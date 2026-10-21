@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apuntes</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      max-width: 720px;
+      margin: 3rem auto;
+      padding: 0 1rem;
+      line-height: 1.6;
+      color: #222;
+      background: #fafafa;
+    }
+    h1 {
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 0.5rem;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin: 0.75rem 0;
+    }
+    a {
+      display: block;
+      padding: 0.9rem 1.1rem;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      color: #0366d6;
+      text-decoration: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    a:hover {
+      border-color: #0366d6;
+      box-shadow: 0 2px 6px rgba(3, 102, 214, 0.15);
+    }
+    .small {
+      font-size: 0.9rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>📚 Apuntes</h1>
+  <p class="small">Selecciona un tema para verlo:</p>
+
+  <ul>
+    <li>
+      <a href="RA1_Montaje_y_mantenimiento_de_equipos.html">
+        RA1 — Montaje y mantenimiento de equipos
+      </a>
+    </li>
+    <!-- Añade aquí más enlaces cuando subas más apuntes:
+    <li>
+      <a href="RA2_Nombre_del_archivo.html">RA2 — Título del tema</a>
+    </li>
+    -->
+  </ul>
+</body>
+</html>
