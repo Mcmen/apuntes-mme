@@ -1,0 +1,2058 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RA5 — Montaje y mantenimiento de equipos: Instala software en un equipo informático utilizando una imagen almacenada en un soporte de memoria y justificando el procedimiento a seguir.</title>
+  <style>
+    html { scroll-behavior: smooth; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #eef1f5; color: #1a1a2e; line-height: 1.7; font-size: 15px; }
+    :root {
+      --azul: #1e3a5f; --azul-medio: #2d6a9f; --azul-claro: #dceeff;
+      --win: #2d6a9f; --win-light: #e6f0f9;
+      --linux: #b8542a; --linux-light: #fbeee6;
+      --critico: #b03a2e; --critico-light: #fdf0ee;
+      --importante: #8a6400; --importante-light: #fff9e6;
+      --complementario: #2d6a9f; --complementario-light: #e8f2fb;
+      --exito: #1a6b3a; --exito-light: #e2f0e6;
+      --gris: #667085; --borde: #dde3ec;
+      --sombra: 0 2px 8px rgba(30,58,95,0.07);
+    }
+
+    /* ── Cabecera ───────────────────────────────────────────── */
+    .nav-sor { position: sticky; top: 0; z-index: 100; background: var(--azul); padding: 0 24px; height: 52px; display: flex; align-items: center; }
+    .nav-brand { color: white; font-weight: 600; font-size: 15px; letter-spacing: 0.3px; max-width: 1080px; width: 100%; margin: 0 auto; }
+    .nav-brand span { color: #8fc7a0; font-weight: 700; }
+    .hero { background: linear-gradient(135deg, var(--azul) 0%, var(--azul-medio) 100%); color: white; padding: 40px 24px 34px; text-align: left; }
+    .hero > * { max-width: 1080px; margin-left: auto; margin-right: auto; }
+    .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 4px 14px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px; }
+    .hero h1 { font-size: 25px; font-weight: 700; line-height: 1.35; margin-bottom: 8px; }
+    .hero-sub { font-size: 14px; opacity: 0.8; font-style: italic; margin-bottom: 20px; }
+    .hero-meta { display: flex; gap: 8px; flex-wrap: wrap; font-size: 12px; }
+    .hero-meta span { background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); padding: 4px 13px; border-radius: 20px; font-weight: 600; }
+
+    /* ── Columna medida ─────────────────────────────────────── */
+    .container { max-width: 1080px; margin: 0 auto; padding: 32px 24px 64px; }
+
+    /* ── Ficha del RA ───────────────────────────────────────── */
+    .ra-info { background: white; border-radius: 10px; padding: 22px 26px; margin-bottom: 24px; box-shadow: var(--sombra); }
+    .ra-info h2 { font-size: 18px; color: var(--azul); border-left: 4px solid var(--azul-medio); padding-left: 14px; margin-bottom: 18px; line-height: 1.4; }
+    .peso-grid { display: flex; flex-wrap: wrap; gap: 12px; margin: 14px 0; }
+    .peso-card { flex: 1; min-width: 120px; background: #f7f9fc; border: 1px solid var(--borde); border-radius: 8px; padding: 12px 14px; text-align: center; }
+    .peso-card .numero { font-size: 24px; font-weight: 700; color: var(--azul-medio); line-height: 1.2; }
+    .peso-card .label { font-size: 11px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.6px; }
+    .ce-criticos { background: var(--critico-light); border-left: 4px solid var(--critico); border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 16px 0; font-size: 13px; }
+    .ce-criticos strong { color: var(--critico); }
+    .progress-bar { background: var(--borde); height: 8px; border-radius: 8px; overflow: hidden; margin: 14px 0 2px; }
+    .progress-fill { background: var(--exito); width: 0%; height: 100%; transition: width 0.3s; }
+
+    /* ── Índice ─────────────────────────────────────────────── */
+    .ce-index { background: white; border-radius: 10px; padding: 18px 26px; margin-bottom: 32px; box-shadow: var(--sombra); }
+    .ce-index-titulo { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gris); margin-bottom: 12px; }
+    .ce-index-links { display: flex; flex-wrap: wrap; gap: 6px; }
+    .ce-idx-item { display: flex; align-items: baseline; gap: 8px; padding: 5px 11px; border-radius: 6px; text-decoration: none; font-size: 12.5px; color: #2c3444; border: 1px solid var(--borde); background: #f7f9fc; transition: 0.15s; }
+    .ce-idx-item:hover { background: var(--azul-claro); border-color: var(--azul-medio); }
+    .ce-idx-critico { border-left: 3px solid var(--critico); }
+    .ce-idx-importante { border-left: 3px solid #d4a017; }
+    .ce-idx-complementario { border-left: 3px solid var(--azul-medio); }
+    .ce-idx-letra { font-weight: 800; font-size: 13px; color: var(--azul); }
+    .ce-idx-desc { color: #4a5568; }
+
+    /* ── Bloques: cabecera y cuerpo como dos tarjetas ───────── */
+    .bloque { background: transparent; border: none; box-shadow: none; margin-bottom: 40px; }
+    .bloque-header { background: white; border-left: 5px solid var(--azul-medio); border-radius: 0 8px 8px 0; padding: 15px 20px; margin-bottom: 16px; box-shadow: var(--sombra); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .bloque-titulo { display: flex; align-items: center; gap: 13px; }
+    .bloque-num { background: var(--azul-medio); color: white; font-weight: 700; border-radius: 6px; padding: 4px 11px; font-size: 14px; flex-shrink: 0; align-self: flex-start; margin-top: 3px; }
+    .bloque-num.critico { background: var(--critico); }
+    .bloque-info h3 { font-size: 18px; color: var(--azul); margin-bottom: 3px; line-height: 1.35; }
+    .bloque-info p { font-size: 12px; color: var(--gris); }
+    .bloque-sesiones { background: #f0f3f8; color: var(--gris); border: 1px solid var(--borde); padding: 4px 12px; border-radius: 20px; font-size: 11.5px; font-weight: 600; }
+    .bloque-body { background: white; border-radius: 10px; padding: 24px 28px; box-shadow: var(--sombra); }
+
+    /* ── Escala tipográfica dentro del cuerpo ───────────────── */
+    .bloque-body h3 { font-size: 16px; color: var(--azul); margin: 26px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--borde); }
+    .bloque-body h4 { font-size: 15px; color: var(--azul); margin: 22px 0 10px; }
+    .bloque-body > h3:first-child, .bloque-body > h4:first-child { margin-top: 0; }
+    .bloque-body p { margin-bottom: 11px; }
+    .bloque-body p:last-child { margin-bottom: 0; }
+    .win-col h4, .linux-col h4, .ejercicio h5, .ejemplo-resuelto h5 { margin-top: 0; }
+
+    /* ── Listas ─────────────────────────────────────────────── */
+    .bloque-body ul, .bloque-body ol, .box-critico ul, .box-critico ol, .box-importante ul, .box-importante ol, .box-complementario ul, .box-complementario ol, .win-col ul, .win-col ol, .linux-col ul, .linux-col ol { padding-left: 20px; margin: 10px 0; }
+    .bloque-body li { margin-bottom: 6px; }
+    .bloque-body li::marker { color: var(--azul-medio); }
+
+    /* ── Dos columnas Windows / Linux ───────────────────────── */
+    .dual-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+    .win-col { background: var(--win-light); border: 1px solid #cfe0ee; border-top: 3px solid var(--win); border-radius: 8px; padding: 16px 18px; min-width: 0; }
+    .win-col h4 { color: var(--win); font-size: 14px; margin-bottom: 10px; }
+    .linux-col { background: var(--linux-light); border: 1px solid #f0dcd0; border-top: 3px solid var(--linux); border-radius: 8px; padding: 16px 18px; min-width: 0; }
+    .linux-col h4 { color: var(--linux); font-size: 14px; margin-bottom: 10px; }
+
+    /* ── Cajas semánticas ───────────────────────────────────── */
+    .box-critico, .box-importante, .box-complementario { border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 18px 0; }
+    .box-critico { background: var(--critico-light); border-left: 4px solid var(--critico); }
+    .box-importante { background: var(--importante-light); border-left: 4px solid #d4a017; }
+    .box-complementario { background: var(--complementario-light); border-left: 4px solid var(--complementario); }
+    .box-label { font-weight: 700; font-size: 12px; text-transform: none; letter-spacing: 0.3px; margin-bottom: 5px; display: block; }
+    .box-critico .box-label { color: var(--critico); }
+    .box-importante .box-label { color: var(--importante); }
+    .box-complementario .box-label { color: var(--complementario); }
+
+    /* ── Código y tablas ────────────────────────────────────── */
+    pre { background: #1e293b; color: #e2e8f0; padding: 13px 16px; border-radius: 8px; overflow-x: auto; font-size: 13px; font-family: 'Consolas', 'Courier New', monospace; margin: 14px 0; line-height: 1.6; }
+    pre code { background: none; color: inherit; padding: 0; }
+    code { background: #eef2f7; padding: 1px 6px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 13px; color: #1e3a5f; }
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 18px 0; border-radius: 8px; border: 1px solid var(--borde); }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    thead tr { background: var(--azul); color: white; }
+    th { padding: 10px 14px; text-align: left; font-weight: 600; }
+    tbody tr:nth-child(even) { background: #f7f9fc; }
+    td { padding: 9px 14px; border-bottom: 1px solid var(--borde); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+
+    /* ── Ejercicios ─────────────────────────────────────────── */
+    .ejercicio { background: #fdfaf2; border: 1px solid #eadfc2; border-left: 4px solid #d4a017; border-radius: 0 8px 8px 0; padding: 16px 18px; margin: 20px 0; }
+    .ejercicio h5 { color: #7a5c00; margin-bottom: 4px; font-size: 14px; }
+    .nivel-tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-bottom: 8px; letter-spacing: 0.5px; }
+    .nivel-basico { background: var(--exito-light); color: var(--exito); }
+    .nivel-medio { background: #fdf3d6; color: #7a5c00; }
+    .nivel-avanzado { background: var(--critico-light); color: var(--critico); }
+    .respuesta { background: white; border: 1px solid var(--borde); border-radius: 6px; padding: 12px; min-height: 76px; margin-top: 12px; outline: none; }
+    .respuesta:focus { border-color: var(--azul-medio); box-shadow: 0 0 0 3px rgba(45,106,159,0.1); }
+    .respuesta:empty::before { content: attr(data-placeholder); color: #a0aec0; pointer-events: none; display: block; }
+    .solucion { margin-top: 12px; background: var(--exito-light); border-radius: 6px; padding: 2px 14px; }
+    .solucion summary { cursor: pointer; font-weight: 600; color: var(--exito); padding: 9px 0; list-style: revert; font-size: 13.5px; }
+    .solucion[open] summary { margin-bottom: 6px; }
+
+    /* ── Ejemplo resuelto, diagrama, checklist ──────────────── */
+    .ejemplo-resuelto { background: var(--exito-light); border-left: 4px solid var(--exito); border-radius: 0 8px 8px 0; padding: 16px 18px; margin: 20px 0; }
+    .ejemplo-resuelto h5 { color: var(--exito); margin-bottom: 8px; font-size: 14px; }
+    .diagrama { margin: 22px 0; background: #f7f9fc; border: 1px solid var(--borde); border-radius: 10px; padding: 20px 14px; text-align: center; overflow-x: auto; }
+    .diagrama svg { max-width: 100%; height: auto; display: block; margin: 0 auto; font-family: 'Segoe UI', system-ui, sans-serif; }
+    .diagrama figcaption { font-size: 12.5px; color: var(--gris); margin-top: 14px; font-style: italic; }
+    .checklist { background: #f7f9fc; border: 1px solid var(--borde); border-radius: 10px; padding: 18px 20px; margin-top: 22px; }
+    .checklist strong { color: var(--azul); font-size: 14px; }
+    .checklist ul { list-style: none; padding: 0; margin-top: 10px; }
+    .checklist li { padding: 5px 0; display: flex; align-items: flex-start; gap: 10px; cursor: pointer; border-bottom: 1px solid #eef1f5; }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li input[type="checkbox"] { width: 15px; height: 15px; flex-shrink: 0; cursor: pointer; margin-top: 5px; accent-color: var(--exito); }
+    .checklist li label { cursor: pointer; flex: 1; font-size: 14px; }
+
+    /* ── Varios ─────────────────────────────────────────────── */
+    hr.sep { border: none; border-top: 2px dashed var(--borde); margin: 24px 0; }
+    footer { text-align: center; padding: 28px 24px; color: var(--gris); font-size: 12px; border-top: 1px solid var(--borde); margin-top: 44px; background: white; }
+    .btn-top { position: fixed; bottom: 20px; right: 20px; background: var(--azul); color: white; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-size: 19px; opacity: 0; transition: 0.3s; z-index: 90; }
+    .btn-top.visible { opacity: 1; }
+    .progreso-badge { position: fixed; bottom: 20px; left: 20px; background: var(--azul); color: white; padding: 7px 15px; border-radius: 20px; font-size: 12.5px; font-weight: 600; z-index: 90; }
+
+    @media (max-width: 768px) {
+      body { font-size: 14px; }
+      .container { padding: 18px 14px 44px; }
+      .dual-columns { grid-template-columns: 1fr; gap: 12px; }
+      .hero { padding: 26px 18px 22px; }
+      .hero h1 { font-size: 19px; }
+      .bloque-body { padding: 16px 17px; }
+      .bloque-header { padding: 13px 15px; }
+      pre { font-size: 11.5px; }
+      th, td { padding: 7px 9px; font-size: 12px; }
+    }
+
+    /* ── Fotos reales ───────────────────────────────────────── */
+    .foto { margin: 22px 0; }
+    .foto-sm img { max-width: 620px; margin-left: auto; margin-right: auto; }
+    .foto img { width: 100%; border-radius: 10px; border: 1px solid var(--borde); display: block; }
+    .foto figcaption { font-size: 12.5px; color: var(--gris); margin-top: 10px; font-style: italic; text-align: center; }
+    .foto-pendiente { border: 2px dashed #c3cede; border-radius: 10px; background: #f7f9fc; padding: 26px 20px; text-align: center; color: var(--gris); }
+    .foto-pendiente .icono { font-size: 30px; display: block; margin-bottom: 8px; opacity: 0.6; }
+    .foto-pendiente .archivo { display: inline-block; font-family: 'Consolas', monospace; font-size: 12.5px; background: white; border: 1px solid var(--borde); border-radius: 4px; padding: 2px 8px; color: var(--azul); margin-top: 8px; }
+    .foto-pendiente .que { font-size: 13.5px; color: #4a5568; }
+
+    /* ── Rejilla de tarjetas de contenido ───────────────────── */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: 14px; margin: 20px 0; }
+    .card { background: #f7f9fc; border: 1px solid var(--borde); border-top: 3px solid var(--azul-medio); border-radius: 8px; padding: 15px 17px; }
+    .card h4 { font-size: 14px; color: var(--azul); margin: 0 0 9px; display: flex; align-items: center; gap: 8px; }
+    .card h4 .ico { font-size: 18px; }
+    .card ul { margin: 0; padding-left: 18px; font-size: 13.5px; }
+    .card li { margin-bottom: 5px; }
+
+    /* ── Etiquetas de peligrosidad ──────────────────────────── */
+    .pel { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 1px 8px; border-radius: 4px; letter-spacing: 0.4px; white-space: nowrap; }
+    .pel-baja    { background: #e2f0e6; color: #1a6b3a; }
+    .pel-media   { background: #fdf3d6; color: #7a5c00; }
+    .pel-alta    { background: #fbe6dd; color: #a0522d; }
+    .pel-critica { background: #f7dcd8; color: #8c2f22; }
+
+    /* ── Frase destacada, para romper el bloque de texto ────── */
+    .clave { font-size: 16px; line-height: 1.6; color: var(--azul); border-left: 4px solid #d4a017; padding: 4px 0 4px 16px; margin: 22px 0; font-weight: 600; }
+
+    /* ── Vídeo de apoyo: enlace, no incrustado ──────────────── */
+    .videos { display: flex; flex-direction: column; gap: 8px; margin: 18px 0; }
+    .video { display: flex; align-items: flex-start; gap: 12px; background: #fff; border: 1px solid var(--borde); border-left: 4px solid #a0302a; border-radius: 8px; padding: 12px 14px; text-decoration: none; color: inherit; box-shadow: var(--sombra); }
+    .video:hover { border-color: #a0302a; }
+    .video .play { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; background: #a0302a; color: #fff; font-size: 11px; line-height: 26px; text-align: center; }
+    .video .txt { min-width: 0; }
+    .video .titulo { display: block; font-weight: 600; font-size: 14.5px; color: var(--azul); }
+    .video .desc { display: block; font-size: 13px; color: var(--gris); margin-top: 2px; }
+  </style>
+</head>
+<body>
+
+<nav class="nav-sor">
+  <div class="nav-brand">Montaje y mantenimiento de equipos &nbsp;<span>RA5</span></div>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">Grado Medio Sistemas Microinformáticos y Redes</div>
+  <h1>RA5: Instala software en un equipo informático utilizando una imagen almacenada en un soporte de memoria y justificando el procedimiento a seguir.</h1>
+  <p class="hero-sub">Contenido técnico de nivel Grado Medio</p>
+  <div class="hero-meta">
+    <span>Peso: 14%</span>
+    <span>13 sesiones × 55 min</span>
+    <span>11 criterios de evaluación</span>
+    <span>6 CEs críticos</span>
+  </div>
+</div>
+<div class="container">
+<div class="ra-info">
+  <h2>RA5: Instala software en un equipo informático utilizando una imagen almacenada en un soporte de memoria y justificando el procedimiento a seguir.</h2>
+  <div class="peso-grid">
+    <div class="peso-card"><div class="numero">14%</div><div class="label">Peso evaluación</div></div>
+    <div class="peso-card"><div class="numero">13</div><div class="label">Sesiones</div></div>
+    <div class="peso-card"><div class="numero">11</div><div class="label">Criterios</div></div>
+    <div class="peso-card"><div class="numero">6</div><div class="label">Críticos</div></div>
+  </div>
+  <div class="ce-criticos"><strong>CEs críticos:</strong> CE-a, CE-c, CE-d, CE-e, CE-g, CE-h</div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+</div>
+<div class="ce-index">
+  <div class="ce-index-titulo">Índice RA5 — 11 criterios</div>
+  <div class="ce-index-links">
+    <a href="#ceA" class="ce-idx-item ce-idx-critico"><span class="ce-idx-letra">a</span><span class="ce-idx-desc">Se ha reconocido la diferencia entre una instalación estándar y una preinstalaci…</span></a>
+    <a href="#ceC" class="ce-idx-item ce-idx-critico"><span class="ce-idx-letra">c</span><span class="ce-idx-desc">Se han inicializado equipos desde distintos soportes de memoria auxiliar.</span></a>
+    <a href="#ceD" class="ce-idx-item ce-idx-critico"><span class="ce-idx-letra">d</span><span class="ce-idx-desc">Se han realizado imágenes de una preinstalación de software.</span></a>
+    <a href="#ceE" class="ce-idx-item ce-idx-critico"><span class="ce-idx-letra">e</span><span class="ce-idx-desc">Se han restaurado imágenes sobre el disco fijo desde distintos soportes.</span></a>
+    <a href="#ceF" class="ce-idx-item ce-idx-importante"><span class="ce-idx-letra">f</span><span class="ce-idx-desc">Se han descrito las utilidades para la creación de imágenes de partición / disco…</span></a>
+    <a href="#ceG" class="ce-idx-item ce-idx-critico"><span class="ce-idx-letra">g</span><span class="ce-idx-desc">Se ha realizado la instalación de S.O y configuración del mismo.</span></a>
+    <a href="#ceH" class="ce-idx-item ce-idx-critico"><span class="ce-idx-letra">h</span><span class="ce-idx-desc">Se ha realizado la creación de particiones y unidades lógicas.</span></a>
+    <a href="#ceI" class="ce-idx-item ce-idx-importante"><span class="ce-idx-letra">i</span><span class="ce-idx-desc">Se ha realizado redimensión de particiones.</span></a>
+    <a href="#ceJ" class="ce-idx-item ce-idx-importante"><span class="ce-idx-letra">j</span><span class="ce-idx-desc">Se ha realizado la instalación y configuración de programas de mantenimiento.</span></a>
+    <a href="#ceK" class="ce-idx-item ce-idx-complementario"><span class="ce-idx-letra">k</span><span class="ce-idx-desc">Se ha realizado la instalación y configuración de programas de optimización del …</span></a>
+    <a href="#ra9ceE" class="ce-idx-item ce-idx-importante"><span class="ce-idx-letra">RA9·e</span><span class="ce-idx-desc">Se han realizado pruebas con sistemas operativos en almacenamiento extraíble.</span></a>
+  </div>
+</div>
+<div class="bloque" id="ceA">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num critico">a</div>
+      <div class="bloque-info">
+        <h3>Instalación estándar frente a preinstalación de software</h3>
+        <p>CE-a · CRÍTICO · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>Un equipo puede llegar al taller con Windows 11 ya funcionando, pero no siempre viene igual: puede estar <strong>preinstalado</strong> de fábrica o habérsele hecho una <strong>instalación estándar</strong>. Distinguirlo es lo primero que hace un técnico, porque condiciona la licencia, las particiones del disco y qué se puede borrar sin perder nada.</p>
+
+    <div class="cards">
+      <div class="card">
+        <h4><span class="ico">💿</span> Instalación estándar</h4>
+        <ul>
+          <li>Se parte de un <strong>medio de instalación</strong>: un archivo <strong>ISO</strong> (copia exacta de un disco de instalación empaquetada en un solo fichero). Con Rufus 4.6 se graba la ISO en el USB; con Ventoy 1.1.05 se instala Ventoy en el USB y después se copia la ISO al USB tal cual (Ventoy no graba la ISO: la arranca desde el fichero copiado).</li>
+          <li>El técnico decide las <strong>particiones</strong> (divisiones lógicas del disco), la cuenta de usuario, los controladores y los programas.</li>
+          <li>La licencia se introduce a mano: <strong>Retail</strong> (se puede pasar a otro equipo) o <strong>Volumen</strong> (para empresas, con muchas activaciones).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">🏭</span> Preinstalación</h4>
+        <ul>
+          <li>El <strong>fabricante OEM</strong> (Original Equipment Manufacturer: la marca que vende el equipo) entrega el sistema ya instalado desde una <strong>imagen de fábrica</strong>.</li>
+          <li>Incluye <strong>bloatware</strong>: programas del fabricante y pruebas de antivirus que el usuario no ha pedido.</li>
+          <li>Puede incluir una <strong>partición OEM de recuperación</strong> con la imagen de fábrica (la partición Recovery/WinRE también la crea Windows 11 en una instalación estándar) y una licencia <strong>OEM</strong> grabada en el firmware del equipo.</li>
+        </ul>
+      </div>
+    </div>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 620 250" role="img" aria-label="Comparación del proceso de instalación estándar y de preinstalación">
+        <defs>
+          <marker id="flecha-cea" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <text x="20" y="25" font-size="14" text-anchor="start" fill="#1a6b3a">INSTALACIÓN ESTÁNDAR (la hace el técnico)</text>
+        <rect x="20" y="40" width="130" height="56" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="85" y="63" text-anchor="middle" font-size="13" fill="#1a1a2e">Medio de</text>
+        <text x="85" y="80" text-anchor="middle" font-size="13" fill="#1a1a2e">instalación</text>
+        <rect x="170" y="40" width="130" height="56" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="235" y="63" text-anchor="middle" font-size="13" fill="#1a1a2e">Particionado</text>
+        <text x="235" y="80" text-anchor="middle" font-size="13" fill="#1a1a2e">manual</text>
+        <rect x="320" y="40" width="130" height="56" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="385" y="63" text-anchor="middle" font-size="13" fill="#1a1a2e">SO y</text>
+        <text x="385" y="80" text-anchor="middle" font-size="13" fill="#1a1a2e">controladores</text>
+        <rect x="470" y="40" width="130" height="56" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="535" y="63" text-anchor="middle" font-size="13" fill="#1a1a2e">Programas</text>
+        <text x="535" y="80" text-anchor="middle" font-size="13" fill="#1a1a2e">a medida</text>
+        <line x1="150" y1="68" x2="166" y2="68" stroke="#667085" stroke-width="2" marker-end="url(#flecha-cea)"/>
+        <line x1="300" y1="68" x2="316" y2="68" stroke="#667085" stroke-width="2" marker-end="url(#flecha-cea)"/>
+        <line x1="450" y1="68" x2="466" y2="68" stroke="#667085" stroke-width="2" marker-end="url(#flecha-cea)"/>
+
+        <text x="20" y="140" font-size="14" text-anchor="start" fill="#2d6a9f">PREINSTALACIÓN (llega hecha de fábrica)</text>
+        <rect x="20" y="155" width="130" height="56" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="85" y="178" text-anchor="middle" font-size="13" fill="#1a1a2e">Imagen de</text>
+        <text x="85" y="195" text-anchor="middle" font-size="13" fill="#1a1a2e">fábrica</text>
+        <rect x="170" y="155" width="130" height="56" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="235" y="178" text-anchor="middle" font-size="13" fill="#1a1a2e">Partición OEM</text>
+        <text x="235" y="195" text-anchor="middle" font-size="13" fill="#1a1a2e">de recuperación</text>
+        <rect x="320" y="155" width="130" height="56" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="385" y="178" text-anchor="middle" font-size="13" fill="#1a1a2e">Primer arranque</text>
+        <text x="385" y="195" text-anchor="middle" font-size="13" fill="#1a1a2e">(OOBE)</text>
+        <rect x="470" y="155" width="130" height="56" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="535" y="178" text-anchor="middle" font-size="13" fill="#1a1a2e">Software del</text>
+        <text x="535" y="195" text-anchor="middle" font-size="13" fill="#1a1a2e">fabricante</text>
+        <line x1="150" y1="183" x2="166" y2="183" stroke="#667085" stroke-width="2" marker-end="url(#flecha-cea)"/>
+        <line x1="300" y1="183" x2="316" y2="183" stroke="#667085" stroke-width="2" marker-end="url(#flecha-cea)"/>
+        <line x1="450" y1="183" x2="466" y2="183" stroke="#667085" stroke-width="2" marker-end="url(#flecha-cea)"/>
+      </svg>
+      <figcaption>Los dos caminos hasta un equipo «con Windows funcionando». Fíjate en que solo la instalación estándar pasa por un medio de instalación y un particionado decidido por el técnico. La etiqueta OOBE significa Out-of-Box Experience (experiencia de primera configuración: idioma, cuenta, red, etc.); la partición Recovery/WinRE la crea también Windows 11 al instalar de cero, mientras que la preinstalación puede añadir una partición OEM de recuperación con la imagen de fábrica.</figcaption>
+    </figure>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Aspecto</th><th>Instalación estándar</th><th>Preinstalación</th></tr></thead>
+        <tbody>
+          <tr><td>Punto de partida</td><td>USB de instalación (Rufus graba la ISO; Ventoy arranca ISOs copiadas)</td><td>Imagen de fábrica o del departamento de TI</td></tr>
+          <tr><td>Particiones</td><td>Las decide el técnico; Windows crea EFI, MSR, C: y Recovery/WinRE</td><td>Ya creadas por el fabricante: EFI, MSR, Windows, Recovery/WinRE y, a veces, una partición OEM extra</td></tr>
+          <tr><td>Licencia</td><td>Retail o Volumen, se escribe a mano</td><td>OEM, grabada en el firmware</td></tr>
+          <tr><td>Software extra</td><td>Solo el que se instala después</td><td>Bloatware del fabricante</td></tr>
+          <tr><td>Recuperación</td><td>Windows crea automáticamente Recovery/WinRE (~500 MB–1 GB) para WinRE</td><td>Además puede incluir una partición OEM de recuperación con la imagen de fábrica</td></tr>
+          <tr><td>Uso típico</td><td>Equipo de cliente, aula, equipo a medida</td><td>Equipo nuevo de tienda, despliegue masivo</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box-importante">
+      <div class="box-label">IMPORTANTE</div>
+      <p>La licencia <strong>OEM</strong> queda atada al equipo: si el disco se formatea, se reinstala el mismo Windows sin problema (el firmware guarda la clave), pero <strong>no se puede llevar a otro ordenador</strong>. La <strong>Retail</strong>, en cambio, se puede desinstalar de un equipo y activar en otro.</p>
+    </div>
+
+    <p>La existencia de una partición <strong>Recovery/WinRE</strong> no delata por sí sola una preinstalación: Windows 11 también la crea automáticamente al instalar de cero, con un tamaño habitual de ~500 MB–1 GB. Lo que orienta hacia una preinstalación es el conjunto: licencia <strong>OEM</strong>, <strong>bloatware</strong> del fabricante y, a veces, una partición <strong>OEM de recuperación</strong> con la imagen de fábrica. Un Windows 11 puede mostrar cuatro particiones habituales: <strong>EFI</strong> (unos 100 MB, donde el firmware UEFI —el programa que arranca el equipo— guarda el gestor de arranque), <strong>MSR</strong> (<strong>Microsoft Reserved Partition</strong>, 16 MB, reservada por Microsoft para metadatos de gestión de discos y uso interno de Windows; no tiene letra ni sistema de archivos visible), <strong>C:</strong> con el sistema y una <strong>Recovery/WinRE</strong> de entre 500 MB y varios GB. En una preinstalación puede haber además una partición OEM de recuperación (por ejemplo, HP_RECOVERY) con la imagen de fábrica.</p>
+
+    <div class="dual-columns">
+      <div class="win-col">
+        <h4>🪟 Windows</h4>
+        <p><code>winver</code> abre un cuadro con la versión y compilación. La <strong>Administración de discos</strong> (se abre escribiendo <code>diskmgmt.msc</code>, el panel de gestión de discos de Windows) muestra las particiones a simple vista. <strong>PowerShell</strong> es la consola de comandos avanzada de Windows: se abre desde Inicio, se escribe <code>PowerShell</code> y se elige «Ejecutar como administrador» con clic derecho. Para la licencia se usa <code>slmgr /dlv</code>, que se detalla en el ejemplo.</p>
+      </div>
+      <div class="linux-col">
+        <h4>🐧 Linux</h4>
+        <p><code>lsblk -f</code> lista discos y particiones con su sistema de archivos (el <code>-f</code> es de <em>filesystem</em>). <code>cat /sys/class/dmi/id/sys_vendor</code> muestra el fabricante del equipo leyendo un fichero del sistema: <code>cat</code> vuelca su contenido en pantalla y esa ruta indica quién montó el equipo.</p>
+      </div>
+    </div>
+
+    <div class="clave">Preinstalado no significa "bien instalado": significa "instalado por otro antes que tú, con su licencia y su software".</div>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p>TecnoParts SL recibe un portátil HP de un proveedor, con Windows 11 25H2 funcionando. El cliente pide "un equipo limpio, solo con Office y el programa de facturación". Antes de tocar nada, el técnico comprueba qué tipo de instalación trae.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li><strong>Ver la versión:</strong> se ejecuta <code>winver</code> y confirma Windows 11 25H2, sin actualizaciones pendientes.</li>
+        <li><strong>Comprobar el canal de licencia:</strong> se abre PowerShell como administrador (Inicio, escribir PowerShell, clic derecho y «Ejecutar como administrador») y se lanza <code>slmgr /dlv</code>.</li>
+        <li><strong>Leer las particiones:</strong> en la misma consola, <code>Get-Partition | Format-Table -AutoSize</code>.</li>
+        <li><strong>Decidir:</strong> si el canal es OEM, hay bloatware (por ejemplo, HP Support Assistant) y aparece una partición OEM de recuperación con imagen de fábrica, es una <strong>preinstalación</strong>. La simple aparición de Recovery no basta, porque Windows 11 la crea también al instalar de cero. Para dejar el equipo limpio se hará una <strong>instalación estándar</strong>: se crea un USB arrancable con Rufus 4.6 a partir de la ISO de Windows 11, se arranca desde él y se borran todas las particiones (la clave OEM se reactivará sola al terminar).</li>
+      </ol>
+      <pre><code>slmgr /dlv
+Get-Partition | Format-Table -AutoSize</code></pre>
+      <ul>
+        <li><code>slmgr</code>: herramienta de gestión de licencias de Windows (ejecuta el script <code>slmgr.vbs</code>); necesita consola de administrador.</li>
+        <li><code>/dlv</code>: opción <em>display license verbose</em>; muestra información detallada de la licencia, incluido el canal (OEM, Retail o Volume) y el estado de activación.</li>
+        <li><code>Get-Partition</code>: comando (cmdlet) de PowerShell que lista todas las particiones del equipo con su número, letra y tamaño.</li>
+        <li><code>|</code>: la barra vertical o <em>pipe</em>; envía lo que produce el primer comando al segundo en lugar de a la pantalla.</li>
+        <li><code>Format-Table</code>: formatea esa información como tabla legible.</li>
+        <li><code>-AutoSize</code>: ajusta el ancho de las columnas al contenido, para que no se corten los datos.</li>
+      </ul>
+    </div>
+
+    <p><strong>Antes de los ejercicios:</strong> una <strong>imagen de disco</strong> es un archivo único que contiene una copia sector a sector de un disco o de una partición (arranque, sistema de archivos y datos), y sirve para restaurar después ese estado exacto. <strong>Clonar un disco</strong> es copiar todo su contenido, sector a sector, a otro disco para dejarlo equivalente. <strong>Clonezilla Live 3.2.3-5</strong> es una utilidad arrancable desde USB que crea y restaura imágenes de discos o particiones, y también clona discos, sin instalarse en el equipo.</p>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-a · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>En el taller de TecnoParts SL hay dos equipos sobre la mesa. <strong>Equipo A</strong>: particiones EFI 100 MB, MSR 16 MB, C: 237 GB y Recovery 750 MB; canal de licencia Retail; solo navegador y ofimática, instalados por el técnico el mes pasado. <strong>Equipo B</strong>: EFI 260 MB, MSR 16 MB, C: 475 GB, Recovery 1 GB y una partición HP_RECOVERY de 12 GB con la imagen de fábrica; canal OEM; trae "HP Support Assistant" y una prueba de antivirus. Indica cuál es preinstalación y cuál instalación estándar, cita tres indicios y di en cuál de los dos se puede trasladar la licencia a otro equipo.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>Equipo B = preinstalación.</strong> Indicios: (1) canal de licencia OEM, atada al firmware; (2) bloatware del fabricante (HP Support Assistant y prueba de antivirus); (3) partición HP_RECOVERY con la imagen de fábrica. La partición Recovery/WinRE de 1 GB no es un indicio por sí sola: el Equipo A también la tiene porque Windows 11 la crea automáticamente al instalar de cero.</p>
+        <p><strong>Equipo A = instalación estándar.</strong> La licencia es Retail y el software es exactamente el que instaló el técnico; tiene Recovery/WinRE, pero no una partición OEM de recuperación con imagen de fábrica. Es en el <strong>Equipo A</strong> donde la licencia se puede trasladar a otro ordenador (previa desactivación en este); la del Equipo B moriría con el equipo.</p>
+      </details>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-a · Medio</h5>
+      <span class="nivel-tag nivel-medio">MEDIO</span>
+      <p>El aula 2 del centro tiene 24 equipos sin sistema operativo y se quiere poner Ubuntu 24.04 LTS en todos. Describe cómo prepararías un único USB instalando Ventoy 1.1.05 en él y copiando después la ISO de Ubuntu tal cual (Ventoy no graba la ISO: se instala en el USB y arranca los ficheros ISO copiados), qué particionado aplicarías a cada equipo y en qué se diferenciaría el resultado de haber usado una imagen preinstalada de un equipo ya configurado creada con Clonezilla Live 3.2.3-5.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-a · Avanzado</h5>
+      <span class="nivel-tag nivel-avanzado">AVANZADO</span>
+      <p>Gestoría Ribera compra 25 portátiles con Windows 11 25H2 preinstalado (licencia OEM) y quiere los 25 idénticos, con su software de gestión. Un compañero propone clonar el disco del primer portátil con Clonezilla Live y restaurar la imagen en los otros 24. Diagnostica qué problemas tendría esa propuesta (piensa en licencia, en los datos únicos de cada equipo y en el software del fabricante) y plantea una alternativa razonada usando instalación estándar o imagen preparada con sysprep, la herramienta de Microsoft que "generaliza" una instalación quitando los datos propios de cada equipo.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-a</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Distingo instalación estándar de preinstalación por el punto de partida (medio de instalación frente a imagen de fábrica)</label></li>
+        <li><label><input type="checkbox" class="check-item"> Reconozco Recovery/WinRE y una partición OEM de recuperación, y sé que la primera no basta para detectar una preinstalación</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé consultar el canal de licencia con slmgr /dlv</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé leer un listado de particiones con Get-Partition o lsblk -f</label></li>
+        <li><label><input type="checkbox" class="check-item"> Explico qué es el bloatware y por qué aparece solo en preinstalaciones</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé qué licencia (OEM, Retail o Volumen) se puede trasladar a otro equipo</label></li>
+      </ul>
+    </div>
+
+    <div class="box-critico">
+      <div class="box-label">⚠ TRAMPA DE EXAMEN</div>
+      <p>El error más repetido es decir que "restaurar la partición de recuperación es hacer una instalación estándar". No lo es: al restaurar vuelves a la <strong>preinstalación</strong> de fábrica, con su bloatware y su configuración. Instalación estándar = medio de instalación (ISO en USB) + particionado propio + licencia introducida o reactivada. El segundo fallo típico: creer que al formatear se pierde la licencia OEM. No se pierde (está en el firmware), pero tampoco se puede llevar a otro equipo. Y no confundas la partición Recovery/WinRE de Windows, que también aparece en una instalación estándar, con una partición OEM de recuperación con imagen de fábrica.</p>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceC">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num critico">c</div>
+      <div class="bloque-info">
+        <h3>Arranque e inicialización desde soportes de memoria auxiliar</h3>
+        <p>CE-c · CRÍTICO · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p><strong>Inicializar un equipo desde un soporte de memoria auxiliar</strong> significa arrancarlo usando una memoria USB, un DVD o la red en lugar de su disco interno. El disco interno puede estar vacío (equipos del taller, sin sistema operativo), puede tener un SO averiado o puede que necesitemos una herramienta externa: instalar Windows 11 25H2, ejecutar <strong>GParted Live</strong> (editor de particiones que corre desde el propio USB), <strong>MemTest86</strong> (prueba de memoria RAM) o <strong>Clonezilla Live</strong> (clonado de discos, ya visto en CE-a).</p>
+
+    <div class="clave">Un USB no "arranca" por copiar el archivo .ISO dentro: hay que grabarlo de forma que el firmware lo reconozca como disco de arranque.</div>
+
+    <h4>La secuencia de arranque, paso a paso</h4>
+    <p>Cuando pulsas el botón de encendido, el hardware no sabe nada de sistemas operativos. La cadena es siempre la misma, y si falla un eslabón el equipo no llega a ningún sitio:</p>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 460 230" role="img" aria-label="Secuencia de arranque: POST, firmware, orden de arranque, soporte, gestor de arranque y sistema operativo">
+        <defs>
+          <marker id="flecha-c-cec" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="15" y="25" width="130" height="64" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="80" y="52" text-anchor="middle" font-size="15" fill="#1a1a2e">POST</text>
+        <text x="80" y="72" text-anchor="middle" font-size="13" fill="#667085">prueba hardware</text>
+
+        <rect x="165" y="25" width="130" height="64" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="230" y="52" text-anchor="middle" font-size="15" fill="#1a1a2e">Firmware</text>
+        <text x="230" y="72" text-anchor="middle" font-size="13" fill="#667085">UEFI o BIOS</text>
+
+        <rect x="315" y="25" width="130" height="64" rx="10" fill="#fdf6e3" stroke="#d4a017" stroke-width="2"/>
+        <text x="380" y="52" text-anchor="middle" font-size="15" fill="#1a1a2e">Orden de</text>
+        <text x="380" y="72" text-anchor="middle" font-size="13" fill="#667085">arranque</text>
+
+        <rect x="315" y="140" width="130" height="64" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="380" y="167" text-anchor="middle" font-size="15" fill="#1a1a2e">Soporte</text>
+        <text x="380" y="187" text-anchor="middle" font-size="13" fill="#667085">USB · DVD · red</text>
+
+        <rect x="165" y="140" width="130" height="64" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="230" y="167" text-anchor="middle" font-size="15" fill="#1a1a2e">Gestor de</text>
+        <text x="230" y="187" text-anchor="middle" font-size="13" fill="#667085">arranque</text>
+
+        <rect x="15" y="140" width="130" height="64" rx="10" fill="#f7f9fc" stroke="#667085" stroke-width="2"/>
+        <text x="80" y="167" text-anchor="middle" font-size="15" fill="#1a1a2e">SO o live</text>
+        <text x="80" y="187" text-anchor="middle" font-size="13" fill="#667085">instalador</text>
+
+        <line x1="145" y1="57" x2="163" y2="57" stroke="#667085" stroke-width="2" marker-end="url(#flecha-c-cec)"/>
+        <line x1="295" y1="57" x2="313" y2="57" stroke="#667085" stroke-width="2" marker-end="url(#flecha-c-cec)"/>
+        <line x1="380" y1="89" x2="380" y2="138" stroke="#667085" stroke-width="2" marker-end="url(#flecha-c-cec)"/>
+        <line x1="315" y1="172" x2="297" y2="172" stroke="#667085" stroke-width="2" marker-end="url(#flecha-c-cec)"/>
+        <line x1="165" y1="172" x2="147" y2="172" stroke="#667085" stroke-width="2" marker-end="url(#flecha-c-cec)"/>
+      </svg>
+      <figcaption>Cadena completa de encendido. El alumno debe fijarse en el tercer eslabón: si el USB no aparece en el orden de arranque, el equipo seguirá buscando el disco duro y no pasará nada en pantalla.</figcaption>
+    </figure>
+
+    <ul>
+      <li><strong>POST</strong> (<em>Power-On Self-Test</em>): prueba automática de la CPU, la RAM y los dispositivos al encender. Si algo esencial falla, la placa emite pitidos por el <strong>zumbador</strong> (el altavoz pequeño que tenemos en el taller) o muestra un código en pantalla.</li>
+      <li><strong>Firmware</strong>: programa grabado en la placa base que controla el hardware básico. En equipos modernos es <strong>UEFI</strong>; en equipos antiguos, <strong>BIOS</strong> (o modo <em>Legacy</em>/CSM dentro de una UEFI). El <strong>CSM</strong> (<em>Compatibility Support Module</em>) es el módulo de compatibilidad que emula una BIOS tradicional dentro de una placa UEFI para poder arrancar sistemas o medios Legacy. Ya lo vimos en CE-a.</li>
+      <li><strong>Orden de arranque</strong>: lista guardada en el firmware con el orden en que se buscan dispositivos de arranque (1.º disco interno, 2.º USB, 3.º red…). Se cambia en la pantalla de configuración (tecla <code>F2</code>, <code>Supr</code> o <code>Esc</code> al encender).</li>
+      <li><strong>Menú de arranque</strong>: atajo <em>temporal</em> (en el taller suele ser <code>F12</code> o <code>F11</code>) que muestra la lista de dispositivos arrancables para esa vez; no modifica el orden guardado.</li>
+    </ul>
+
+    <h4>Soportes y cómo se preparan</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Soporte</th><th>Cómo se prepara</th><th>Cuándo usarlo</th></tr></thead>
+        <tbody>
+          <tr><td>Memoria USB</td><td>Grabar la ISO con Rufus 4.6 (permite elegir GPT/MBR y FAT32/NTFS; añade el cargador UEFI:NTFS cuando se formatea en NTFS), con balenaEtcher 1.19.25 (grabadora gráfica que escribe la ISO/IMG bloque a bloque y verifica la grabación; no ofrece los ajustes de particionado de Rufus) o copiar las ISO a un USB preparado con Ventoy 1.1.05 (visto en CE-a)</td><td>Instalaciones, herramientas live, chequeos</td></tr>
+          <tr><td>DVD</td><td>Grabar la imagen como imagen de disco, no como archivo suelto</td><td>Equipos antiguos con lector óptico (tenemos unidades en el taller)</td></tr>
+          <tr><td>Disco duro/SSD externo</td><td>Igual que un USB</td><td>Imágenes grandes, Clonezilla, copias de seguridad</td></tr>
+          <tr><td>Tarjeta SD</td><td>Igual que un USB</td><td>Portátiles ligeros sin USB libre</td></tr>
+          <tr><td>Red (PXE)</td><td>Arranque desde un servidor de la red mediante <strong>PXE</strong> (<em>Preboot eXecution Environment</em>, entorno de arranque por red), sin medio físico</td><td>Aulas con muchos equipos; aquí lo citamos, pero no lo usaremos</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>Rufus</strong> permite elegir esquema de particiones y sistema de archivos; <strong>balenaEtcher</strong> es más simple: escribe la imagen tal cual y verifica la grabación, pero no permite cambiar GPT/MBR ni FAT32/NTFS; <strong>Ventoy</strong> instala un gestor que arranca ISOs copiadas dentro del USB.</p>
+
+    <h4>UEFI frente a Legacy: lo que rompe el arranque</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Aspecto</th><th>UEFI (moderno)</th><th>Legacy / CSM (antiguo)</th></tr></thead>
+        <tbody>
+          <tr><td>Esquema de particiones</td><td>GPT (<em>GUID Partition Table</em>): moderna, hasta 128 particiones y discos de muchos TB</td><td>MBR (<em>Master Boot Record</em>): antigua, 4 particiones primarias y discos hasta 2 TB</td></tr>
+          <tr><td>Sistema de archivos del USB</td><td>FAT32 de forma nativa. NTFS puede arrancar con un cargador UEFI:NTFS (por ejemplo, el que añade Rufus); exFAT normalmente no se lee sin soporte adicional del firmware.</td><td>FAT32 o NTFS, según el gestor de arranque del USB; la BIOS no interpreta sistemas de archivos por sí sola.</td></tr>
+          <tr><td>Secure Boot</td><td>Puede estar activo: solo arranca cargadores firmados digitalmente</td><td>No existe</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>FAT32, exFAT y NTFS</strong> son <em>sistemas de archivos</em>: la forma en que una unidad organiza nombres, carpetas y espacio libre. <strong>GPT y MBR</strong> son <em>esquemas de particiones</em>, no sistemas de archivos. <strong>Secure Boot</strong> (arranque seguro) es una opción del firmware que comprueba la firma digital del cargador; Windows 11 lo exige, pero bloquea herramientas live antiguas o no firmadas, y entonces hay que desactivarlo <em>temporalmente</em>.</p>
+
+    <h4>Crear el USB desde la línea de órdenes (y por qué a veces se hace así)</h4>
+    <p>Se usa la línea de órdenes cuando no hay entorno gráfico (WinPE, un Linux live, un servidor), cuando hay que automatizar la preparación de muchos USBs, cuando Rufus o balenaEtcher no están disponibles o cuando se necesita controlar con precisión el esquema de particiones, el formato y las marcas de arranque. También sirve para reparar un USB que no aparece en el Explorador o para grabar imágenes con <code>dd</code> sin depender de una utilidad gráfica.</p>
+    <div class="dual-columns">
+      <div class="win-col"><h4>🪟 Windows</h4>
+        <p><strong>Ejemplo de preparación manual para Legacy/MBR:</strong></p>
+        <pre><code>diskpart
+list disk
+select disk 2
+clean
+convert mbr
+create partition primary
+format fs=ntfs quick
+select partition 1
+active
+assign</code></pre>
+        <ul>
+          <li><code>diskpart</code>: abre la herramienta de gestión de discos por consola de Windows. Necesita consola iniciada como administrador.</li>
+          <li><code>list disk</code>: enumera los discos físicos con su número. Hay que localizar el USB por su tamaño.</li>
+          <li><code>select disk 2</code>: selecciona el disco 2 como destino; el <code>2</code> es el número que hemos visto antes (en el ejemplo, el USB).</li>
+          <li><code>clean</code>: borra TODA la información y las particiones del disco seleccionado. Es irreversible.</li>
+          <li><code>convert mbr</code>: convierte el USB al esquema MBR, necesario para arranque Legacy; para UEFI se usaría <code>convert gpt</code>.</li>
+          <li><code>create partition primary</code>: crea una partición primaria que ocupa todo el USB.</li>
+          <li><code>format fs=ntfs quick</code>: la formatea en NTFS de forma rápida. En Windows 11 no fuerces FAT32 si <code>install.wim</code> supera 4 GB: FAT32 no admite archivos de ese tamaño.</li>
+          <li><code>select partition 1</code> y <code>active</code>: marcan la partición como activa; es imprescindible en arranque Legacy/MBR, pero no se usa en UEFI/GPT.</li>
+          <li><code>assign</code>: le asigna una letra de unidad para que aparezca en el Explorador.</li>
+        </ul>
+        <p>Después no se copia el archivo <code>.iso</code> tal cual: hay que montar la ISO en Windows (clic derecho → Montar) o extraerla con 7-Zip y copiar <em>el contenido</em> (carpetas <code>boot</code>, <code>sources</code>, etc.) a la raíz del USB. En Legacy/MBR, además de marcar la partición activa, para Windows suele ser necesario escribir el código de arranque con <code>bootsect /nt60 X: /mbr</code> si se hace manualmente.</p>
+        <p>Para un USB UEFI de Windows 11 25H2, si <code>install.wim</code> supera 4 GB no basta con formatear en FAT32: usa Rufus 4.6 con esquema GPT/UEFI y NTFS (Rufus añade el cargador UEFI:NTFS), divide <code>install.wim</code> en <code>install.swm</code> con DISM y copia los archivos a FAT32, o emplea Ventoy.</p>
+      </div>
+      <div class="linux-col"><h4>🐧 Linux</h4>
+        <pre><code>sudo dd if=gparted-live-1.6.0-3-amd64.iso of=/dev/sdb bs=4M status=progress oflag=sync</code></pre>
+        <ul>
+          <li><code>sudo</code>: ejecuta la orden con privilegios de administrador; escribir en un disco crudo lo exige.</li>
+          <li><code>dd</code>: copia datos bloque a bloque, sin interpretar el sistema de archivos. Es la forma de "grabar la ISO tal cual".</li>
+          <li><code>if=</code>: <em>input file</em>, el archivo de origen (la ISO descargada).</li>
+          <li><code>of=</code>: <em>output file</em>, el dispositivo de destino. <code>/dev/sdb</code> es el USB completo; el nombre se comprueba con <code>lsblk -f</code> (visto en CE-a).</li>
+          <li><code>bs=4M</code>: tamaño de bloque de 4 MB; acelera la escritura frente al valor por defecto.</li>
+          <li><code>status=progress</code>: muestra el avance y la velocidad mientras copia.</li>
+          <li><code>oflag=sync</code>: fuerza a escribir físicamente antes de dar la orden por terminada, para poder extraer el USB sin corromperlo.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="box-importante"><div class="box-label">IMPORTANTE</div><p>Equivocar el número en <code>select disk</code> o la letra en <code>of=</code> borra el disco duro del equipo, no el USB. Antes de ejecutar, comprueba siempre el tamaño del disco con <code>list disk</code> o <code>lsblk -f</code>.</p></div>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p>En el taller del IES hay un equipo con firmware UEFI y sin sistema operativo. Queremos comprobar la RAM con MemTest86 11.2 y luego instalar Debian 13.0, usando un único USB de 32 GB.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li>Preparar el USB con Ventoy 1.1.05 desde el PC del aula (Windows 11 25H2). Ventoy crea una partición de datos (exFAT por defecto) y una pequeña partición VTOYEFI para el cargador; después basta <em>copiar</em> los archivos <code>memtest86.iso</code> y <code>debian-13.0-amd64.iso</code> dentro.</li>
+        <li>Encender el equipo del taller y pulsar <code>F12</code> al aparecer el logo: se abre el menú de arranque.</li>
+        <li>Elegir la entrada con prefijo <code>UEFI:</code>. Aunque el USB pueda aparecer también sin prefijo, MemTest86 11.2 solo arranca en UEFI: desde la versión 9 de PassMark no soporta BIOS/Legacy, así que la entrada sin prefijo no es válida para esta ISO. Si el equipo no tuviera UEFI, habría que usar otra herramienta o una versión antigua compatible con BIOS.</li>
+        <li>Arranca el menú de Ventoy y seleccionamos MemTest86. Si aparece un aviso de Secure Boot, entramos en la configuración del firmware (<code>F2</code>), desactivamos Secure Boot temporalmente si la herramienta no está firmada, guardamos con <code>F10</code> y repetimos el paso 2.</li>
+        <li>Al terminar el test, reiniciamos, volvemos a elegir el USB y seleccionamos la ISO de Debian para iniciar el instalador.</li>
+        <li>Documentamos en el parte de taller: soporte usado, entrada de arranque elegida y resultado del test de RAM.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-c · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>En Tecnoparts SL tenéis 6 equipos variados del taller sin sistema operativo y un USB de 32 GB. Antes de instalar nada, debes comprobar en el primero los requisitos de Windows 11 25H2 (modo UEFI, Secure Boot, TPM 2.0, RAM y almacenamiento). Prepara un USB que permita instalar Windows 11 en los equipos que cumplan y arrancar GParted Live 1.6.0-3 en los que no. Describe la preparación del USB, la verificación de requisitos y los pasos de arranque.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p>Resolución completa paso a paso:</p>
+        <ol>
+          <li>Descargar de la web oficial la ISO de Windows 11 25H2 y la de GParted Live 1.6.0-3.</li>
+          <li>Preparar el USB de 32 GB con Ventoy 1.1.05 (una sola vez) y copiar ambas ISO dentro. Ventoy permite arrancar ISOs grandes sin que tengamos que elegir FAT32 o NTFS manualmente.</li>
+          <li>Alternativa con Rufus 4.6 para Windows 11: elegir esquema <em>GPT / UEFI</em> y sistema de archivos NTFS si el <code>install.wim</code> de la ISO supera 4 GB (Rufus añade el cargador UEFI:NTFS). Si se quisiera usar FAT32, habría que dividir <code>install.wim</code> en <code>install.swm</code> con DISM, porque FAT32 no admite archivos de más de 4 GB. No se debe justificar FAT32 diciendo que "UEFI no lee NTFS": lo correcto es que el firmware UEFI lee FAT32 de forma nativa y que Rufus incorpora un cargador para arrancar desde NTFS.</li>
+          <li>Antes de instalar, comprobar los requisitos en el firmware del equipo: entrar con <code>F2</code>, <code>Supr</code> o <code>Esc</code> y verificar que está activo el modo UEFI (no solo CSM/Legacy), que Secure Boot es compatible y está activo, que hay TPM 2.0 (se puede consultar con <code>tpm.msc</code> o en el propio firmware), y que la CPU, RAM y almacenamiento cumplen los mínimos de Windows 11. Si el equipo no cumple, no se fuerza la instalación: se documenta y se usa GParted Live para diagnóstico, borrado o preparación de particiones.</li>
+          <li>Con el USB puesto, encender el equipo y pulsar <code>F12</code> para abrir el menú de arranque.</li>
+          <li>Elegir la entrada <code>UEFI: USB</code> para Windows 11. Si el equipo no mostrase esa entrada, entrar en el firmware (<code>F2</code>) y revisar el orden de arranque, el modo UEFI/Legacy y Secure Boot. Para GParted Live puede ser necesario desactivar Secure Boot temporalmente si la herramienta no está firmada.</li>
+          <li>En los equipos compatibles, seleccionar en el menú de Ventoy la ISO de Windows 11 y continuar con el instalador. En los no compatibles, seleccionar GParted Live y realizar las comprobaciones o el borrado seguro que proceda.</li>
+        </ol>
+      </details>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-c · Medio</h5>
+      <span class="nivel-tag nivel-medio">MEDIO</span>
+      <p>Un técnico de AulaTec Systems ha grabado un USB con Rufus eligiendo <em>GPT / UEFI</em> y formato exFAT. Lo prueba en un PC de 2011 (solo BIOS Legacy, disco MBR) y el equipo ignora el USB y arranca del disco duro. Explica qué ha fallado y detalla cómo rehacer el soporte.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-c · Avanzado</h5>
+      <span class="nivel-tag nivel-avanzado">AVANZADO</span>
+      <p>Placa base AM5 con Secure Boot activo y dos discos (un NVMe con Windows 11 26H2 y un SSD SATA vacío). Al pulsar <code>F12</code>, el USB con MemTest86 11.2 aparece en la lista pero al seleccionarlo vuelve al menú de arranque del firmware. Además, quieres pasar un test de RAM antes de instalar nada. Diagnostica la causa, indica la secuencia exacta de pasos y qué riesgo tiene cambiar esa configuración de forma permanente.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-c</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Explico la cadena POST → firmware → orden de arranque → soporte → gestor de arranque</label></li>
+        <li><label><input type="checkbox" class="check-item"> Distingo orden de arranque (permanente) y menú de arranque (F12, temporal)</label></li>
+        <li><label><input type="checkbox" class="check-item"> Distingo esquema de particiones (GPT/MBR) y sistema de archivos (FAT32/NTFS/exFAT), y sé qué combinación usar</label></li>
+        <li><label><input type="checkbox" class="check-item"> Preparo un USB arrancable con Rufus, balenaEtcher o Ventoy</label></li>
+        <li><label><input type="checkbox" class="check-item"> Identifico en <code>diskpart</code> o <code>lsblk -f</code> el disco correcto antes de borrar</label></li>
+        <li><label><input type="checkbox" class="check-item"> Relaciono un fallo de arranque con Secure Boot o con el modo UEFI/Legacy</label></li>
+      </ul>
+    </div>
+
+    <div class="box-critico">
+      <div class="box-label">⚠ TRAMPA DE EXAMEN</div>
+      <p>El error más repetido es decir que "se copia el archivo .ISO al USB y ya arranca". Copiar la ISO como archivo deja un USB normal, no arrancable: hay que <strong>grabarla</strong> (Rufus, balenaEtcher, <code>dd</code>) o usar Ventoy, que sí sabe arrancar ISOs copiadas. El segundo error es confundir el <strong>menú de arranque</strong> (<code>F12</code>, válido solo para ese encendido) con el <strong>orden de arranque</strong> del firmware, que es el que persiste y el que hay que tocar si el equipo no responde a <code>F12</code>.</p>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceD">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num critico">d</div>
+      <div class="bloque-info">
+        <h3>Creación de imágenes de una preinstalación de software</h3>
+        <p>CE-d · CRÍTICO · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>En CE-a aprendimos a distinguir una instalación estándar de una <strong>preinstalación</strong>: el fabricante entrega el equipo con Windows 11, drivers, utilidades OEM, bloatware y una partición de recuperación. Ahora damos el paso profesional: <strong>crear una imagen de esa preinstalación</strong> para conservarla tal cual, restaurarla o replicarla en otros equipos del aula o de la empresa.</p>
+
+    <div class="clave">Una imagen no es una carpeta copiada: es un archivo que guarda la estructura completa de un disco o partición, incluido el sector de arranque y las particiones del sistema.</div>
+
+    <p>Un <strong>sector</strong> es la unidad mínima de almacenamiento de un disco (habitualmente 512 o 4096 bytes). Una <strong>imagen de disco</strong> guarda la estructura a nivel de sector/bloque de un disco o partición, no archivos sueltos. Por eso, si se captura el disco completo, conserva la partición EFI, la MSR y la partición OEM de recuperación, cosas que una copia manual con el Explorador de Windows no reproduce. La <strong>licencia OEM</strong> no viaja en la imagen: en equipos UEFI la clave OEM está en el firmware (tabla ACPI MSDM) y la licencia digital va asociada al hash del hardware; no se pierde por copiar archivos ni se preserva por hacer una imagen.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Tipo de imagen</th><th>Qué copia</th><th>Cuándo usarla</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Sector a sector</td><td>Todos los sectores del disco, ocupados o vacíos (modo estricto)</td><td>Preinstalaciones OEM con recovery, discos pequeños o forense</td></tr>
+          <tr><td>Basada en archivos (WIM)</td><td>Solo archivos y metadatos de una partición</td><td>Despliegue de Windows en aula, imágenes más ligeras</td></tr>
+          <tr><td>De partición</td><td>Una sola partición, por ejemplo C:</td><td>Guardar solo el sistema, sin recovery ni EFI</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 900 220" role="img" aria-label="Flujo de creación y restauración de una imagen de preinstalación">
+        <defs>
+          <marker id="flecha-d-ced" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+
+        <rect x="15" y="55" width="155" height="90" rx="12" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="92" y="88" text-anchor="middle" font-size="14" fill="#1a1a2e">Equipo con</text>
+        <text x="92" y="108" text-anchor="middle" font-size="14" fill="#1a1a2e">preinstalación OEM</text>
+        <text x="92" y="128" text-anchor="middle" font-size="12" fill="#667085">Windows 11 25H2</text>
+
+        <line x1="170" y1="100" x2="210" y2="100" stroke="#667085" stroke-width="2" marker-end="url(#flecha-d-ced)"/>
+
+        <rect x="210" y="55" width="150" height="90" rx="12" fill="#f7f9fc" stroke="#667085" stroke-width="2"/>
+        <text x="285" y="88" text-anchor="middle" font-size="14" fill="#1a1a2e">Arranque desde</text>
+        <text x="285" y="108" text-anchor="middle" font-size="14" fill="#1a1a2e">USB live</text>
+        <text x="285" y="128" text-anchor="middle" font-size="12" fill="#667085">Clonezilla / WinPE</text>
+
+        <line x1="360" y1="100" x2="400" y2="100" stroke="#667085" stroke-width="2" marker-end="url(#flecha-d-ced)"/>
+
+        <rect x="400" y="55" width="155" height="90" rx="12" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="477" y="88" text-anchor="middle" font-size="14" fill="#1a1a2e">Captura de</text>
+        <text x="477" y="108" text-anchor="middle" font-size="14" fill="#1a1a2e">imagen</text>
+        <text x="477" y="128" text-anchor="middle" font-size="12" fill="#667085">disco o partición</text>
+
+        <line x1="555" y1="100" x2="595" y2="100" stroke="#667085" stroke-width="2" marker-end="url(#flecha-d-ced)"/>
+
+        <rect x="595" y="55" width="150" height="90" rx="12" fill="#fdf3d6" stroke="#d4a017" stroke-width="2"/>
+        <text x="670" y="88" text-anchor="middle" font-size="14" fill="#1a1a2e">Archivo .img</text>
+        <text x="670" y="108" text-anchor="middle" font-size="14" fill="#1a1a2e">o .wim</text>
+        <text x="670" y="128" text-anchor="middle" font-size="12" fill="#667085">disco externo</text>
+
+        <line x1="745" y1="100" x2="785" y2="100" stroke="#667085" stroke-width="2" marker-end="url(#flecha-d-ced)"/>
+
+        <rect x="785" y="55" width="100" height="90" rx="12" fill="#f2e6e5" stroke="#b03a2e" stroke-width="2"/>
+        <text x="835" y="88" text-anchor="middle" font-size="14" fill="#1a1a2e">Restaurar</text>
+        <text x="835" y="108" text-anchor="middle" font-size="14" fill="#1a1a2e">o desplegar</text>
+      </svg>
+      <figcaption>El alumno debe fijarse en que la imagen se crea arrancando desde un medio externo y se guarda fuera del disco que se captura. El archivo resultante permite volver al estado OEM o replicarlo.</figcaption>
+    </figure>
+
+    <h4>Herramientas para crear la imagen</h4>
+    <p><strong>Clonezilla Live 3.2.3-5</strong> es una distribución Linux que se arranca desde USB y captura discos o particiones. Por defecto usa <strong>partclone</strong> y copia solo los bloques que contienen datos, por lo que la imagen puede ocupar menos que el disco original e incluso caber en un disco menor. El modo estrictamente <strong>sector a sector</strong>, que copia también los sectores vacíos, requiere opciones tipo <code>dd</code> o <code>-rescue/-icds</code> y se reserva para discos dañados, análisis forense o casos muy concretos. <strong>Rescuezilla 2.6</strong> ofrece la misma idea con interfaz gráfica. <strong>DISM</strong> (Deployment Image Servicing and Management) es la herramienta de Windows que crea y aplica imágenes WIM basadas en archivos; solo sirve para particiones con sistema de archivos y no puede capturar la MSR, que carece de sistema de archivos. Se ejecuta desde <strong>WinPE</strong>, el entorno de arranque mínimo que ya vimos en CE-c.</p>
+
+    <div class="box-importante">
+      <div class="box-label">IMPORTANTE</div>
+      <p>Para una preinstalación OEM completa, captura el <strong>disco entero</strong> con Clonezilla (<em>savedisk</em>). Si usas <em>saveparts</em>, deberás seleccionar a mano EFI, MSR, Windows y Recovery; si olvidas una, la restauración no arrancará. DISM/WIM no sustituye a <em>savedisk</em> para este objetivo: solo captura particiones basadas en archivos y no genera por sí solo una imagen arrancable con EFI, MSR y Recovery.</p>
+    </div>
+
+    <p>Si tu objetivo es capturar solo la <strong>partición de Windows</strong> para un despliegue basado en archivos, el comando de DISM es:</p>
+    <pre><code>dism /Capture-Image /ImageFile:E:\imagenes\win11_oem.wim /CaptureDir:C:\ /Name:"Windows 11 OEM TecnoAula" /Compress:max /CheckIntegrity</code></pre>
+    <ul>
+      <li><code>dism</code>: herramienta de Windows para crear, aplicar y reparar imágenes de sistema.</li>
+      <li><code>/Capture-Image</code>: indica que vamos a capturar una partición en un archivo WIM.</li>
+      <li><code>/ImageFile:E:\imagenes\win11_oem.wim</code>: ruta y nombre del archivo de imagen. <code>E:</code> es el disco externo donde se guarda; nunca debe ser el mismo disco capturado.</li>
+      <li><code>/CaptureDir:C:\</code>: partición basada en archivos que se captura. En este caso, la raíz del Windows preinstalado.</li>
+      <li><code>/Name:"Windows 11 OEM TecnoAula"</code>: nombre descriptivo que quedará dentro del WIM para identificar la imagen.</li>
+      <li><code>/Compress:max</code>: compresión máxima; tarda más, pero ocupa menos en el disco externo.</li>
+      <li><code>/CheckIntegrity</code>: comprueba la integridad del archivo mientras se genera, para detectar errores de escritura.</li>
+    </ul>
+
+    <p>El WIM resultante contiene únicamente archivos y metadatos de <code>C:\</code>: no incluye la partición EFI, la MSR ni Recovery, y no es, por sí solo, una imagen restaurable de la preinstalación OEM completa. Para conservar una preinstalación OEM arrancable hay que capturar el disco entero con Clonezilla (<em>savedisk</em>) o preparar por separado las particiones de arranque y recuperación.</p>
+
+    <p>Al terminar, verifica la huella del archivo con PowerShell:</p>
+    <pre><code>Get-FileHash E:\imagenes\win11_oem.wim -Algorithm SHA256</code></pre>
+    <ul>
+      <li><code>Get-FileHash</code>: cmdlet de PowerShell que calcula un hash criptográfico, es decir, una huella única del archivo.</li>
+      <li><code>E:\imagenes\win11_oem.wim</code>: archivo de imagen que queremos verificar.</li>
+      <li><code>-Algorithm SHA256</code>: algoritmo SHA-256; si el archivo cambia, la huella cambia y sabremos que la imagen está dañada o alterada.</li>
+    </ul>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p><strong>TecnoAula</strong> dispone de 15 equipos HP ProDesk 400 G9 con Windows 11 25H2 preinstalado de fábrica, disco NVMe de 512 GB y partición Recovery. Antes de borrar el bloatware para dejarlos listos para clase, quieren conservar una imagen del estado OEM original.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li>Descargar la ISO de <strong>Clonezilla Live 3.2.3-5</strong> y grabarla en un USB con Rufus 4.6, como vimos en CE-c.</li>
+        <li>Conectar un disco externo USB de 1 TB y arrancar el HP desde el USB con la tecla de menú de arranque (F9 en HP).</li>
+        <li>En Clonezilla, elegir el modo de trabajo <em>device-image</em> (crear o restaurar una imagen desde un dispositivo) y, como repositorio, <em>local_dev</em> (usar un disco local o USB conectado como destino de la imagen). Seleccionar el disco externo de 1 TB como destino.</li>
+        <li>Elegir <em>savedisk</em> para capturar el disco completo, no solo C:. Así se incluyen EFI, MSR, Windows y Recovery.</li>
+        <li>Seleccionar el NVMe de 512 GB como origen, asignar el nombre <code>hp_oem_win11_25h2_2026-09-15</code> y activar compresión gzip.</li>
+        <li>Al finalizar, comprobar el tamaño del archivo y calcular su SHA-256 con <code>Get-FileHash</code>. Guardar ese valor en el informe de la intervención.</li>
+        <li>No ejecutar <strong>sysprep</strong> en este caso: el objetivo es conservar intacto el estado OEM de fábrica antes de quitar el bloatware y los 15 equipos son idénticos del mismo modelo. Sysprep generaliza y altera el sistema capturado; si se necesitara para otro escenario, el comando sería <code>sysprep /generalize /oobe /shutdown</code>, pero aquí no procede.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-d · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p><strong>Taller MicroFix</strong> recibe un Lenovo ThinkCentre M70q con Windows 11 25H2 preinstalado, SSD de 256 GB y partición de recuperación. Antes de instalar software de diagnóstico, quieren guardar una imagen fiel del estado de fábrica en un disco externo de 500 GB. Indica qué herramienta usarías, qué opción de Clonezilla elegirías y por qué.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p>Usaría <strong>Clonezilla Live 3.2.3-5</strong> arrancado desde USB. Elegiría <em>savedisk</em>, no <em>saveparts</em>, porque el equipo tiene una preinstalación OEM con partición EFI, MSR, Windows y Recovery. Si capturara solo C: perdería la partición de recuperación y el arranque podría fallar al restaurar. Guardaría la imagen en el disco externo de 500 GB, con compresión gzip, y verificaría el resultado con un hash SHA-256.</p>
+      </details>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-d · Medio</h5>
+      <span class="nivel-tag nivel-medio">MEDIO</span>
+      <p><strong>Aula 4</strong> tiene 12 HP EliteDesk idénticos con Windows 11 25H2 preinstalado. Quieren crear una imagen de referencia y luego restaurarla en los 12 equipos. Explica qué precauciones tomarías antes de capturar, qué particiones incluirías y cómo comprobarías que la imagen está íntegra.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <p><strong>BitLocker</strong> es la tecnología de cifrado de volumen de Windows: cifra los bloques del volumen y, cuando está bloqueado, exige TPM, contraseña o clave de recuperación para acceder a los datos. Para suspender la protección antes de una captura temporal puede usarse <code>manage-bde -protectors -disable C: -rebootcount 0</code>; para desactivar BitLocker y descifrar el volumen, <code>manage-bde -off C:</code>. El estado se consulta con <code>manage-bde -status C:</code>. Suspender no es lo mismo que desactivar: el volumen sigue cifrado y la protección se reactiva al reiniciar o de forma manual según la opción usada. Además, el cifrado en sí no provoca errores de lectura en Clonezilla: esta herramienta lee los sectores en bruto; los problemas aparecen si el volumen está bloqueado y no se puede interpretar o validar, o si el disco, cable o adaptador están defectuosos. Para una imagen que se vaya a restaurar en otro equipo, hay que desactivar BitLocker y descifrar antes de capturar, o disponer de la clave de recuperación y gestionar el TPM del destino.</p>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-d · Avanzado</h5>
+      <span class="nivel-tag nivel-avanzado">AVANZADO</span>
+      <p><strong>Servicio Técnico Central</strong> quiere crear una imagen de un portátil con Windows 11 y BitLocker activo. El disco de origen es de 512 GB y el disco externo de destino es de 1 TB. Al arrancar con Clonezilla, el técnico comprueba que el volumen está bloqueado y no puede validar el contenido; además, duda si el cifrado provoca errores de lectura y teme perder la licencia OEM. Diagnostica qué está ocurriendo, aclara qué relación tienen BitLocker y la licencia OEM con la captura y propón una secuencia de actuación segura para conservar la preinstalación.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-d</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Distingo imagen de disco, imagen de partición e imagen WIM.</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé por qué hay que capturar también EFI, MSR y Recovery en una preinstalación OEM.</label></li>
+        <li><label><input type="checkbox" class="check-item"> Identifico Clonezilla, Rescuezilla y DISM como herramientas de creación de imágenes.</label></li>
+        <li><label><input type="checkbox" class="check-item"> Explico el comando DISM de captura de la partición Windows y su diferencia con una imagen completa del disco; verifico la imagen con un hash SHA-256.</label></li>
+        <li><label><input type="checkbox" class="check-item"> Comprendo cuándo aplicar sysprep y cuándo no es necesario antes de desplegar una imagen.</label></li>
+      </ul>
+    </div>
+
+    <div class="box-critico">
+      <div class="box-label">⚠ TRAMPA DE EXAMEN</div>
+      <p>El error más frecuente es confundir «hacer una imagen» con «copiar la carpeta Windows a un disco externo». Una copia de archivos no conserva el sector de arranque, la partición EFI ni la partición Recovery, y al restaurarla el equipo puede no arrancar. La licencia OEM no es algo que se conserve o se pierda con la imagen: en equipos UEFI la clave está en el firmware (tabla ACPI MSDM) y la licencia digital va asociada al hash del hardware. Si el enunciado habla de preinstalación OEM, captura el disco completo o, como mínimo, todas las particiones del sistema, y verifica siempre el hash de los archivos generados.</p>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceE">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num critico">e</div>
+      <div class="bloque-info">
+        <h3>Restauración de imágenes sobre el disco fijo desde distintos soportes</h3>
+        <p>CE-e · CRÍTICO · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>En CE-d creamos imágenes del sistema: copias completas guardadas en un soporte externo. <strong>Restaurar</strong> es la operación inversa: volcar el contenido de esa imagen sobre el <strong>disco fijo</strong> del equipo para devolverlo al estado exacto que tenía (o instalar ese estado en otro equipo). Restaurar <em>no</em> es copiar archivos con el explorador: se escriben sectores o se reconstruye la estructura del sistema de archivos, según el tipo de imagen que hayamos hecho.</p>
+
+    <div class="clave">Restaurar sobrescribe el disco destino por completo: lo que hubiera antes desaparece sin preguntar dos veces.</div>
+
+    <h4>Los cuatro soportes de restauración</h4>
+    <div class="cards">
+      <div class="card">
+        <h4><span class="ico">🧩</span> Clonezilla Live 3.2.3-5</h4>
+        <ul><li>Arranca desde USB (como vimos en CE-c).</li><li>Restauración sector a sector con <code>partclone</code>.</li><li>Menú guiado o comandos <code>ocs-sr</code>.</li></ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">🖱️</span> Rescuezilla 2.6</h4>
+        <ul><li>Interfaz gráfica construida sobre Clonezilla.</li><li>Misma restauración, con ratón.</li><li>Muy útil con alumnos que empiezan.</li></ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">🪟</span> WinPE 10.1.26100 + DISM</h4>
+        <ul><li>Entorno Windows de arranque (visto en CE-c).</li><li>Aplica imágenes basadas en archivos (<code>.wim</code>, <code>.swm</code>).</li><li>Solo reconstruye sistemas Windows.</li></ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">🐧</span> Linux live + <code>dd</code></h4>
+        <ul><li>Volcado en bruto de un fichero <code>.img</code>.</li><li>Clon exacto, byte a byte.</li><li>Sin comprobaciones: máxima responsabilidad.</li></ul>
+      </div>
+    </div>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 620 220" role="img" aria-label="Secuencia de restauración de una imagen sobre el disco fijo">
+        <defs>
+          <marker id="flecha-e-cee" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="20" y="20" width="170" height="60" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="105" y="45" text-anchor="middle" font-size="14" fill="#1a1a2e">1. Imagen</text>
+        <text x="105" y="63" text-anchor="middle" font-size="12" fill="#667085">verificada (hash)</text>
+
+        <rect x="225" y="20" width="170" height="60" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="310" y="45" text-anchor="middle" font-size="14" fill="#1a1a2e">2. Arrancar</text>
+        <text x="310" y="63" text-anchor="middle" font-size="12" fill="#667085">desde el USB</text>
+
+        <rect x="430" y="20" width="170" height="60" rx="10" fill="#f7f9fc" stroke="#d4a017" stroke-width="2"/>
+        <text x="515" y="45" text-anchor="middle" font-size="14" fill="#1a1a2e">3. Elegir</text>
+        <text x="515" y="63" text-anchor="middle" font-size="12" fill="#667085">disco destino</text>
+
+        <rect x="430" y="140" width="170" height="60" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="515" y="165" text-anchor="middle" font-size="14" fill="#1a1a2e">4. Volcar</text>
+        <text x="515" y="183" text-anchor="middle" font-size="12" fill="#667085">sectores/archivos</text>
+
+        <rect x="225" y="140" width="170" height="60" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="310" y="165" text-anchor="middle" font-size="14" fill="#1a1a2e">5. Reescribir</text>
+        <text x="310" y="183" text-anchor="middle" font-size="12" fill="#667085">el arranque</text>
+
+        <rect x="20" y="140" width="170" height="60" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="105" y="165" text-anchor="middle" font-size="14" fill="#1a1a2e">6. Comprobar</text>
+        <text x="105" y="183" text-anchor="middle" font-size="12" fill="#667085">que arranca</text>
+
+        <line x1="190" y1="50" x2="220" y2="50" stroke="#667085" stroke-width="2" marker-end="url(#flecha-e-cee)"/>
+        <line x1="395" y1="50" x2="425" y2="50" stroke="#667085" stroke-width="2" marker-end="url(#flecha-e-cee)"/>
+        <line x1="515" y1="80" x2="515" y2="135" stroke="#667085" stroke-width="2" marker-end="url(#flecha-e-cee)"/>
+        <line x1="430" y1="170" x2="400" y2="170" stroke="#667085" stroke-width="2" marker-end="url(#flecha-e-cee)"/>
+        <line x1="225" y1="170" x2="195" y2="170" stroke="#667085" stroke-width="2" marker-end="url(#flecha-e-cee)"/>
+      </svg>
+      <figcaption>Secuencia completa de una restauración. Fíjate en el paso 3: es el único punto donde un error es irreversible, porque todo lo anterior se puede repetir y lo posterior depende de haber acertado con el disco destino.</figcaption>
+    </figure>
+
+    <h4>Tres comprobaciones antes de escribir nada</h4>
+    <ul>
+      <li><strong>Integridad de la imagen:</strong> comparamos su hash SHA-256 con el que anotamos al crearla, usando <code>Get-FileHash</code> (visto en CE-d). Si no coincide, la imagen está corrupta y la restauración fallará a medias.</li>
+      <li><strong>Identificar el disco destino:</strong> con <code>lsblk -f</code> en Linux o <code>Get-Disk</code> en PowerShell vemos modelo y tamaño de cada disco. <code>Get-Disk</code> es un cmdlet de PowerShell que lista los discos físicos y muestra, entre otros datos, número de disco, modelo, tamaño y tipo de tabla de particiones (MBR/GPT). Nunca por la letra asignada: cambia según el orden de arranque.</li>
+      <li><strong>Tamaño suficiente:</strong> una imagen sector a sector necesita un destino igual o mayor, salvo que Clonezilla use <code>-icds</code> (ya visto en CE-d) para ajustar particiones.</li>
+    </ul>
+
+    <h4>Restaurar con Clonezilla desde la línea de órdenes</h4>
+    <pre><code>sudo ocs-sr -g auto -e1 -e2 -r -j2 -p reboot restoredisk win11_25h2_2026-03-04 sda</code></pre>
+    <ul>
+      <li><code>sudo</code>: ejecuta con privilegios de administrador; sin ellos no se puede escribir en el disco.</li>
+      <li><code>ocs-sr</code>: programa de Clonezilla que hace el trabajo real; es lo que el menú gráfico lanza por debajo.</li>
+      <li><code>-g auto</code>: detecta automáticamente si el arranque es UEFI o Legacy y actúa en consecuencia.</li>
+      <li><code>-e1</code> (o <code>--skip-check-img</code>): omite la comprobación de la integridad de la imagen antes de restaurar. Es un flag sin argumento: se escribe <code>-e1</code>, no <code>-e1 auto</code>.</li>
+      <li><code>-e2</code> (o <code>--skip-check-size</code>): omite la comprobación del tamaño del disco destino antes de restaurar. También es un flag sin argumento: se escribe solo <code>-e2</code>.</li>
+      <li><code>-r</code>: tras restaurar, no pregunta y aplica la configuración por defecto del disco.</li>
+      <li><code>-j2</code>: crea la tabla de particiones del disco destino partiendo de la de la imagen (equivale a clonarla).</li>
+      <li><code>-p reboot</code>: al terminar, reinicia el equipo automáticamente (evita apagarlo a mano y arrancar con el USB puesto).</li>
+      <li><code>restoredisk</code>: modo “restaurar disco completo”, es decir, todas las particiones de la imagen sobre un solo disco.</li>
+      <li><code>win11_25h2_2026-03-04</code>: nombre de la carpeta de imagen creada en CE-d. Debe ser exacto.</li>
+      <li><code>sda</code>: disco destino (el primero detectado). Si dudas, comprueba antes con <code>lsblk -f</code>: aquí se decide si el equipo sobrevive o no.</li>
+    </ul>
+    <p>Si la imagen contiene <em>una sola partición</em> y queremos colocarla en otra existente, el modo es <code>restoreparts</code> en lugar de <code>restoredisk</code>, indicando imagen y partición de destino (<code>sda2</code>, por ejemplo). En modo disco se reescribe también el sector de arranque; en modo partición, no.</p>
+
+    <h4>Restaurar una imagen .wim en Windows</h4>
+    <pre><code>dism /Apply-Image /ImageFile:D:\img\win11.wim /Index:1 /ApplyDir:C:\</code></pre>
+    <ul>
+      <li><code>dism</code>: herramienta de despliegue de imágenes de Windows.</li>
+      <li><code>/Apply-Image</code>: indica que vamos a aplicar (restaurar) una imagen sobre un volumen.</li>
+      <li><code>/ImageFile:</code>: ruta del fichero <code>.wim</code> que contiene la imagen.</li>
+      <li><code>/Index:1</code>: número de imagen dentro del fichero; un <code>.wim</code> puede contener varias.</li>
+      <li><code>/ApplyDir:C:\</code>: carpeta raíz del volumen destino, que debe estar formateado y con letra asignada.</li>
+    </ul>
+    <p>DISM copia archivos, no sectores: por eso <strong>no escribe el arranque</strong>. Tras aplicarla hay que reconstruirlo con <code>bcdboot</code>, que genera los ficheros de arranque en la partición EFI apuntando a la instalación:</p>
+    <pre><code>bcdboot C:\Windows /s S: /f UEFI</code></pre>
+    <ul>
+      <li><code>bcdboot</code>: escribe los cargadores de arranque de Windows en el volumen indicado.</li>
+      <li><code>C:\Windows</code>: instalación de Windows que será el sistema a arrancar.</li>
+      <li><code>/s S:</code>: letra del volumen donde se escriben los ficheros de arranque (la partición EFI, montada previamente con <code>diskpart</code>).</li>
+      <li><code>/f UEFI</code>: fuerza el formato de arranque UEFI (en equipos Legacy sería <code>/f BIOS</code>).</li>
+    </ul>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p><strong>Tecnoparts SL</strong> recibe del ayuntamiento 5 equipos HP con disco HDD de 500 GB, sin sistema operativo. En CE-d se creó la imagen <code>win11_25h2_2026-03-04</code> a partir de un SSD de 240 GB. Hay que dejarlos funcionando con Clonezilla Live en USB.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li>Verificamos la integridad de la imagen con la comprobación propia de Clonezilla (sin desactivar el chequeo con <code>-e1</code> o desde el menú). Si queremos comparar hashes, se hace fichero a fichero con <code>Get-FileHash</code>; no se puede calcular con <code>Get-FileHash</code> el hash de un directorio de imagen completo.</li>
+        <li>Arrancamos el equipo desde el USB de Clonezilla (tecla F9 en HP, menú de arranque, como vimos en CE-c).</li>
+        <li>En consola ejecutamos <code>lsblk -f</code> y localizamos el HDD de 500 GB: aparece como <code>sda</code>, sin sistema de archivos y con tamaño 465,8 G. El USB es <code>sdb</code>.</li>
+        <li>Montamos el USB de imágenes y lanzamos <code>ocs-sr ... restoredisk win11_25h2_2026-03-04 sda</code>. Clonezilla avisa de que <code>sda</code> se borrará: confirmamos escribiendo <code>y</code>.</li>
+        <li>Termina en unos 12 minutos y reinicia solo (<code>-p reboot</code>). Retiramos el USB para que no vuelva a arrancar desde él.</li>
+        <li>Comprobamos que Windows 11 inicia, llega al escritorio y, en Administración de discos, que se ha creado el espacio no asignado restante (500 GB menos los 240 GB de la imagen). Ese espacio se amplía después o se deja como partición de datos.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-e · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>En el aula, sobre VirtualBox 7.1, dispones de la imagen <code>ubuntu_2404_base</code> creada en CE-d y de la ISO de Clonezilla Live 3.2.3-5. Crea una máquina virtual nueva con disco de 60 GB y explica, ordenadamente, cómo restaurarías esa imagen sobre su disco virtual.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p>1) Prepara un medio que Clonezilla Live pueda montar: si la imagen <code>ubuntu_2404_base</code> está en el host, cópiala a un disco virtual auxiliar (VDI) o a un USB y conéctalo a la VM nueva como segundo disco. No uses una carpeta compartida de VirtualBox: Clonezilla Live no incluye el módulo <code>vboxsf</code> y no puede montarla.</p>
+        <p>2) En la VM nueva, añade la ISO de Clonezilla Live en la unidad óptica y arranca desde ella.</p>
+        <p>3) Comprueba con <code>lsblk -f</code> que el disco de 60 GB es <code>sda</code> y que el segundo disco/USB con la imagen aparece como <code>sdb</code> (por ejemplo, <code>sdb1</code>). Monta esa partición en <code>/home/partimag</code>.</p>
+        <p>4) Entra en Clonezilla en modo <em>device-image</em> → <em>restoredisk</em> y selecciona la imagen <code>ubuntu_2404_base</code> desde <code>/home/partimag</code>.</p>
+        <p>5) Elige como destino <code>sda</code>, el disco virtual de 60 GB. Antes de confirmar, revisa que el tamaño y el modelo cuadran y que no es el disco donde está la imagen. Confirma el borrado de <code>sda</code>.</p>
+        <p>6) Espera a que termine la restauración, reinicia y retira la ISO de Clonezilla para que no vuelva a arrancar desde ella.</p>
+        <p>7) Comprueba que Ubuntu arranca. Al usar <code>restoredisk</code> con <code>-j2</code> se clona la tabla de particiones de la imagen: las particiones conservan el tamaño que tenían en la imagen y el resto del disco virtual de 60 GB queda como espacio no asignado, no como espacio libre dentro de Ubuntu. Si se quiere aprovechar ese espacio, habrá que ampliar la partición después con una herramienta como GParted.</p>
+      </details>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-e · Medio</h5>
+      <span class="nivel-tag nivel-medio">MEDIO</span>
+      <p>En <strong>Gestoría Delta</strong> se restauró con Rescuezilla 2.6 una imagen de una sola partición (Windows 11 25H2) sobre un SSD nuevo de 1 TB. La restauración termina sin errores, pero el equipo muestra “No se encuentra ningún dispositivo de arranque”. Explica qué ha pasado y qué harías para dejarlo operativo.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-e · Avanzado</h5>
+      <span class="nivel-tag nivel-avanzado">AVANZADO</span>
+      <p>En el taller hay que restaurar <code>disco_taller.img</code> sobre el HDD de un equipo de prácticas. Un compañero ejecuta <code>sudo dd if=/mnt/img/disco_taller.img of=/dev/sda bs=4M status=progress oflag=sync</code> sin comprobar antes los discos. Al terminar, el equipo no arranca y, además, el USB de Clonezilla ha dejado de funcionar. Diagnostica qué ha ocurrido, qué se puede recuperar y cómo habría que haberlo hecho.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-e</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Explico qué significa restaurar una imagen y en qué se diferencia de copiar archivos</label></li>
+        <li><label><input type="checkbox" class="check-item"> Identifico el disco destino con <code>lsblk -f</code> o <code>Get-Disk</code> antes de escribir</label></li>
+        <li><label><input type="checkbox" class="check-item"> Distingo <code>restoredisk</code> de <code>restoreparts</code> y sé cuándo usar cada uno</label></li>
+        <li><label><input type="checkbox" class="check-item"> Aplico una imagen <code>.wim</code> con DISM y reconstruyo el arranque con <code>bcdboot</code></label></li>
+        <li><label><input type="checkbox" class="check-item"> Verifico el hash de la imagen antes de restaurar</label></li>
+        <li><label><input type="checkbox" class="check-item"> Compruebo tras la restauración que el equipo arranca y que el espacio libre es correcto</label></li>
+      </ul>
+    </div>
+
+    <div class="box-critico">
+      <div class="box-label">⚠ TRAMPA DE EXAMEN</div>
+      <p>El error clásico es confundir <code>if=</code> (origen) con <code>of=</code> (destino) en <code>dd</code>, o elegir <code>sda</code> siendo justo el USB desde el que estamos arrancando. Regla de oro: <strong>antes de confirmar, lee en voz alta modelo y tamaño del disco destino</strong>. Y recuerda: <code>restoredisk</code> reescribe la tabla de particiones y el sector de arranque; <code>restoreparts</code> no, así que tras restaurar una sola partición puede hacer falta reconstruir el arranque.</p>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceF">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num">f</div>
+      <div class="bloque-info">
+        <h3>Utilidades para crear imágenes de partición y de disco</h3>
+        <p>CE-f · importante · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>Una <strong>utilidad de creación de imágenes</strong> es el programa que lee el contenido de un disco o de una partición y lo empaqueta en un fichero para poder restaurarlo después tal cual estaba. En CE-d y CE-e ya generamos y restauramos imágenes con varias de ellas; lo que toca ahora es <em>saber cuál elegir y por qué</em>, porque no todas sirven para lo mismo.</p>
+
+    <div class="clave">La herramienta no se elige por gusto: se elige por el estado del equipo de origen (arranca o no) y por el tipo de destino que tengamos.</div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Utilidad</th><th>Dónde se ejecuta</th><th>Qué genera</th><th>Cuándo usarla</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Clonezilla Live 3.2.3-5</strong></td><td>USB de arranque (live); no necesita sistema operativo instalado</td><td>Imagen de disco o de partición, sector a sector o por archivos, comprimida y troceada</td><td>Equipos que no arrancan, discos dañados y despliegues de muchas máquinas iguales</td></tr>
+          <tr><td><strong>Rescuezilla 2.6</strong></td><td>USB de arranque, con entorno gráfico</td><td>Lo mismo que Clonezilla (por debajo usa el mismo motor, <code>partclone</code>)</td><td>Cuando el técnico prefiere ratón e interfaz en lugar de menús de texto</td></tr>
+          <tr><td><strong>DISM</strong> (desde Windows PE 10.1.26100)</td><td>WinPE o Windows en marcha</td><td>Imagen de <em>partición</em> en formato <code>.wim</code>/<code>.swm</code>, basada en archivos</td><td>Solo equipos Windows; imágenes de sistema operativo para instalar en serie</td></tr>
+          <tr><td><strong><code>dd</code></strong></td><td>Terminal de un Linux live</td><td>Copia byte a byte del dispositivo completo a un fichero <code>.img</code></td><td>Último recurso: sistemas de archivos que ninguna otra herramienta reconoce o discos a punto de fallar</td></tr>
+          <tr><td><strong>Imagen del sistema de Windows</strong></td><td>Windows en marcha (utilidad heredada del Panel de control)</td><td>Imagen completa del disco en un archivo de disco virtual <code>.vhdx</code> dentro de una carpeta</td><td>Equipos que arrancan bien y queremos copia íntegra rápida sin USB de terceros</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p><strong>VHDX:</strong> es un formato de archivo de disco virtual de Microsoft (sucesor de VHD). La Imagen del sistema de Windows lo usa para guardar una copia completa del disco en una carpeta; puede montarse o restaurarse con herramientas de Windows o de virtualización.</p>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 460 220" role="img" aria-label="Clasificación de las utilidades de imagen según se ejecuten desde un medio live o desde el sistema operativo">
+        <defs>
+          <marker id="flecha-f-cef" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="130" y="15" width="200" height="45" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="230" y="44" text-anchor="middle" font-size="15" fill="#1a1a2e">Utilidades de imagen</text>
+
+        <line x1="200" y1="60" x2="120" y2="105" stroke="#667085" stroke-width="2" marker-end="url(#flecha-f-cef)"/>
+        <line x1="260" y1="60" x2="340" y2="105" stroke="#667085" stroke-width="2" marker-end="url(#flecha-f-cef)"/>
+
+        <rect x="15" y="108" width="200" height="85" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="115" y="130" text-anchor="middle" font-size="14" fill="#1a1a2e">Arrancan el equipo</text>
+        <text x="115" y="148" text-anchor="middle" font-size="13" fill="#667085">(USB live)</text>
+        <text x="115" y="168" text-anchor="middle" font-size="13" fill="#1a6b3a">Clonezilla · Rescuezilla</text>
+        <text x="115" y="187" text-anchor="middle" font-size="13" fill="#1a6b3a">dd (Linux live)</text>
+
+        <rect x="245" y="108" width="200" height="85" rx="10" fill="#f7f9fc" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="345" y="130" text-anchor="middle" font-size="14" fill="#1a1a2e">Desde Windows</text>
+        <text x="345" y="148" text-anchor="middle" font-size="12" fill="#667085">(o WinPE para DISM)</text>
+        <text x="345" y="168" text-anchor="middle" font-size="12" fill="#2d6a9f">DISM (WinPE/Windows)</text>
+        <text x="345" y="187" text-anchor="middle" font-size="12" fill="#2d6a9f">Imagen del sistema (Windows)</text>
+      </svg>
+      <figcaption>Las utilidades live —Clonezilla, Rescuezilla y dd desde Linux live— son la primera opción cuando el equipo de origen no arranca. DISM se ejecuta desde WinPE o Windows, y la Imagen del sistema requiere Windows en marcha.</figcaption>
+    </figure>
+
+    <div class="cards">
+      <div class="card">
+        <h4><span class="ico">📦</span> Disco o partición</h4>
+        <ul><li><strong>Disco</strong>: todas las particiones y la tabla de particiones. Restaura el equipo completo, pero ocupa más.</li><li><strong>Partición</strong>: solo una, por ejemplo <code>C:</code>. Más rápida y pequeña; hay que reconstruir el arranque después (visto en CE-e).</li></ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">💾</span> Destino y espacio</h4>
+        <ul><li>Comprueba el espacio libre antes de empezar: una imagen comprimida suele ocupar entre el 40 % y el 60 % de los datos reales.</li><li>En FAT32 ningún fichero puede pasar de 4 GB: Clonezilla trocea la imagen automáticamente en partes de unos 4 GB. El flag <code>-z1p</code> solo selecciona compresión gzip paralela (pigz); no es el que activa el troceado.</li></ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">✅</span> Verificación</h4>
+        <ul><li>Toda imagen se verifica al crearla y se guarda su hash SHA-256 en el informe (visto en CE-d).</li><li>Una imagen sin verificar no es una copia de seguridad: es una promesa.</li></ul>
+      </div>
+    </div>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p><strong>Tecnoparts SL</strong> va a actualizar el equipo de recepción (Windows 11 25H2, disco NVMe de 512 GB con particiones EFI, MSR y <code>C:</code>) a 26H2. Antes quieren una imagen que permita volver atrás en 20 minutos y el equipo <em>sí arranca</em>. Se dispone de un disco USB de 1 TB.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li>Se descarta la Imagen del sistema de Windows: es cómoda, pero no permite elegir compresión ni verificar con hash de forma sencilla. Se descarta <code>dd</code>: copiaría 512 GB completos aunque solo haya 90 GB ocupados.</li>
+        <li>Se elige <strong>Clonezilla Live</strong> arrancado desde USB: permite imagen de <em>disco completo</em> (tabla de particiones incluida) y compresión.</li>
+        <li>Se ejecuta desde el menú de línea de comandos de Clonezilla:</li>
+      </ol>
+      <pre><code>sudo ocs-sr -q2 -c -j1 -z1p -p reboot savedisk tecnoparts-recepcion nvme0n1</code></pre>
+      <ul>
+        <li><code>sudo</code>: ejecuta con privilegios de administrador (necesario para leer el disco en bruto).</li>
+        <li><code>ocs-sr</code>: motor de Clonezilla en modo texto, el mismo que usa el menú.</li>
+        <li><code>-q2</code>: salida silenciosa nivel 2; no pide confirmación partición a partición.</li>
+        <li><code>-c</code>: espera una confirmación final antes de crear la imagen (margen para cancelar).</li>
+        <li><code>-j1</code>: comprueba el sistema de archivos de origen antes de copiarlo; así la imagen se hace por archivos y no sector a sector.</li>
+        <li><code>-j2</code> no se usa: activa el modo dd, es decir, copia sector a sector sin comprobar el sistema de archivos y copiaría también los sectores vacíos.</li>
+        <li><code>-z1p</code>: comprime con gzip paralelo (pigz); el troceado en partes de ~4 GB lo realiza Clonezilla automáticamente si el destino lo necesita.</li>
+        <li><code>-p reboot</code>: reinicia al terminar, para no dejar el equipo colgado en el menú.</li>
+        <li><code>savedisk</code>, <code>tecnoparts-recepcion</code> y <code>nvme0n1</code>: acción de guardar disco, nombre de la imagen y disco origen NVMe (<code>/dev/nvme0n1</code>).</li>
+      </ul>
+      <p>Finalmente se calcula el SHA-256 del conjunto de ficheros y se anota en el informe junto a la fecha y la versión de la herramienta.</p>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-f · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>Un taller tiene dos equipos: (a) un PC con Windows 10 que no arranca y del que hay que conservar la tabla de particiones y el arranque; (b) un portátil con Windows 11 que arranca y del que se quiere una copia completa rápida en un disco externo. Para cada equipo indica la utilidad, si harías imagen de disco o de partición, el formato del fichero y una precaución sobre destino y verificación.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <ol>
+          <li><strong>Equipo (a), no arranca:</strong> usar Clonezilla Live desde USB (o Rescuezilla 2.6 si se prefiere interfaz gráfica). Hacer imagen de <strong>disco completo</strong> para conservar tabla de particiones y arranque. El resultado es una imagen comprimida y troceada automáticamente si el destino lo necesita (por ejemplo, FAT32). Precaución: comprobar espacio libre y verificar con el hash SHA-256 generado al terminar.</li>
+          <li><strong>Equipo (b), arranca:</strong> se puede usar la Imagen del sistema de Windows, que genera un archivo <code>.vhdx</code>, o arrancar Clonezilla/Rescuezilla y hacer imagen de disco o de la partición <code>C:</code>. Si se busca copia completa rápida, la Imagen del sistema es válida; si se quiere control de compresión y hash, Clonezilla con imagen de disco. Precaución: guardar en un disco externo distinto del original y verificar el hash antes de dar la copia por buena.</li>
+        </ol>
+      </details>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-f · Medio</h5>
+      <span class="nivel-tag nivel-medio">MEDIO</span>
+      <p><strong>Clínica Dental Sonrisa SL</strong> nos deja tres equipos y una tarde para resolverlos:</p>
+      <ul>
+        <li><strong>Equipo A</strong>: PC de sala de espera con Windows 10; no pasa del logo de arranque. El disco es de 240 GB SSD SATA.</li>
+        <li><strong>Equipo B</strong>: portátil de dirección con Windows 11 25H2, arranca perfectamente, disco NVMe de 1 TB y solo 130 GB ocupados.</li>
+        <li><strong>Equipo C</strong>: servidor de la clínica con Debian 13.0 y un sistema de archivos <strong>XFS</strong> (sistema de archivos de alto rendimiento habitual en servidores Linux, orientado a ficheros grandes y cargas concurrentes) que la versión de Clonezilla del taller no reconoce.</li>
+      </ul>
+      <p>Indica qué utilidad usarías en cada equipo, si harías imagen de disco o de partición, en qué formato quedaría el fichero y qué precauciones tomarías con el destino y la verificación. Justifica cada decisión en dos líneas.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-f</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Distingo imagen de disco (todo + tabla de particiones) de imagen de partición</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé qué utilidad usar cuando el equipo de origen no arranca</label></li>
+        <li><label><input type="checkbox" class="check-item"> Conozco el formato de fichero que genera cada utilidad (.img, .wim/.swm, .vhdx)</label></li>
+        <li><label><input type="checkbox" class="check-item"> Compruebo espacio libre en el destino y el límite de 4 GB de FAT32 antes de crear la imagen</label></li>
+        <li><label><input type="checkbox" class="check-item"> Verifico la imagen con hash y lo anoto en el informe técnico</label></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceG">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num critico">g</div>
+      <div class="bloque-info">
+        <h3>Instalación del sistema operativo y configuración inicial</h3>
+        <p>CE-g · CRÍTICO · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>El <strong>sistema operativo</strong> (SO) es el software que controla el hardware y permite ejecutar programas: Windows 11, Ubuntu o Debian son ejemplos. En CE-a vimos la diferencia entre una preinstalación de fábrica y una <em>instalación estándar</em> (desde cero, con nuestro propio medio). En CE-c preparamos ese medio de arranque y comprobamos el POST. Ahora damos el paso que faltaba: instalar el SO en el disco y dejarlo configurado y usable.</p>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 460 210" role="img" aria-label="Fases de una instalación estándar de sistema operativo">
+        <defs>
+          <marker id="flecha-g-ceg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="6" y="20" width="140" height="56" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="76" y="44" text-anchor="middle" font-size="13" fill="#1a1a2e">1. Medio de</text>
+        <text x="76" y="62" text-anchor="middle" font-size="13" fill="#1a1a2e">instalación</text>
+        <line x1="146" y1="48" x2="160" y2="48" stroke="#667085" stroke-width="2" marker-end="url(#flecha-g-ceg)"/>
+        <rect x="160" y="20" width="140" height="56" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="230" y="44" text-anchor="middle" font-size="13" fill="#1a1a2e">2. Arranque</text>
+        <text x="230" y="62" text-anchor="middle" font-size="13" fill="#1a1a2e">del medio</text>
+        <line x1="300" y1="48" x2="314" y2="48" stroke="#667085" stroke-width="2" marker-end="url(#flecha-g-ceg)"/>
+        <rect x="314" y="20" width="140" height="56" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="384" y="44" text-anchor="middle" font-size="13" fill="#1a1a2e">3. Particiones</text>
+        <text x="384" y="62" text-anchor="middle" font-size="13" fill="#1a1a2e">del disco</text>
+        <polyline points="384,76 384,104 76,104 76,130" fill="none" stroke="#667085" stroke-width="2" marker-end="url(#flecha-g-ceg)"/>
+        <rect x="6" y="130" width="140" height="56" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="76" y="154" text-anchor="middle" font-size="13" fill="#1a1a2e">4. Copia de</text>
+        <text x="76" y="172" text-anchor="middle" font-size="13" fill="#1a1a2e">archivos</text>
+        <line x1="146" y1="158" x2="160" y2="158" stroke="#667085" stroke-width="2" marker-end="url(#flecha-g-ceg)"/>
+        <rect x="160" y="130" width="140" height="56" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="230" y="154" text-anchor="middle" font-size="13" fill="#1a1a2e">5. Configuración</text>
+        <text x="230" y="172" text-anchor="middle" font-size="13" fill="#1a1a2e">inicial (OOBE)</text>
+        <line x1="300" y1="158" x2="314" y2="158" stroke="#667085" stroke-width="2" marker-end="url(#flecha-g-ceg)"/>
+        <rect x="314" y="130" width="140" height="56" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="384" y="154" text-anchor="middle" font-size="13" fill="#1a1a2e">6. Primer</text>
+        <text x="384" y="172" text-anchor="middle" font-size="13" fill="#1a1a2e">arranque</text>
+      </svg>
+      <figcaption>Las seis fases de una instalación estándar. Fíjate en que el particionado (3) va <strong>antes</strong> de copiar archivos (4), y en que la configuración del equipo no termina al llegar al escritorio: falta la fase 6.</figcaption>
+    </figure>
+
+    <p>Las decisiones que se toman durante la instalación condicionan el resto de la vida del equipo. Estas son las que siempre hay que pensar antes de pulsar “Siguiente”:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Decisión</th><th>Qué elegir y por qué</th></tr></thead>
+        <tbody>
+          <tr><td>Idioma y teclado</td><td>Español (España) y distribución “Español”. Si se equivoca, la ñ y los símbolos saldrán en otra tecla; se corrige después, pero se pierde tiempo.</td></tr>
+          <tr><td>Tipo de instalación</td><td><strong>Personalizada / desde cero</strong>, no “Actualizar”. Esta última solo sirve si ya hay un SO instalado.</td></tr>
+          <tr><td>Particionado</td><td>En un disco vacío, dejar que el instalador cree las particiones. A mano solo si hay otro SO que conservar.</td></tr>
+          <tr><td>Cuenta de usuario</td><td>Cuenta local (sin cuenta de Microsoft) en aulas y talleres: no depende de Internet ni de credenciales ajenas al centro.</td></tr>
+          <tr><td>Red y actualizaciones</td><td>Conectar a red durante la instalación para que descargue controladores; después, ejecutar Windows Update o el actualizador del SO.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="dual-columns">
+      <div class="win-col"><h4>🪟 Windows 11 25H2</h4><p>Asistente gráfico → “Personalizada” → el instalador crea EFI (100 MB), MSR (16 MB), Windows (C:) y Recovery. Tras la OOBE (la configuración de primer arranque: región, teclado, red, cuenta) hay 2-3 reinicios. Requiere UEFI, TPM 2.0 y 4 GB de RAM (visto en CE-c).</p></div>
+      <div class="linux-col"><h4>🐧 Ubuntu 24.04 LTS</h4><p>El instalador ofrece “Borrar disco e instalar” o “Instalación manual”. Crea la partición EFI y una raíz <code>/</code> en ext4, el sistema de archivos nativo de Linux (Fourth Extended Filesystem): es un sistema con diario (journaling), maduro y estable que Ubuntu elige por defecto por su equilibrio entre rendimiento, recuperación tras cortes y compatibilidad. El usuario se crea durante la instalación y el primer arranque ya pide actualizaciones.</p></div>
+    </div>
+
+    <div class="clave">Instalar el SO no termina al ver el escritorio: termina cuando el equipo tiene nombre, controladores, actualizaciones y una cuenta que funciona.</div>
+
+    <p>La instalación es casi toda gráfica, pero la configuración final se comprueba y remata desde la línea de comandos:</p>
+
+    <pre><code>Rename-Computer -NewName "PC-AULA01" -Restart</code></pre>
+    <ul>
+      <li><code>Rename-Computer</code>: <em>cmdlet</em> de PowerShell (un comando propio de PowerShell, como vimos en CE-a) que cambia el nombre del equipo en la red.</li>
+      <li><code>-NewName "PC-AULA01"</code>: nombre nuevo; máximo 15 caracteres, sin espacios ni acentos.</li>
+      <li><code>-Restart</code>: reinicia al terminar, porque el nombre no se aplica hasta el siguiente arranque.</li>
+    </ul>
+
+    <pre><code>sudo apt update && sudo apt full-upgrade -y</code></pre>
+    <ul>
+      <li><code>sudo</code>: ejecuta como administrador (superusuario); instalar software exige permisos.</li>
+      <li><code>apt</code>: gestor de paquetes de Debian/Ubuntu, la herramienta que descarga e instala software desde los repositorios oficiales.</li>
+      <li><code>update</code>: refresca la lista de paquetes disponibles. <strong>No instala nada</strong>, solo actualiza el catálogo.</li>
+      <li><code>&&</code>: operador “y lógico”; ejecuta lo de la derecha solo si lo de la izquierda terminó bien.</li>
+      <li><code>full-upgrade</code>: instala las versiones nuevas de todos los paquetes, permitiendo añadir o quitar dependencias (otros paquetes que necesita).</li>
+      <li><code>-y</code>: responde “sí” a todas las confirmaciones, para que no se pare pidiendo permiso.</li>
+    </ul>
+
+    <div class="box-complementario"><div class="box-label">NOTA</div><p>Los controladores (el software que permite al SO hablar con cada componente) se instalan solos en Windows 11 con Windows Update. Si algún dispositivo queda con signo de exclamación en el Administrador de dispositivos, se descarga del fabricante del equipo, nunca de webs de terceros.</p></div>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p>Aula 2 de Tecnoparts SL. Hay que dejar preparada una máquina virtual con Windows 11 25H2 en VirtualBox 7.1 sobre el equipo del profesor.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li>Crear la VM “WIN11-PRUEBA”: 4 GB de RAM, 2 vCPU (núcleos virtuales asignados a la máquina virtual) y disco virtual de 64 GB en formato VDI (el archivo de disco virtual que vimos en CE-e), reservado dinámicamente para que no ocupe 64 GB reales desde el principio.</li>
+        <li>En Configuración → Sistema, activar EFI y TPM 2.0. Sin TPM el instalador de Windows 11 se detiene (lo estudiamos en CE-c).</li>
+        <li>Montar la ISO de Windows 11 25H2 en la unidad óptica virtual y arrancar: la VM pasa el POST y arranca del medio, no del disco.</li>
+        <li>Idioma español, teclado español, “Instalar ahora”, tipo <strong>Personalizada</strong>. El disco VDI está vacío: se deja que el instalador cree EFI, MSR, Windows y Recovery. No se particiona a mano.</li>
+        <li>Durante los reinicios, expulsar la ISO de la unidad virtual; si no, la VM vuelve a arrancar del instalador en bucle.</li>
+        <li>OOBE: región España, teclado español y red NAT (Network Address Translation: la VM sale a Internet a través del equipo anfitrión, que traduce sus direcciones, pero no es visible directamente desde la red local; es la red por defecto de VirtualBox). En Windows 11 25H2 la OOBE exige conexión a Internet y cuenta Microsoft, así que la cuenta local no aparece como opción normal: en la pantalla de cuenta se pulsa <strong>Shift+F10</strong>, se abre la consola y se ejecuta <code>start ms-cxh:localonly</code>; en la ventana que aparece se crea el usuario local <code>alumno</code> (con contraseña local si el aula lo requiere, no con cuenta Microsoft). Se termina la OOBE con privacidad al mínimo.</li>
+        <li>Ya en el escritorio: abrir PowerShell como administrador y ejecutar <code>Rename-Computer -NewName "PC-AULA01" -Restart</code>. Al volver, comprobar con <code>winver</code> (versión del SO) y <code>slmgr /dlv</code> (estado de activación), ambos vistos en CE-a.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-g · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>En el aula de Tecnoparts SL vas a instalar Ubuntu 24.04 LTS en una VM con 4 GB de RAM y 25 GB de disco. Indica las decisiones de configuración que tomarás (teclado, tipo de instalación, usuario y contraseña, particionado) y cómo comprobarías al final que la versión instalada es la correcta.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p>1) Crear la VM con 4 GB de RAM, 2 vCPU (núcleos virtuales) y disco de 25 GB tipo VDI; montar la ISO de Ubuntu 24.04 LTS y arrancar de ella.</p>
+        <p>2) Teclado “Spanish”; tipo de instalación “Borrar disco e instalar Ubuntu” (el disco virtual está vacío, no hay nada que conservar).</p>
+        <p>3) Usuario <code>alumno</code> con contraseña robusta. En Ubuntu el usuario creado aquí es administrador y usa <code>sudo</code> para las tareas de sistema.</p>
+        <p>4) Particionado: el instalador crea una partición EFI (FAT32) para el arranque y una raíz <code>/</code> en ext4 (sistema de archivos nativo de Linux con diario y muy estable, el que Ubuntu elige por defecto) con el resto del disco.</p>
+        <p>5) Comprobación: abrir terminal y ejecutar <code>lsb_release -a</code> (el comando <code>lsb_release</code> consulta los datos de la distribución y el flag <code>-a</code>, <em>all</em>, muestra todos los campos: distribuidor, descripción, versión y nombre clave) o mirar “Acerca de” en Configuración. Después, <code>sudo apt update && sudo apt full-upgrade -y</code> para dejar el sistema actualizado.</p>
+      </details>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-g · Medio</h5>
+      <span class="nivel-tag nivel-medio">MEDIO</span>
+      <p>En el taller hay un equipo con 3 GB de RAM, disco mecánico de 160 GB y firmware BIOS heredado (Legacy, sin UEFI). No tiene SO. Un cliente lo quiere para ofimática y navegar. Razona qué SO instalarías y por qué descartas Windows 11, indica el esquema de particiones que usarías y enumera los pasos de instalación y configuración posterior (nombre de equipo, usuario, actualizaciones).</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-g · Avanzado</h5>
+      <span class="nivel-tag nivel-avanzado">AVANZADO</span>
+      <p>Instalas Windows 11 25H2 en un equipo del aula con UEFI y TPM 2.0. Todo avanza, pero al terminar la copia de archivos el equipo se reinicia y vuelve a aparecer el asistente de instalación una y otra vez. En otro equipo distinto, el instalador se detiene con el mensaje “Windows no se puede instalar en este disco: el disco seleccionado tiene el estilo de partición MBR”. Diagnostica cada caso, explica la causa y propón la solución concreta para los dos, indicando en qué fase del diagrama falla cada uno.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-g</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Distingo instalación estándar de preinstalación y sé cuándo toca cada una.</label></li>
+        <li><label><input type="checkbox" class="check-item"> Identifico las seis fases y sé que el particionado va antes de la copia de archivos.</label></li>
+        <li><label><input type="checkbox" class="check-item"> Elijo bien idioma, teclado, tipo de instalación y cuenta de usuario.</label></li>
+        <li><label><input type="checkbox" class="check-item"> Verifico la instalación (versión del SO, nombre del equipo, actualizaciones).</label></li>
+        <li><label><input type="checkbox" class="check-item"> Explico el desglose de <code>Rename-Computer</code> y de <code>apt update && apt full-upgrade -y</code>.</label></li>
+      </ul>
+    </div>
+
+    <div class="box-critico">
+      <div class="box-label">⚠ TRAMPA DE EXAMEN</div>
+      <p>Creer que el disco “ya vale” porque el instalador lo acepta sin preguntar. Con firmware UEFI el disco debe estar en <strong>GPT</strong>; si está en MBR, la instalación de Windows 11 se corta en la fase 3 con el aviso del ejercicio avanzado. Y ojo con lo contrario: dejar la ISO montada tras el primer reinicio provoca el bucle del mismo ejercicio. Comprueba siempre dos cosas antes de empezar: estilo de partición del disco (GPT) y medio de instalación expulsado tras la copia.</p>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceH">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num critico">h</div>
+      <div class="bloque-info">
+        <h3>Creación de particiones y unidades lógicas</h3>
+        <p>CE-h · CRÍTICO · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>En CE-g vimos el particionado tal y como lo propone el instalador del sistema operativo. Aquí damos el paso anterior: crear las particiones <strong>a mano</strong>, sobre un disco del taller que todavía no tiene nada, y dejarlo listo para instalar o para guardar datos. Antes de tocar nada hay que separar dos conceptos que se confunden todo el rato:</p>
+
+    <div class="cards">
+      <div class="card">
+        <h4><span class="ico">🗂️</span> Partición</h4>
+        <ul>
+          <li>Es una <strong>división del disco</strong> anotada en la tabla de particiones.</li>
+          <li>Solo reserva un rango de sectores: todavía no sirve para guardar archivos.</li>
+          <li>Se crea con diskpart, Administración de discos, GParted, fdisk…</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">💽</span> Volumen / unidad lógica</h4>
+        <ul>
+          <li>Es una partición <strong>formateada</strong>: tiene sistema de archivos (NTFS, ext4…).</li>
+          <li>Además recibe una <strong>letra</strong> (Windows) o un <strong>punto de montaje</strong> (Linux).</li>
+          <li>Solo entonces aparece en el Explorador o en <code>/mnt</code>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p>El esquema de particiones del disco (MBR o GPT, vistos en CE-c y CE-g) decide qué tipos de partición podemos crear. En <strong>MBR</strong> la tabla tiene solo cuatro entradas, así que para pasar de cuatro divisiones hay que usar una <strong>partición extendida</strong>: un contenedor que ocupa el espacio libre y dentro del cual se crean las <strong>unidades lógicas</strong> (que en Windows y Linux se numeran siempre a partir de la 5: <code>sdb5</code>, partición 5…). En <strong>GPT</strong> esto no existe: hay hasta 128 particiones normales y ninguna es "lógica".</p>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 480 220" role="img" aria-label="Esquema de un disco MBR con tres particiones primarias y una extendida que contiene dos unidades lógicas">
+        <defs>
+          <marker id="flecha-h-ceh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="20" y="55" width="100" height="70" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="70" y="95" text-anchor="middle" font-size="13" fill="#1a1a2e">Primaria 1</text>
+        <rect x="120" y="55" width="100" height="70" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="170" y="95" text-anchor="middle" font-size="13" fill="#1a1a2e">Primaria 2</text>
+        <rect x="220" y="55" width="100" height="70" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="270" y="95" text-anchor="middle" font-size="13" fill="#1a1a2e">Primaria 3</text>
+        <rect x="320" y="55" width="140" height="70" fill="#fdf6e0" stroke="#d4a017" stroke-width="2"/>
+        <text x="390" y="48" text-anchor="middle" font-size="12" fill="#1a1a2e">Extendida</text>
+        <rect x="326" y="66" width="62" height="48" fill="#ffffff" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="357" y="95" text-anchor="middle" font-size="11" fill="#1a1a2e">Lógica 1</text>
+        <rect x="392" y="66" width="62" height="48" fill="#ffffff" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="423" y="95" text-anchor="middle" font-size="11" fill="#1a1a2e">Lógica 2</text>
+        <line x1="390" y1="130" x2="390" y2="160" stroke="#667085" stroke-width="2" marker-end="url(#flecha-h-ceh)"/>
+        <text x="240" y="185" text-anchor="middle" font-size="13" fill="#667085">Tabla MBR: 4 entradas máximas</text>
+        <text x="240" y="205" text-anchor="middle" font-size="13" fill="#667085">Las lógicas solo viven dentro de la extendida</text>
+      </svg>
+      <figcaption>Un disco MBR con tres primarias y una extendida. Fíjate en que las unidades lógicas no son entradas de la tabla: están dentro de la extendida, que es la cuarta entrada.</figcaption>
+    </figure>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>MBR (Master Boot Record)</th><th>GPT (GUID Partition Table)</th></tr></thead>
+        <tbody>
+          <tr><td>Entradas de la tabla</td><td>4 primarias como máximo</td><td>128 particiones (Windows)</td></tr>
+          <tr><td>¿Extendida y lógicas?</td><td>Sí, obligatorias para pasar de 4</td><td>No existen</td></tr>
+          <tr><td>Tamaño máximo de disco</td><td>2 TiB (2<sup>32</sup> sectores de 512 B)</td><td>Prácticamente sin límite</td></tr>
+          <tr><td>Arranque</td><td>BIOS/Legacy</td><td>UEFI (ver CE-c)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="clave">Una unidad lógica sin partición extendida que la contenga es imposible: primero el contenedor, después las divisiones.</div>
+
+    <h4>Crear extendida y unidades lógicas con diskpart (Windows)</h4>
+    <p>Como vimos en CE-c, <code>diskpart</code> es la consola interactiva de gestión de discos de Windows y se abre desde una terminal con permisos de administrador. Estos son los subcomandos que faltaban:</p>
+    <pre><code>diskpart
+list disk
+select disk 1
+create partition extended
+create partition logical size=102400
+assign letter=E
+format fs=ntfs quick label=DATOS</code></pre>
+    <ul>
+      <li><code>diskpart</code>: abre la consola interactiva; se escribe un subcomando por línea y se ejecuta al pulsar Intro.</li>
+      <li><code>list disk</code>: enumera los discos con su número y tamaño; sirve para identificar el disco correcto antes de tocarlo.</li>
+      <li><code>list partition</code>: enumera las particiones del disco seleccionado con su número, tipo (Primaria, Extendida o Lógica), tamaño y desplazamiento. Sirve para comprobar la numeración (en MBR las lógicas empiezan en la 5) y que la extendida contiene las lógicas.</li>
+      <li><code>list volume</code>: enumera los volúmenes del sistema con letra, etiqueta, sistema de archivos, tipo y tamaño. Sirve para verificar que una partición ya formateada tiene letra y aparece como volumen utilizable.</li>
+      <li><code>select disk 1</code>: pone el foco en el disco 1; a partir de aquí, todos los subcomandos actúan sobre él.</li>
+      <li><code>create partition extended size=n</code>: crea la partición extendida. Si se omite <code>size</code>, ocupa todo el espacio libre que queda del disco; con <code>size=n</code> se limita a n MB. Solo es válido en discos MBR.</li>
+      <li><code>create partition logical size=102400</code>: crea una unidad lógica de 102400 MB (100 GB) dentro de la extendida; si se omite <code>size</code>, toma todo el espacio libre.</li>
+      <li><code>assign letter=E</code>: asigna la letra <code>E:</code> a la partición seleccionada para que Windows la muestre como unidad.</li>
+      <li><code>format fs=ntfs quick label=DATOS</code>: la formatea en NTFS; <code>quick</code> hace un formateo rápido (escribe la estructura del sistema de archivos sin comprobar sector a sector) y <code>label</code> fija la etiqueta visible en el Explorador.</li>
+    </ul>
+
+    <h4>Otros métodos: PowerShell y Linux</h4>
+    <div class="dual-columns">
+      <div class="win-col"><h4>🪟 Windows</h4><p>Además de diskpart está <strong>Administración de discos</strong> (<code>diskmgmt.msc</code>), gráfica: clic derecho sobre el espacio no asignado → Nuevo volumen simple. En PowerShell se hace con <code>New-Partition</code> y <code>Format-Volume</code>, pero el ejemplo siguiente crea una partición primaria/simple, no una extendida ni una unidad lógica.</p></div>
+      <div class="linux-col"><h4>🐧 Linux</h4><p>Con <strong>GParted Live 1.6.0-3</strong> (gráfico, el más usado en taller). Por consola, las particiones se crean con <code>fdisk</code> o <code>gdisk</code> (interactivos: <code>n</code> nueva, <code>w</code> escribir) y luego se formatean con <code>mkfs</code>.</p></div>
+    </div>
+
+    <p>Este ejemplo no es equivalente al caso MBR con extendida y unidades lógicas: crea y formatea una partición primaria/simple. Para una extendida y sus lógicas en MBR hay que seguir el procedimiento específico de MBR (crear primero la extendida y después las lógicas) con diskpart u otra herramienta; el cmdlet mostrado no hace esa función.</p>
+
+    <pre><code>New-Partition -DiskNumber 1 -UseMaximumSize -DriveLetter F | Format-Volume -FileSystem NTFS -NewFileSystemLabel "DATOS"</code></pre>
+    <ul>
+      <li><code>New-Partition</code>: cmdlet que crea una partición (no la formatea).</li>
+      <li><code>-DiskNumber 1</code>: disco sobre el que actuar, el mismo número que devuelve <code>Get-Disk</code>.</li>
+      <li><code>-UseMaximumSize</code>: usa todo el espacio libre contiguo disponible.</li>
+      <li><code>-DriveLetter F</code>: letra asignada a la nueva partición.</li>
+      <li><code>|</code>: <em>pipe</em>; envía el objeto partición que acaba de crearse al cmdlet siguiente, sin tener que nombrarla a mano.</li>
+      <li><code>Format-Volume -FileSystem NTFS -NewFileSystemLabel "DATOS"</code>: formatea en NTFS con la etiqueta DATOS.</li>
+    </ul>
+
+    <pre><code>sudo mkfs.ext4 -L DATOS /dev/sdb1
+sudo mkdir -p /mnt/datos && sudo mount /dev/sdb1 /mnt/datos</code></pre>
+    <ul>
+      <li><code>sudo</code>: ejecuta con privilegios de superusuario; formatear y montar exige ser root.</li>
+      <li><code>mkfs.ext4</code>: crea el sistema de archivos ext4 (el estándar de Linux, con <em>journaling</em>, visto en CE-g) sobre la partición indicada.</li>
+      <li><code>-L DATOS</code>: etiqueta del sistema de archivos.</li>
+      <li><code>/dev/sdb1</code>: primera partición del segundo disco (<code>sdb</code>); en un disco MBR con extendida, las lógicas serían <code>/dev/sdb5</code>, <code>sdb6</code>…</li>
+      <li><code>mkdir -p /mnt/datos</code>: crea la carpeta que hará de punto de montaje; <code>-p</code> evita el error si ya existe y crea las carpetas intermedias.</li>
+      <li><code>&&</code>: ejecuta el comando siguiente solo si el anterior terminó bien.</li>
+      <li><code>mount /dev/sdb1 /mnt/datos</code>: enlaza la partición con esa carpeta para poder acceder a su contenido. Este montaje es temporal; para que se monte automáticamente al arrancar hay que añadir una línea a <code>/etc/fstab</code>.</li>
+      <li><code>/etc/fstab</code>: archivo de texto de Linux que indica qué sistemas de archivos se montan automáticamente al arrancar y con qué opciones. Cada línea contiene, como mínimo, el dispositivo, el punto de montaje, el tipo de sistema de archivos y las opciones. Se edita como root con un editor de texto, por ejemplo <code>sudo nano /etc/fstab</code>; después conviene comprobar la sintaxis con <code>sudo mount -a</code> antes de reiniciar.</li>
+    </ul>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p>En el taller del centro hay un disco de 500 GB, limpio y en MBR, para el equipo de prácticas. Como los equipos del taller no tienen sistema operativo, el disco se conecta a un equipo del aula con Windows 11 para prepararlo. Se pide: una primaria de 120 GB para sistema (etiqueta SISTEMA), una primaria de 80 GB para programas (PROGRAMAS) y una extendida con el resto que contenga dos unidades lógicas de 150 GB cada una (DATOS en <code>E:</code> y PRACTICAS en <code>F:</code>).</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li>En el equipo del aula con Windows 11, abrir terminal como administrador, ejecutar <code>diskpart</code>, <code>list disk</code> y comprobar que el disco de 500 GB es el 1 (por tamaño, nunca por suposición). <code>select disk 1</code>.</li>
+        <li><code>create partition primary size=122880</code> → 120 GB (120 × 1024 MB). Después <code>format fs=ntfs quick label=SISTEMA</code>.</li>
+        <li><code>create partition primary size=81920</code> → 80 GB. <code>format fs=ntfs quick label=PROGRAMAS</code>.</li>
+        <li>Con 2 primarias gastadas, creamos la extendida con <code>create partition extended</code>: ocupa los ~300 GB restantes y consume la tercera entrada; la cuarta entrada de la tabla queda libre.</li>
+        <li><code>create partition logical size=153600</code> (150 GB) → <code>assign letter=E</code> → <code>format fs=ntfs quick label=DATOS</code>.</li>
+        <li><code>create partition logical</code> sin tamaño (toma el resto, ~150 GB) → <code>assign letter=F</code> → <code>format fs=ntfs quick label=PRACTICAS</code>.</li>
+        <li>Verificación con <code>list partition</code>: deben aparecer la Partición 1 (SISTEMA), la 2 (PROGRAMAS), la 3 (Extendida) y las Particiones 5 y 6 (lógicas); la entrada 4 de la tabla MBR queda libre, por eso no existe Partición 4. Con <code>list volume</code> se comprueba que <code>E:</code> y <code>F:</code> tienen las etiquetas DATOS y PRACTICAS y el tamaño esperado; en Administración de discos se ven como bloques dentro del marco verde de la extendida.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-h · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>Tecnoparts SL os entrega un disco de 1 TB limpio y en MBR, conectado como disco 1, para el equipo de recepción. Hay que dejar: una primaria de 200 GB (SISTEMA, NTFS), y el resto como una extendida con dos unidades lógicas de 300 GB cada una (DATOS en <code>D:</code> y COPIA en <code>E:</code>). Escribe los subcomandos de diskpart en orden y di qué comprobarías al final.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p>Conversión de unidades: 200 GB = 200 × 1024 = 204800 MB; 300 GB = 307200 MB. Nunca se escribe "200GB" en diskpart: se trabaja en megabytes (o se omite el tamaño).</p>
+        <ol>
+          <li><code>diskpart</code> y <code>list disk</code>: confirmar que el disco de 1 TB es el 1.</li>
+          <li><code>select disk 1</code>.</li>
+          <li><code>create partition primary size=204800</code>, luego <code>format fs=ntfs quick label=SISTEMA</code> y <code>assign letter=C</code> si va a ser el sistema.</li>
+          <li><code>create partition extended</code>: se lleva todo el espacio libre restante (~800 GB) y es la segunda entrada de la tabla.</li>
+          <li><code>create partition logical size=307200</code> → <code>assign letter=D</code> → <code>format fs=ntfs quick label=DATOS</code>.</li>
+          <li><code>create partition logical size=307200</code> → <code>assign letter=E</code> → <code>format fs=ntfs quick label=COPIA</code>. Quedarán ~200 GB libres dentro de la extendida, que se podrían usar para una tercera lógica.</li>
+          <li>Comprobar con <code>list partition</code> que aparecen la Partición 1 (SISTEMA) y la 2 (Extendida), y las Particiones 5 y 6 (lógicas); la entrada 4 queda libre. Con <code>list volume</code>, que <code>D:</code> y <code>E:</code> aparecen con su etiqueta y capacidad, y en el Explorador que son accesibles.</li>
+        </ol>
+      </details>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-h · Medio</h5>
+      <span class="nivel-tag nivel-medio">MEDIO</span>
+      <p>Gestoría Amper SL tiene un equipo nuevo con un disco de 2 TB en GPT, conectado como disco 0, y otro disco de 500 GB como disco 1. Se pide crear en el disco 0 tres particiones con PowerShell: 400 GB para sistema, 800 GB para datos y el resto sin asignar; en el disco 1, una única partición que use todo el espacio con etiqueta ARCHIVO. Además, la letra <code>D:</code> está ocupada por la unidad de DVD y una de las particiones nuevas no aparece en el Explorador. Indica los cmdlets, las letras que elegirías y qué puede estar pasando con la partición invisible.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-h · Avanzado</h5>
+      <span class="nivel-tag nivel-avanzado">AVANZADO</span>
+      <p>Un cliente trae un equipo con un disco de 3 TB del que solo se ven 2 TB, y en diskpart, al intentar <code>create partition primary</code>, devuelve error de espacio libre insuficiente aunque el Explorador muestre espacio sin usar. En <code>list partition</code> aparecen tres particiones y una cuarta que contiene otras dos. Diagnostica la causa, explica por qué el límite es justo ese y propón dos soluciones ordenadas de menor a mayor riesgo, indicando qué pasa con los datos en cada una.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-h</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Distingo partición, partición extendida y volumen formateado</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé cuándo hacen falta unidades lógicas y cuándo no (MBR vs GPT)</label></li>
+        <li><label><input type="checkbox" class="check-item"> Creo primarias, extendida y lógicas con diskpart sin consultar apuntes</label></li>
+        <li><label><input type="checkbox" class="check-item"> Asigno letras y formato con etiqueta, y lo verifico con list partition / list volume</label></li>
+        <li><label><input type="checkbox" class="check-item"> Uso New-Partition + Format-Volume en PowerShell y sé qué hace el pipe</label></li>
+        <li><label><input type="checkbox" class="check-item"> En Linux formateo con mkfs.ext4 y monto en /mnt antes de usar la partición</label></li>
+      </ul>
+    </div>
+
+    <div class="box-critico">
+      <div class="box-label">⚠ TRAMPA DE EXAMEN</div>
+      <p>El error más repetido es intentar <code>create partition logical</code> sin haber creado antes la extendida: diskpart responde con un error y el alumno culpa al disco. El orden es siempre primarias → extendida → lógicas. El segundo fallo típico es al contrario: crear una extendida en un disco GPT "porque toca" —en GPT no existe, y el mensaje de error lo dice—, o creer que una partición recién creada ya se puede usar: sin formato y sin letra o punto de montaje no aparece en el Explorador ni en <code>/mnt</code>.</p>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceI">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num">i</div>
+      <div class="bloque-info">
+        <h3>Redimensión de particiones: ampliar y reducir sin perder datos</h3>
+        <p>CE-i · importante · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p><strong>Redimensionar</strong> una partición es cambiar su tamaño sin borrarla ni perder los datos que contiene. Como vimos en CE-h, una partición es un trozo del disco delimitado en la tabla de particiones; redimensionar mueve esas fronteras. Se hace por dos motivos muy habituales en el taller: un disco <code>C:</code> que se ha quedado sin espacio para actualizar Windows, o una partición de datos enorme que no se usa y podría ceder espacio a la del sistema.</p>
+
+    <p>El proceso tiene siempre <strong>dos capas</strong>: primero se cambia el tamaño en la tabla de particiones y después se adapta el <strong>sistema de archivos</strong> (NTFS, ext4…) al nuevo tamaño. Si solo se hace lo primero, el sistema de archivos cree que la partición sigue siendo del tamaño antiguo y el volumen queda inconsistente.</p>
+
+    <div class="clave">Al reducir, el hueco libre aparece siempre al final de la partición reducida. Para ampliar otra, ese hueco tiene que quedar pegado a su borde derecho.</div>
+
+    <p>Esa regla explica el caso más típico: disco con <code>C:</code> y <code>D:</code> seguidos. Si reduzco <code>D:</code>, el espacio libre queda a la derecha de <code>D:</code>, no junto a <code>C:</code>, y Windows no deja ampliar <code>C:</code>. Hay que <strong>mover</strong> <code>D:</code> hacia la derecha para que el hueco se coloque en medio.</p>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 520 260" role="img" aria-label="Disco antes, estado intermedio tras reducir y mover una partición, y después de ampliar otra">
+        <defs>
+          <marker id="flecha-i-cei" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <text x="40" y="22" font-size="13" fill="#667085" text-anchor="start">ANTES</text>
+        <rect x="40" y="30" width="240" height="44" rx="8" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="160" y="58" text-anchor="middle" font-size="15" fill="#1a1a2e">C: 60 GB</text>
+        <rect x="280" y="30" width="160" height="44" rx="8" fill="#f7f9fc" stroke="#d4a017" stroke-width="2"/>
+        <text x="360" y="58" text-anchor="middle" font-size="15" fill="#1a1a2e">D: 40 GB</text>
+        <line x1="240" y1="82" x2="240" y2="104" stroke="#667085" stroke-width="2" marker-end="url(#flecha-i-cei)"/>
+        <text x="40" y="112" font-size="13" fill="#667085" text-anchor="start">INTERMEDIO: D reducida y movida</text>
+        <rect x="40" y="120" width="240" height="44" rx="8" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="160" y="148" text-anchor="middle" font-size="15" fill="#1a1a2e">C: 60 GB</text>
+        <rect x="280" y="120" width="80" height="44" rx="8" fill="#eef2f7" stroke="#98a2b3" stroke-width="2" stroke-dasharray="5 4"/>
+        <text x="320" y="139" text-anchor="middle" font-size="11" fill="#1a1a2e">libre</text>
+        <text x="320" y="154" text-anchor="middle" font-size="11" fill="#1a1a2e">20 GB</text>
+        <rect x="360" y="120" width="80" height="44" rx="8" fill="#f7f9fc" stroke="#d4a017" stroke-width="2"/>
+        <text x="400" y="148" text-anchor="middle" font-size="14" fill="#1a1a2e">D: 20 GB</text>
+        <line x1="240" y1="172" x2="240" y2="194" stroke="#667085" stroke-width="2" marker-end="url(#flecha-i-cei)"/>
+        <text x="40" y="202" font-size="13" fill="#667085" text-anchor="start">DESPUÉS: C ampliada</text>
+        <rect x="40" y="210" width="320" height="44" rx="8" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="200" y="238" text-anchor="middle" font-size="15" fill="#1a1a2e">C: 80 GB</text>
+        <rect x="360" y="210" width="80" height="44" rx="8" fill="#f7f9fc" stroke="#d4a017" stroke-width="2"/>
+        <text x="400" y="238" text-anchor="middle" font-size="14" fill="#1a1a2e">D: 20 GB</text>
+      </svg>
+      <figcaption>Para pasar de 60 a 80 GB en C: hay que reducir D: 20 GB <strong>y moverla</strong> a la derecha: el espacio no asignado debe quedar contiguo a C:. El estado intermedio muestra ese hueco libre entre C: y D: antes de ampliar C:.</figcaption>
+    </figure>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Aspecto</th><th>Windows · Administración de discos</th><th>Linux · GParted Live 1.6.0-3</th></tr></thead>
+        <tbody>
+          <tr><td>Ampliar</td><td>Solo si hay espacio no asignado justo a la derecha y del mismo estilo (GPT/MBR)</td><td>Puede mover particiones y ampliar aunque el hueco esté en otra posición</td></tr>
+          <tr><td>Reducir</td><td>Limitado por archivos no movibles: <code>pagefile.sys</code> (paginación), <code>hiberfil.sys</code> (hibernación) y la MFT (Master File Table)</td><td>Redimensiona ext4, NTFS o FAT32; mover datos puede tardar mucho</td></tr>
+          <tr><td>En caliente</td><td>Sí, con el volumen montado</td><td>ext4 se amplía montado; reducir exige desmontar o arrancar en live</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p><strong>Archivos no movibles en Windows.</strong> <code>pagefile.sys</code> es el archivo de paginación: memoria virtual que Windows usa cuando la RAM se llena. <code>hiberfil.sys</code> es el archivo de hibernación: guarda el contenido de la RAM para apagar y reanudar el equipo. La <strong>MFT</strong> (<em>Master File Table</em>) es la tabla maestra del sistema NTFS, donde se registra la ubicación y los metadatos de cada archivo. Administración de discos no puede reducirlos ni moverlos durante la operación, por eso calcula el máximo espacio reducible y a veces deja menos hueco del esperado.</p>
+
+    <p>En Windows, la herramienta gráfica es <code>diskmgmt.msc</code> (Administración de discos, ya vista en CE-h). Para trabajar desde consola:</p>
+
+    <pre><code>diskpart
+list volume
+select volume 3
+shrink desired=10240
+exit</code></pre>
+    <ul>
+      <li><code>diskpart</code>: abre la herramienta de particiones por consola; debe ejecutarse en una ventana elevada (como administrador).</li>
+      <li><code>list volume</code>: enumera los volúmenes con su número, letra, etiqueta, sistema de archivos y tamaño.</li>
+      <li><code>select volume 3</code>: selecciona el volumen número 3 (el número lo da el listado anterior; aquí sería, por ejemplo, <code>D:</code>).</li>
+      <li><code>shrink desired=10240</code>: reduce el volumen seleccionado 10 240 MB (10 GB); <code>desired</code> indica el tamaño a liberar en megabytes.</li>
+      <li><code>exit</code>: sale de diskpart. El espacio liberado queda al final del volumen.</li>
+    </ul>
+
+    <p>En Linux, GParted cambia el tamaño de la partición y de ext4 desde su interfaz; si se hace por consola, <code>resize2fs</code> ajusta el sistema de archivos. <strong>La partición debe estar desmontada</strong> para ejecutar <code>e2fsck</code> y para reducir ext4; si es la raíz del sistema, hay que arrancar con el live de GParted. Ejemplo de reducción del sistema de archivos de <code>/dev/sda2</code> a 20 GB:</p>
+
+    <pre><code>sudo umount /dev/sda2
+sudo e2fsck -f /dev/sda2
+sudo resize2fs /dev/sda2 20G</code></pre>
+    <ul>
+      <li><code>sudo</code>: ejecuta con privilegios de superusuario (administrador), imprescindible para tocar discos.</li>
+      <li><code>umount /dev/sda2</code>: desmonta la partición para que ningún proceso escriba en ella; si ya está desmontada, devuelve un aviso y no es necesario repetirlo.</li>
+      <li><code>e2fsck -f</code>: comprueba y repara el sistema de archivos ext4; <code>-f</code> fuerza la revisión aunque el sistema parezca limpio. Es obligatorio antes de reducir y debe ejecutarse con la partición desmontada (o desde el live).</li>
+      <li><code>resize2fs /dev/sda2 20G</code>: reduce el sistema de archivos ext4 de <code>/dev/sda2</code> a 20 GB. El tamaño final debe indicarse siempre al reducir; <code>resize2fs /dev/sda2</code> sin tamaño solo amplía el sistema de archivos hasta ocupar toda la partición.</li>
+    </ul>
+    <p><strong>Orden al reducir:</strong> primero se reduce el sistema de archivos con <code>resize2fs</code> al tamaño final y después la partición con GParted (o se deja que GParted haga ambos pasos). <strong>Orden al ampliar:</strong> primero se agranda la partición con GParted y después se ejecuta <code>sudo resize2fs /dev/sda2</code> sin tamaño para que ext4 ocupe todo el espacio nuevo; si se indica un tamaño, se ajusta exactamente a ese valor.</p>
+
+    <div class="box-importante">
+      <div class="box-label">IMPORTANTE</div>
+      <p>Antes de redimensionar, <strong>copia de seguridad</strong> (imagen con Clonezilla, CE-d) y equipo enchufado a la red eléctrica: mover una partición reescribe cada bloque y un corte de luz a mitad destruye el volumen.</p>
+    </div>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p>Taller MicroTec. Equipo con Windows 11 25H2 y disco de 128 GB: particiones EFI de 512 MB, MSR de 16 MB y Recovery de 1 GB; <code>C:</code> de 60 GB al 94 % de ocupación y <code>D:</code> de 60 GB con solo 12 GB usados. Quedan unos 6,5 GB sin asignar. Objetivo: dar 20 GB más a <code>C:</code>.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li>Copia de seguridad: imagen de disco completa con Clonezilla Live 3.2.3-5 (CE-d). Sin copia no se toca nada.</li>
+        <li>Se comprueba Administración de discos: reducir <code>D:</code> desde Windows dejaría el hueco a la derecha de <code>D:</code>, y <code>C:</code> no podría ampliarse. Descartado.</li>
+        <li>Se arranca el equipo con el USB de GParted Live 1.6.0-3 (orden de arranque en el firmware, CE-c).</li>
+        <li>En GParted se selecciona el disco <code>/dev/sda</code> y la partición de datos (NTFS) → <em>Redimensionar/Mover</em> → se reduce 20 000 MB (de 60 GB a 40 GB) dejando el espacio libre a la derecha.</li>
+        <li>Sin cerrar el diálogo de la misma partición, se arrastra hacia la derecha para que el hueco quede entre <code>C:</code> y <code>D:</code>. Esto mueve los datos: tarda varios minutos.</li>
+        <li>Se selecciona <code>C:</code> → <em>Redimensionar/Mover</em> → se arrastra el borde derecho hasta ocupar todo el hueco (de 60 GB a 80 GB).</li>
+        <li>Se pulsa <em>Aplicar</em> (✓) y se confirma la advertencia. GParted ejecuta la cola de operaciones.</li>
+        <li>Se apaga, se arranca Windows y se comprueba el resultado en <code>diskmgmt.msc</code>. Si el sistema de archivos no se adaptó, se ejecuta desde una consola elevada <code>chkdsk C: /f</code>: <code>chkdsk</code> comprueba y repara errores del sistema de archivos NTFS, y <code>/f</code> corrige los errores encontrados; si el volumen está en uso, Windows pedirá aceptar la comprobación al reiniciar.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-i · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>En VirtualBox 7.1, la máquina virtual «Ubuntu-24.04-BD» de la empresa Datos Nova SL tiene un disco de 40 GB repartido así: <code>/dev/sda1</code> EFI de 1 GB, <code>/dev/sda2</code> ext4 de 24 GB con el 90 % ocupado (raíz del sistema) y <code>/dev/sda3</code> ext4 de 15 GB con solo 4 GB usados. Hay que dar 8 GB más a <code>/dev/sda2</code>. Explica qué harías y en qué orden.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>1. Preparación.</strong> Instantánea (snapshot) de la máquina virtual en VirtualBox: guarda el estado completo de la VM —discos y configuración— en un punto concreto y permite volver a él si la operación falla. Se crea con la VM apagada o en ejecución desde <em>Máquina → Tomar instantánea</em> (o el botón de cámara de la barra de herramientas), se asigna un nombre y se acepta. Como alternativa, imagen con Clonezilla. Después, apagar el sistema: ext4 no se puede reducir en caliente.</p>
+        <p><strong>2. Arrancar con GParted Live 1.6.0-3</strong> desde la ISO montada en la unidad óptica virtual y elegir como dispositivo <code>/dev/sda</code>.</p>
+        <p><strong>3. Reducir y mover <code>/dev/sda3</code>:</strong> Redimensionar/Mover → reducirla en 8000 MB (de 15 GB a 7 GB) y arrastrarla a la derecha, de forma que el espacio no asignado quede entre <code>sda2</code> y <code>sda3</code>. Los 4 GB usados siguen cabiendo en los 7 GB restantes.</p>
+        <p><strong>4. Ampliar <code>/dev/sda2</code>:</strong> Redimensionar/Mover → arrastrar el borde derecho hasta el hueco (de 24 GB a 32 GB) → Aplicar (✓). GParted redimensiona el sistema de archivos ext4 al aplicar.</p>
+        <p><strong>5. Verificación:</strong> reiniciar Ubuntu y comprobar con <code>lsblk -f</code> (lista discos, particiones y sistemas de archivos) y <code>df -h</code> (muestra el espacio usado y disponible de los sistemas de archivos montados; <code>-h</code> presenta los tamaños en unidades legibles, GB/MB). Si GParted no hubiera ajustado el sistema de archivos, se haría antes de reiniciar, desde el live y con la partición desmontada: <code>sudo e2fsck -f /dev/sda2</code> y <code>sudo resize2fs /dev/sda2</code> (sin tamaño, para ampliar ext4 hasta ocupar toda la partición).</p>
+      </details>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-i</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Explico por qué redimensionar exige tocar la tabla de particiones y el sistema de archivos</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé que al reducir, el hueco libre queda al final, y que para ampliar debe ser contiguo</label></li>
+        <li><label><input type="checkbox" class="check-item"> Distingo cuándo basta Administración de discos y cuándo hace falta GParted Live</label></li>
+        <li><label><input type="checkbox" class="check-item"> Desgloso <code>diskpart</code> / <code>shrink</code> y <code>e2fsck</code> / <code>resize2fs</code> sin dudar</label></li>
+        <li><label><input type="checkbox" class="check-item"> Justifico la copia de seguridad previa y los riesgos de mover particiones</label></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceJ">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num">j</div>
+      <div class="bloque-info">
+        <h3>Instalación y configuración de programas de mantenimiento</h3>
+        <p>CE-j · importante · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>Un <strong>programa de mantenimiento</strong> es el software que <em>mide</em> y <em>vigila</em> el hardware: temperaturas, voltajes, salud del disco, rendimiento. Estas herramientas recogen datos y avisan cuando un valor se sale de lo normal; en este bloque aprendemos a instalarlas y configurarlas para que el aviso llegue solo, sin tener que abrirlas cada día. La interpretación detallada de los resultados se trabajará más adelante en el módulo.</p>
+
+    <div class="cards">
+      <div class="card">
+        <h4><span class="ico">🔍</span> Información del sistema</h4>
+        <ul><li>CPU-Z 2.15</li><li>GPU-Z 2.62</li></ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">🌡️</span> Monitorización de sensores</h4>
+        <ul><li>HWiNFO64 8.20</li><li>Core Temp 1.19</li></ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">💾</span> Salud del disco</h4>
+        <ul><li>CrystalDiskInfo 9.5</li><li>CrystalDiskMark 8.0.6</li></ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">⚙️</span> Esfuerzo y rendimiento</h4>
+        <ul><li>OCCT 13.1</li><li>Prime95 30.19</li></ul>
+      </div>
+    </div>
+
+    <p>CPU-Z 2.15 identifica el procesador, la placa base y la memoria, y muestra sus frecuencias; GPU-Z 2.62 identifica la tarjeta gráfica y lee sus sensores de temperatura, uso y frecuencia. HWiNFO64 8.20 centraliza la lectura de sensores del equipo y permite registrar esos valores en un archivo. Core Temp 1.19 lee la temperatura y la carga de la CPU. CrystalDiskInfo 9.5 consulta el estado SMART y la salud del disco, mientras que CrystalDiskMark 8.0.6 es un <strong>benchmark</strong> de disco: mide la velocidad de lectura y escritura para compararla con la esperada. OCCT 13.1 y Prime95 30.19 son herramientas de <strong>prueba de esfuerzo</strong> (<em>stress test</em>): someten un componente a carga alta y sostenida para comprobar si el equipo es estable, si las temperaturas se mantienen dentro de límites y si aparecen errores o reinicios.</p>
+
+    <h4>Portable o instalable: dos formas de llegar al equipo</h4>
+    <p>Un <strong>portable</strong> es un programa que se descarga comprimido en un archivo <strong>ZIP</strong> (contenedor que agrupa y comprime archivos; hay que <em>descomprimirlo</em> para obtener el <strong>.exe</strong>, el ejecutable) y funciona sin instalarse. Un <strong>instalable</strong> usa un asistente que copia archivos, escribe en el <strong>registro de Windows</strong> (base de datos interna donde el sistema guarda la configuración de programas y hardware) y crea el desinstalador.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Aspecto</th><th>Portable</th><th>Instalable</th></tr></thead>
+        <tbody>
+          <tr><td>Dónde vive</td><td>Carpeta propia o USB</td><td>Archivos de programa</td></tr>
+          <tr><td>Registro de Windows</td><td>No lo modifica</td><td>Escribe claves de configuración</td></tr>
+          <tr><td>Desinstalar</td><td>Borrar la carpeta</td><td>Configuración → Aplicaciones</td></tr>
+          <tr><td>Uso previsto</td><td>Diagnóstico rápido en equipos con Windows (aula, cliente o puesto propio)</td><td>Herramienta fija del puesto con Windows</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Los bancos de montaje y desmontaje del taller no tienen sistema operativo, así que un <strong>.exe</strong> portable de Windows no puede ejecutarse allí. El uso del portable se plantea en equipos Windows del aula, de un cliente o de un puesto real.</p>
+
+    <div class="box-importante">
+      <div class="box-label">IMPORTANTE</div>
+      <p>Descarga siempre de la <strong>web oficial del fabricante</strong> y comprueba el <strong>hash SHA-256</strong> que publica (mismo procedimiento que vimos en CE-d). Windows puede mostrar el aviso de <strong>SmartScreen</strong>, el filtro que avisa de ejecutables poco conocidos o sin <strong>firma digital</strong> (sello criptográfico del fabricante, visto en CE-c): no lo desactives, comprueba el origen.</p>
+    </div>
+
+    <pre><code>Get-FileHash .\hwi_820.zip -Algorithm SHA256</code></pre>
+    <ul>
+      <li><code>Get-FileHash</code>: cmdlet (comando propio de PowerShell, como vimos en CE-a) que calcula el hash criptográfico de un archivo.</li>
+      <li><code>.\hwi_820.zip</code>: ruta del archivo descargado; el punto (<code>.</code>) significa «la carpeta actual» y la barra invertida separa carpetas en Windows.</li>
+      <li><code>-Algorithm SHA256</code>: algoritmo a aplicar; debe coincidir con el que publica la web del fabricante.</li>
+    </ul>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 460 345" role="img" aria-label="Secuencia de instalación y configuración de un programa de mantenimiento">
+        <defs>
+          <marker id="flecha-j-cej" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="70" y="15" width="320" height="48" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="230" y="36" text-anchor="middle" font-size="15" fill="#1a1a2e">1. Descarga oficial</text>
+        <text x="230" y="53" text-anchor="middle" font-size="13" fill="#667085">web del fabricante</text>
+
+        <line x1="230" y1="63" x2="230" y2="80" stroke="#667085" stroke-width="2" marker-end="url(#flecha-j-cej)"/>
+
+        <rect x="70" y="80" width="320" height="48" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="230" y="101" text-anchor="middle" font-size="15" fill="#1a1a2e">2. Verificar hash</text>
+        <text x="230" y="118" text-anchor="middle" font-size="13" fill="#667085">SHA-256 y firma digital</text>
+
+        <line x1="230" y1="128" x2="230" y2="145" stroke="#667085" stroke-width="2" marker-end="url(#flecha-j-cej)"/>
+
+        <rect x="70" y="145" width="320" height="48" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="230" y="166" text-anchor="middle" font-size="15" fill="#1a1a2e">3. Ejecutar o instalar</text>
+        <text x="230" y="183" text-anchor="middle" font-size="13" fill="#667085">portable o instalable</text>
+
+        <line x1="230" y1="193" x2="230" y2="210" stroke="#667085" stroke-width="2" marker-end="url(#flecha-j-cej)"/>
+
+        <rect x="70" y="210" width="320" height="48" rx="10" fill="#fdf3d6" stroke="#d4a017" stroke-width="2"/>
+        <text x="230" y="231" text-anchor="middle" font-size="15" fill="#1a1a2e">4. Configurar</text>
+        <text x="230" y="248" text-anchor="middle" font-size="13" fill="#667085">refresco, alertas, registro</text>
+
+        <line x1="230" y1="258" x2="230" y2="275" stroke="#667085" stroke-width="2" marker-end="url(#flecha-j-cej)"/>
+
+        <rect x="70" y="275" width="320" height="48" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="230" y="296" text-anchor="middle" font-size="15" fill="#1a1a2e">5. Comprobar y documentar</text>
+        <text x="230" y="313" text-anchor="middle" font-size="13" fill="#667085">informe de mantenimiento</text>
+      </svg>
+      <figcaption>Los cinco pasos de cualquier herramienta de mantenimiento. Observa que la verificación (paso 2) va antes de ejecutar y que no se documenta nada sin haber configurado antes el registro de datos.</figcaption>
+    </figure>
+
+    <p>El <strong>informe de mantenimiento</strong> es el documento donde el técnico deja constancia de la intervención y de su trazabilidad. Debe incluir, como mínimo: datos del equipo (nombre o ubicación, sistema operativo y versión), fecha y técnico responsable, programa instalado con su versión y origen, verificación realizada (hash y firma digital), tipo de instalación (portable o instalable), ajustes aplicados (periodo de refresco, alertas, registro y arranque automático), resultados de las comprobaciones y observaciones o incidencias detectadas.</p>
+
+    <h4>Qué se configura (y por qué)</h4>
+    <p>Instalar no es dejar el programa con los valores por defecto. Un técnico ajusta cuatro cosas: <strong>periodo de refresco</strong> (cada cuánto lee los sensores), <strong>alertas</strong> (umbral a partir del cual avisa), <strong>registro</strong> en archivo CSV (valores separados por comas, texto plano que se abre con hoja de cálculo) y <strong>arranque automático</strong> con Windows.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Programa</th><th>Ajuste</th><th>Por qué</th></tr></thead>
+        <tbody>
+          <tr><td>HWiNFO64 8.20</td><td>Modo «solo sensores» + refresco 2000 ms</td><td>Evita ventanas emergentes y no carga la CPU</td></tr>
+          <tr><td>HWiNFO64 8.20</td><td>Registro CSV activado</td><td>Deja histórico para el informe</td></tr>
+          <tr><td>CrystalDiskInfo 9.5</td><td>Inicio con Windows + alerta de temperatura</td><td>Avisa antes de que el disco falle</td></tr>
+          <tr><td>CPU-Z 2.15</td><td>Nada: es de solo lectura</td><td>Solo consulta datos, no vigila nada</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="clave">Un programa de mantenimiento sin alertas ni registro configurados es solo un adorno: no avisa cuando el equipo empieza a fallar.</div>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p>Suministros Ribera SL. El PC de recepción (Windows 11 25H2) se reinicia solo y queremos dejar HWiNFO64 8.20 (versión portable) configurado como vigilante permanente.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li>Descargamos el ZIP de la web oficial y comprobamos el SHA-256 con <code>Get-FileHash</code>.</li>
+        <li>Descomprimimos en <code>C:\Herramientas\HWiNFO64\</code>. No va a Archivos de programa porque no se instala: escribir ahí requiere permisos y no aporta nada.</li>
+        <li>Ejecutamos el <strong>.exe</strong> con «Ejecutar como administrador»: sin privilegios elevados no puede leer todos los sensores (algunos dependen de un controlador que se carga al arrancar).</li>
+        <li>En <em>Settings</em> marcamos «Sensors-only» (arranca directamente en la pantalla de sensores) y fijamos el periodo de refresco en <strong>2000 ms</strong>.</li>
+        <li>Pulsamos «Logging Start» y guardamos en <code>C:\Herramientas\logs\sensores.csv</code>: así tendremos valores de las últimas 24 h.</li>
+        <li>Definimos una <strong>alarma</strong> sobre «CPU Package» a 85 °C: si se supera, el programa avisa. Es el <strong>umbral</strong>, el valor límite a partir del cual se dispara el aviso.</li>
+        <li>Anotamos versión, fecha, ruta y ajustes en el informe de mantenimiento del equipo.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-j · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>Talleres Nortec. El PC de facturación (Windows 11 25H2, disco NVMe de 512 GB) lleva dos años encendido 10 horas al día. Debes dejar instalado CrystalDiskInfo 9.5 para que avise si el disco pierde salud. Indica: de dónde lo descargas, cómo lo instalas y qué tres ajustes de configuración harías, justificando cada uno.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>1. Descarga.</strong> Solo desde la web oficial del fabricante. Verificamos el hash SHA-256 publicado y comprobamos que el ejecutable tiene firma digital antes de abrirlo, aunque SmartScreen no muestre aviso.</p>
+        <p><strong>2. Instalación.</strong> Es un instalable: ejecutamos el asistente, aceptamos la licencia, elegimos la carpeta de destino (o dejamos la propuesta) y terminamos. Después comprobamos en Configuración → Aplicaciones que aparece en la lista, lo que confirma que se registró correctamente.</p>
+        <p><strong>3. Configuración:</strong></p>
+        <ul>
+          <li><strong>Inicio con Windows:</strong> el programa se lanza solo al encender; si el disco empieza a fallar un lunes por la mañana, nos enteramos sin abrirlo.</li>
+          <li><strong>Refresco automático cada 10 minutos:</strong> suficiente para un disco, sin generar lecturas constantes de <strong>SMART</strong> (sistema de autodiagnóstico interno del disco).</li>
+          <li><strong>Alerta de temperatura y de salud:</strong> umbral de aviso cuando la temperatura suba de lo normal o el indicador de salud baje de «Bueno». Es el aviso que nos permitirá clonar el disco antes de que muera.</li>
+        </ul>
+        <p>Por último, se documenta en el informe de mantenimiento del equipo: versión instalada, fecha, ajustes y resultado de la primera lectura.</p>
+      </details>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-j</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Distingo programa portable de instalable y sé dónde queda cada uno</label></li>
+        <li><label><input type="checkbox" class="check-item"> Descargo siempre de la web oficial y verifico hash y firma</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé ejecutar como administrador y explico por qué hace falta</label></li>
+        <li><label><input type="checkbox" class="check-item"> Configuro periodo de refresco, alertas y registro de datos</label></li>
+        <li><label><input type="checkbox" class="check-item"> Documento versión, ajustes y resultados en el informe de mantenimiento</label></li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="bloque" id="ceK">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num">k</div>
+      <div class="bloque-info">
+        <h3>Instalación y configuración de programas de optimización del sistema</h3>
+        <p>CE-k · complementario · 0 sesiones</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">0 sesiones</span>
+  </div>
+  <div class="bloque-body">
+    <p>Un <strong>programa de optimización</strong> es una utilidad que modifica Windows para reducir el consumo de recursos: limpia archivos temporales, controla lo que arranca con el sistema o ajusta <strong>servicios</strong> (programas que se ejecutan en segundo plano al encender el equipo). No hace milagros: si el equipo va lento por un disco mecánico o poca RAM, el software no lo arregla.</p>
+
+    <div class="box-importante">
+      <div class="box-label">IMPORTANTE</div>
+      <p>Desconfía de los “optimizadores milagro” que limpian el registro de Windows (la base de datos de configuración que vimos en CE-j) o desactivan servicios a ciegas. Suelen incluir <strong>adware</strong> (software que muestra publicidad no deseada) y dar falsos positivos: avisos de errores que no existen. Antes de tocar nada, comprueba que la <strong>Protección del sistema</strong> está activada en la unidad del sistema —en Windows 11 25H2 suele venir desactivada por defecto— y crea un <strong>punto de restauración</strong>: una copia de la configuración del sistema que permite volver atrás si algo falla.</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Herramienta</th><th>Qué hace</th><th>Cuándo usarla</th></tr></thead>
+        <tbody>
+          <tr><td>Utilidades nativas de Windows</td><td>Liberador de espacio borra temporales; Administrador de tareas controla el inicio; Optimizar unidades gestiona la desfragmentación (reorganización de los fragmentos de un archivo en un HDD para que ocupen bloques contiguos y se lean más rápido) y TRIM (orden que informa al SSD de qué bloques ya no contienen datos válidos para que los libere).</td><td>Primera opción, sin instalar nada.</td></tr>
+          <tr><td>Autoruns (Microsoft Sysinternals)</td><td>Utilidad portable oficial que muestra y permite desmarcar programas de arranque, tareas programadas y servicios.</td><td>Diagnóstico avanzado del autoarranque.</td></tr>
+          <tr><td>Limpiadores de registro genéricos</td><td>Modifican claves del registro de forma masiva y sin criterio técnico.</td><td>Evitarlos en mantenimiento profesional.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Para usar una utilidad portable como <strong>Autoruns</strong> (de Sysinternals, suite de herramientas oficiales de Microsoft), descarga el archivo de su web oficial, descomprímelo en <code>C:\Herramientas\Autoruns</code> y ejecútalo como administrador. Al ser portable no requiere instalación, como vimos en CE-j. En <em>Options</em>, activa <em>Hide Microsoft entries</em> para ver solo software de terceros y <em>Verify code signatures</em> para comprobar la firma digital (vista en CE-c). Desmarca, no borres, las entradas que identifiques. Después, en el Administrador de tareas (Ctrl+Shift+Esc, herramienta de Windows para ver procesos y programas de inicio), entra en <em>Inicio</em> y desactiva apps de terceros que no necesites; no toques antivirus ni controladores. En <em>Optimizar unidades</em>, verifica que el SSD usa TRIM (orden que informa al SSD de qué bloques ya no contienen datos válidos para que los libere) y que el HDD se desfragmenta. No se desfragmenta un SSD porque no tiene partes móviles ni fragmentación física que corregir; además, la desfragmentación generaría escrituras innecesarias y reduciría su vida útil. En un SSD, Windows aplica TRIM u optimización programada; en un HDD sí se desfragmenta cuando procede.</p>
+
+    <div class="ejemplo-resuelto">
+      <h5>Ejemplo resuelto: autoarranque analizado con Autoruns y desactivado desde el Administrador de tareas</h5>
+      <p><strong>Caso:</strong> un equipo tarda mucho en iniciar y aparece una aplicación llamada <code>ActualizadorPDF</code> al encenderlo.</p>
+      <ol>
+        <li>Comprueba que la Protección del sistema está activada en la unidad C: y crea un punto de restauración llamado “Antes de revisar autoarranque”.</li>
+        <li>Abre <strong>Autoruns</strong> como administrador y activa <em>Options > Hide Microsoft entries</em> y <em>Verify code signatures</em>.</li>
+        <li>Localiza <code>ActualizadorPDF</code> en la pestaña <em>Logon</em>. Observa que la firma digital no es válida o es de un editor desconocido y que su ruta está en la carpeta del usuario, no en una ubicación oficial. Anota el nombre y la ruta, pero no borres la entrada.</li>
+        <li>Abre el <strong>Administrador de tareas</strong> con Ctrl+Shift+Esc, entra en <em>Inicio</em>, localiza <code>ActualizadorPDF</code>, selecciónala y pulsa <em>Deshabilitar</em>.</li>
+        <li>Reinicia el equipo y mide de nuevo el tiempo hasta el escritorio. Revisa en <em>Inicio</em> que la entrada sigue deshabilitada.</li>
+        <li>Si la aplicación era necesaria, vuelve a habilitarla; si el equipo queda inestable, restaura el punto de restauración creado.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-k · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>Taller TecnoFix SL. Un PC con Windows 11 25H2 tarda 3 minutos en arrancar porque el usuario ha instalado varios programas. Debes optimizarlo sin usar limpiadores de registro. Indica herramientas, orden de uso, qué configurarías y cómo comprobarías el resultado.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>1.</strong> Comprueba y, si hace falta, activa la Protección del sistema: Panel de control > Sistema > Protección del sistema; selecciona la unidad C:, pulsa <em>Configurar</em>, activa <em>Activar protección del sistema</em>, asigna espacio y acepta. Después pulsa <em>Crear</em> y nombra el punto de restauración “Antes de optimizar CE-k”. En Windows 11 25H2 no des por hecho que ya está activada en la unidad del sistema. <strong>2.</strong> Abre el Liberador de espacio y elimina temporales y papelera; no borres la carpeta Descargas del usuario. <strong>3.</strong> En Administrador de tareas > Inicio, desactiva apps de terceros que no sean antivirus ni controladores. <strong>4.</strong> Con Autoruns como administrador, activa <em>Hide Microsoft entries</em> y <em>Verify code signatures</em>; desmarca entradas de terceros innecesarias, sin borrar. <strong>5.</strong> En Optimizar unidades, comprueba que el SSD usa TRIM y, si el equipo tuviera HDD, analiza si procede desfragmentarlo. <strong>6.</strong> Reinicia, mide el tiempo hasta el escritorio y revisa el impacto en Inicio. Si algo falla, restaura el punto. No uses limpiadores de registro.</p>
+      </details>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-k · Medio</h5>
+      <span class="nivel-tag nivel-medio">MEDIO</span>
+      <p>Un equipo tiene un SSD SATA y otro equipo del taller tiene un HDD. Explica qué harías en <em>Optimizar unidades</em> en cada caso, por qué no se desfragmenta un SSD y cómo comprobarías que TRIM está activo. Después, indica dos servicios de Windows que revisarías antes de desactivarlos y justifica por qué no usarías un limpiador de registro genérico.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-k · Avanzado</h5>
+      <span class="nivel-tag nivel-avanzado">AVANZADO</span>
+      <p>Un portátil con Windows 11 25H2 arranca lento y muestra una herramienta sospechosa llamada <code>SysBoost</code> en el inicio. Diseña un procedimiento completo: comprobación y activación de la Protección del sistema si fuera necesario, creación de un punto de restauración, análisis con Autoruns de una entrada de inicio y de un servicio de terceros, verificación de la firma digital y de la ruta, desactivación segura desde el Administrador de tareas para el autoarranque y decisión razonada sobre el servicio. Indica cómo comprobarías el resultado y cómo revertirías los cambios.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+  </div>
+</div>
+<div class="bloque" data-ra-origen="9" id="ra9ceE">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num">e</div>
+      <div class="bloque-info">
+        <h3>Pruebas con sistemas operativos en almacenamiento extraíble</h3>
+        <p>CE-e · importante · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <div class="box-importante">
+      <div class="box-label">IMPORTANTE</div>
+      <p>Este criterio se evalúa en el <strong>RA9</strong>, no en el RA5. Aquí no hablamos de restaurar imágenes (eso fue el CE-e del RA5), sino de <strong>arrancar un sistema operativo desde un lápiz USB y hacer pruebas con él</strong> sin tocar el disco interno del equipo.</p>
+    </div>
+
+    <h4>¿Qué es un SO en almacenamiento extraíble?</h4>
+    <p>Un <strong>almacenamiento extraíble</strong> es cualquier medio que se conecta y se quita sin abrir el equipo: un lápiz USB, una tarjeta SD o un SSD externo. Un <strong>sistema operativo (SO) en medio extraíble</strong> es un SO completo grabado en ese medio que el equipo ejecuta al arrancar desde él, en lugar de usar el disco interno.</p>
+    <p>Hay tres formas de hacerlo:</p>
+    <ul>
+      <li><strong>SO «live»</strong>: se carga en memoria RAM y funciona en modo de solo lectura sobre el USB. No instala nada y, al apagar, todo lo hecho se pierde. Es lo habitual en Ubuntu Live, GParted Live, Clonezilla Live o MemTest86.</li>
+      <li><strong>SO «live» con persistencia</strong>: reserva una parte del USB para guardar cambios (documentos, configuración). Al apagar, los datos se conservan.</li>
+      <li><strong>Instalación completa en USB</strong>: el SO se instala de verdad en el lápiz. En Windows 11 ya no está soportado oficialmente y resulta muy lento; en Linux es posible pero poco práctico por la velocidad del USB.</li>
+    </ul>
+
+    <div class="clave">Un SO live no demuestra que el equipo esté bien: solo demuestra que arranca. Las pruebas son lo que aporta el diagnóstico.</div>
+
+    <h4>Cómo se prepara el medio</h4>
+    <p>El <strong>gestor de arranque</strong> (bootloader) es el pequeño programa que el firmware carga al iniciar y que se encarga de cargar el sistema operativo o de mostrar un menú para elegir entre varios.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Herramienta</th><th>Qué hace</th><th>Cuándo usarla</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Rufus 4.6</strong></td><td>Graba una única imagen ISO en el USB y permite elegir esquema de partición (GPT para UEFI) y sistema de archivos.</td><td>Un solo SO de rescate o instalación.</td></tr>
+          <tr><td><strong>Ventoy 1.1.05</strong></td><td>Instala un gestor de arranque en el USB; después basta copiar los ficheros ISO como si fueran archivos. Muestra un menú para elegir cuál arrancar.</td><td>Varios SO (multiarranque) en un mismo lápiz.</td></tr>
+          <tr><td><strong>balenaEtcher 1.19.25</strong></td><td>Graba ISO o IMG con muy pocas opciones; valida la escritura al terminar.</td><td>Grabaciones rápidas y sencillas.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Una <strong>ISO</strong> es un fichero que contiene la imagen exacta de un disco óptico (con su sistema de archivos y su sector de arranque). Hoy se descarga de la web oficial del fabricante y se graba en USB en lugar de en CD.</p>
+
+    <p>Para que el equipo arranque desde el USB hay que: entrar en el <strong>firmware UEFI</strong> (el programa que inicializa el hardware antes que el SO) y poner el USB primero en el <strong>orden de arranque</strong>, o bien pulsar la tecla del menú de arranque al encender (F12 en la mayoría de placas, F9 en HP, F11 en algunos equipos). Además, <strong>Secure Boot</strong> —la opción del firmware que solo permite arrancar software firmado— puede impedir el arranque de medios no firmados. Con distribuciones firmadas (por ejemplo, Ubuntu 24.04 LTS mediante shim) puede permanecer activado; si el medio no está firmado, habrá que desactivarla temporalmente o enrolar su clave (MOK).</p>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 620 200" role="img" aria-label="Flujo de preparación y uso de un sistema operativo live desde USB">
+        <defs>
+          <marker id="flecha-e-ce9e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="16" y="70" width="108" height="60" rx="12" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="70" y="94" text-anchor="middle" font-size="13" fill="#1a1a2e">Imagen ISO</text>
+        <text x="70" y="112" text-anchor="middle" font-size="13" fill="#667085">oficial</text>
+
+        <line x1="124" y1="100" x2="134" y2="100" stroke="#667085" stroke-width="2" marker-end="url(#flecha-e-ce9e)"/>
+
+        <rect x="136" y="70" width="108" height="60" rx="12" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="190" y="94" text-anchor="middle" font-size="13" fill="#1a1a2e">Grabar con</text>
+        <text x="190" y="112" text-anchor="middle" font-size="13" fill="#667085">Rufus o Ventoy</text>
+
+        <line x1="244" y1="100" x2="254" y2="100" stroke="#667085" stroke-width="2" marker-end="url(#flecha-e-ce9e)"/>
+
+        <rect x="256" y="70" width="108" height="60" rx="12" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="310" y="94" text-anchor="middle" font-size="13" fill="#1a1a2e">USB</text>
+        <text x="310" y="112" text-anchor="middle" font-size="13" fill="#667085">arrancable</text>
+
+        <line x1="364" y1="100" x2="374" y2="100" stroke="#667085" stroke-width="2" marker-end="url(#flecha-e-ce9e)"/>
+
+        <rect x="376" y="70" width="108" height="60" rx="12" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="430" y="94" text-anchor="middle" font-size="13" fill="#1a1a2e">Menú de</text>
+        <text x="430" y="112" text-anchor="middle" font-size="13" fill="#667085">arranque (F12)</text>
+
+        <line x1="484" y1="100" x2="494" y2="100" stroke="#667085" stroke-width="2" marker-end="url(#flecha-e-ce9e)"/>
+
+        <rect x="496" y="70" width="108" height="60" rx="12" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="550" y="94" text-anchor="middle" font-size="13" fill="#1a1a2e">SO live:</text>
+        <text x="550" y="112" text-anchor="middle" font-size="13" fill="#667085">hacer pruebas</text>
+
+        <text x="310" y="170" text-anchor="middle" font-size="13" fill="#667085">El disco interno no se toca en ningún paso</text>
+      </svg>
+      <figcaption>Recorrido completo: desde la ISO hasta las pruebas en el equipo. Fíjate en que el paso de arranque depende del firmware, no del USB.</figcaption>
+    </figure>
+
+    <h4>Qué se prueba desde el SO live</h4>
+    <div class="cards">
+      <div class="card">
+        <h4><span class="ico">🧠</span> Hardware</h4>
+        <ul><li>hardinfo (Linux) o CPU-Z/HWiNFO64 portables en Windows PE 10.1.26100 o una sesión Windows: modelo de CPU, RAM instalada y velocidad real.</li><li>Detectar componentes no reconocidos.</li></ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">💽</span> Disco</h4>
+        <ul><li>GSmartControl/smartctl (Linux) o CrystalDiskInfo portable en Windows PE 10.1.26100 o una sesión Windows: estado SMART y horas de uso.</li><li>GParted Live: ver y editar la tabla de particiones.</li></ul>
+        <p><strong>SMART</strong> (Self-Monitoring, Analysis and Reporting Technology) es un sistema de automonitorización del disco que registra su salud, errores y horas de encendido.</p>
+      </div>
+      <div class="card">
+        <h4><span class="ico">🔌</span> Estabilidad</h4>
+        <ul><li>MemTest86 11.2: prueba la memoria RAM durante varios ciclos.</li><li>Comprobar que la red y los USB funcionan.</li></ul>
+      </div>
+    </div>
+
+    <div class="box-complementario">
+      <div class="box-label">NOTA</div>
+      <p>Un USB 2.0 hace que el SO live tarde minutos en arrancar; con USB 3.x es cuestión de segundos. Si el equipo arranca muy lento desde el lápiz, antes de culpar al equipo comprueba el puerto y el propio medio.</p>
+    </div>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p>En el aula (Windows 11 25H2) vamos a preparar un USB de 16 GB con Ubuntu 24.04 LTS y comprobar que el equipo arranca con él sin tocar el disco.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li>Descargamos <code>ubuntu-24.04.3-desktop-amd64.iso</code> de la web oficial y verificamos que no se ha corrompido comparando su huella <strong>SHA-256</strong> (un código único que identifica el fichero byte a byte). Para ello abrimos PowerShell desde Inicio (botón Inicio → escribimos PowerShell → Windows PowerShell). PowerShell es el entorno de línea de comandos y scripting de Windows; un <strong>cmdlet</strong> es uno de sus comandos integrados:
+          <pre><code>Get-FileHash -Algorithm SHA256 "C:\ISOs\ubuntu-24.04.3-desktop-amd64.iso"</code></pre>
+          <ul>
+            <li><code>Get-FileHash</code>: comando (cmdlet) de PowerShell que calcula la huella digital de un fichero.</li>
+            <li><code>-Algorithm SHA256</code>: indica el algoritmo usado; SHA-256 produce un código de 64 caracteres hexadecimales.</li>
+            <li><code>"C:\ISOs\...iso"</code>: ruta del fichero; las comillas evitan problemas con espacios en la ruta.</li>
+            <li>El resultado debe coincidir exactamente con el publicado por el fabricante. Si no coincide, se vuelve a descargar.</li>
+          </ul>
+        </li>
+        <li>Abrimos Rufus, seleccionamos el USB (comprobando la letra de unidad para no borrar otro medio), elegimos la ISO, esquema <strong>GPT/UEFI</strong> y FAT32, y pulsamos Empezar. Rufus formatea y escribe el gestor de arranque.</li>
+        <li>Reiniciamos el equipo, pulsamos F12 al encender y elegimos el USB en el menú. Ubuntu 24.04 LTS está firmado (shim), así que debe arrancar con Secure Boot activo; si apareciera un aviso, comprobamos que el USB se grabó en GPT/UEFI y solo desactivaremos Secure Boot temporalmente si usáramos un medio no firmado.</li>
+        <li>Ya en el escritorio de Ubuntu: abrimos <em>Configuración → Acerca de</em> para ver CPU y RAM y, si necesitamos más detalle, usamos <strong>hardinfo</strong> (Linux). HWiNFO64, CPU-Z y CrystalDiskInfo son ejecutables .exe de Windows, por lo que no se ejecutan en Ubuntu: requerirían Windows PE 10.1.26100 o una sesión Windows. Para el disco interno abrimos <strong>GSmartControl</strong> o ejecutamos <code>smartctl</code> para leer el estado SMART. Comprobamos que hay red y que los USB funcionan.</li>
+        <li>Apagamos, retiramos el USB y verificamos que el equipo sigue arrancando con Windows 11 como antes: no hemos modificado nada.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-e · Pruebas con Ventoy en equipos sin SO</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>Tecnoparts SL recibe tres equipos HP EliteDesk 800 G3 <em>sin sistema operativo</em>. El técnico dispone de un USB de 32 GB con Ventoy y tres ISOs copiadas: <code>memtest86-11.2.iso</code>, <code>gparted-live-1.6.0-3.iso</code> y <code>clonezilla-live-3.2.3-5.iso</code>. Debe comprobar la memoria RAM del primer equipo, revisar la tabla de particiones del segundo y verificar que el tercero arranca correctamente. Indica el orden de pasos, qué prueba harías en cada equipo y qué comprobarías antes de dar el equipo por válido.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>1. Preparación (una sola vez):</strong> Ventoy ya está instalado en el USB y las tres ISOs ya están copiadas en su partición de datos; no hay que volver a instalarlo ni copiarlas. Solo hay que comprobar, antes de empezar, que el firmware del HP tiene el USB por delante del disco en el orden de arranque (o usar F9 en el arranque, que en HP abre el menú de dispositivos) y que, al iniciar Ventoy, aparecen las tres entradas en su menú.</p>
+        <p><strong>2. Equipo 1 — RAM:</strong> arrancar <code>memtest86-11.2.iso</code> desde el menú de Ventoy. MemTest86 se ejecuta solo, sin SO. Dejar al menos una pasada completa y comprobar que no aparece ningún error en rojo. Si aparece un error, la memoria o su zócalo están mal y se cambia el módulo antes de seguir.</p>
+        <p><strong>3. Equipo 2 — Particiones:</strong> arrancar <code>gparted-live-1.6.0-3.iso</code>, aceptar las opciones por defecto del teclado y abrir GParted. Revisar la tabla de particiones (MBR o GPT), el sistema de archivos y el espacio libre. Anotar el esquema antes de tocar nada; si hay que borrar particiones, confirmar que el disco no contiene datos del cliente.</p>
+        <p><strong>4. Equipo 3 — Arranque:</strong> arrancar <code>clonezilla-live-3.2.3-5.iso</code> y comprobar que llega al menú inicial sin errores de arranque. Basta con eso: se trata de verificar que el equipo es capaz de cargar un SO live, no de clonar nada.</p>
+        <p><strong>5. Comprobaciones finales:</strong> en los tres casos, apagar ordenadamente, retirar el USB, encender de nuevo y confirmar que el equipo sigue igual. Documentar en el parte de trabajo: ISO usada, versión, resultado de cada prueba y hora. Si un equipo no arranca ninguna ISO, revisar Secure Boot, el modo UEFI/Legacy y el propio USB antes de diagnosticar un fallo de hardware.</p>
+      </details>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-e</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Distingo SO live, live con persistencia e instalación completa en USB</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé elegir entre Rufus, Ventoy y balenaEtcher según el caso</label></li>
+        <li><label><input type="checkbox" class="check-item"> Verifico la ISO por su huella SHA-256 antes de grabarla</label></li>
+        <li><label><input type="checkbox" class="check-item"> Ajusto orden de arranque, menú de arranque y Secure Boot en el firmware</label></li>
+        <li><label><input type="checkbox" class="check-item"> Realizo pruebas de hardware, disco y RAM desde el SO live</label></li>
+        <li><label><input type="checkbox" class="check-item"> Compruebo al terminar que el disco interno no se ha modificado</label></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="resumen">
+  <div class="bloque-header" style="border-left-color:#1a6b3a;">
+    <div class="bloque-titulo">
+      <div class="bloque-num" style="background:#1a6b3a;">★</div>
+      <div class="bloque-info">
+        <h3>Puntos clave — RA5</h3>
+        <p>Repasa esto antes del examen</p>
+      </div>
+    </div>
+  </div>
+  <div class="bloque-body">
+    <ol>
+      <li style="margin-bottom:8px;"><strong>CE-a.</strong> Distingue una instalación estándar (SO y programas desde cero) de una preinstalación (imagen o instalación completa en USB ya preparada), usando Rufus 4.6, Ventoy 1.1.05 o balenaEtcher 1.19.25 para crear el soporte.</li>
+      <li style="margin-bottom:8px;"><strong>CE-c.</strong> Inicializa equipos desde distintos soportes de memoria auxiliar (USB 2.0/3.x) grabando ISOs con Rufus 4.6, Ventoy 1.1.05 y balenaEtcher 1.19.25, y selecciona el dispositivo en el menú de arranque UEFI respetando el orden de arranque y Secure Boot.</li>
+      <li style="margin-bottom:8px;"><strong>CE-d.</strong> Realiza imágenes de una preinstalación de software con Clonezilla Live, guardándolas en un soporte auxiliar y verificando su integridad con SHA-256 mediante PowerShell y el cmdlet Get-FileHash -Algorithm SHA256.</li>
+      <li style="margin-bottom:8px;"><strong>CE-e.</strong> Restaura imágenes sobre el disco fijo desde distintos soportes (USB con Clonezilla Live), comprobando antes el estado SMART del disco con CrystalDiskInfo, GSmartControl o smartctl y asegurando el arranque UEFI/GPT.</li>
+      <li style="margin-bottom:8px;"><strong>CE-f.</strong> Describe las utilidades para crear imágenes de partición/disco: Clonezilla Live y GParted Live, diferenciando entre clonar una partición completa, crear una imagen comprimida y restaurarla en otro disco con formato GPT.</li>
+      <li style="margin-bottom:8px;"><strong>CE-g.</strong> Instala y configura Ubuntu 24.04 LTS (o arranca Ubuntu Live) en un equipo, ajustando el gestor de arranque (bootloader) y el firmware UEFI, y comprobando el arranque con Secure Boot y shim/MOK si es necesario.</li>
+      <li style="margin-bottom:8px;"><strong>CE-h.</strong> Crea particiones y unidades lógicas con GParted Live sobre un disco con tabla GPT, asigna FAT32 a la partición de arranque UEFI y verifica la estructura con hardinfo.</li>
+      <li style="margin-bottom:8px;"><strong>CE-i.</strong> Redimensiona particiones con GParted Live, ajustando su tamaño sin perder datos y comprobando después el estado del disco con CrystalDiskInfo y SMART.</li>
+      <li style="margin-bottom:8px;"><strong>CE-j.</strong> Instala y configura programas de mantenimiento gratuitos y portables como CPU-Z 2.14, HWiNFO64 8.16, CrystalDiskInfo 9.5 y MemTest86 11.2, ejecutándolos desde USB o Windows PE 10.1.26100 para diagnosticar hardware y memoria.</li>
+      <li style="margin-bottom:8px;"><strong>CE-e.</strong> Realiza pruebas con sistemas operativos en almacenamiento extraíble: arranca Ubuntu Live desde USB creado con Rufus 4.6, Ventoy 1.1.05 o balenaEtcher 1.19.25, prueba la persistencia y comprueba el estado del medio con CrystalDiskInfo y SMART.</li>
+    </ol>
+  </div>
+</div>
+</div>
+
+<footer>Montaje y mantenimiento de equipos · Grado Medio · RA5: Instala software en un equipo informático utilizando una imagen almacenada en un soporte de memoria y justificando el procedimiento a seguir.</footer>
+
+<button class="btn-top" id="btnTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="progreso-badge" id="progresoBadge">Progreso: 0%</div>
+
+<script>
+
+  window.addEventListener('scroll', function() {
+    document.getElementById('btnTop').classList.toggle('visible', window.scrollY > 300);
+  });
+  function updateProgress() {
+    var all = document.querySelectorAll('.check-item');
+    var checked = document.querySelectorAll('.check-item:checked');
+    var pct = all.length > 0 ? Math.round((checked.length / all.length) * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progresoBadge').textContent = 'Progreso: ' + pct + '%';
+    try { localStorage.setItem('progreso_ra5_montaje_y_mantenimie', pct); } catch(e) {}
+  }
+  document.querySelectorAll('.check-item').forEach(function(cb, i) {
+    try { if (localStorage.getItem('cb_ra5_montaje_y_mantenimie_' + i) === 'true') cb.checked = true; } catch(e) {}
+    cb.addEventListener('change', function() {
+      try { localStorage.setItem('cb_ra5_montaje_y_mantenimie_' + i, cb.checked); } catch(e) {}
+      updateProgress();
+    });
+  });
+  document.querySelectorAll('.respuesta[contenteditable="true"]').forEach(function(div, i) {
+    try { var s = localStorage.getItem('resp_ra5_montaje_y_mantenimie_' + i); if (s) div.innerHTML = s; } catch(e) {}
+    div.addEventListener('input', function() {
+      try { localStorage.setItem('resp_ra5_montaje_y_mantenimie_' + i, div.innerHTML); } catch(e) {}
+    });
+  });
+  updateProgress();
+
+</script>
+</body>
+</html>

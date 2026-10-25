@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RA9 — Montaje y mantenimiento de equipos: Verifica equipos interpretando resultados de las pruebas realizadas.</title>
+  <style>
+    html { scroll-behavior: smooth; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #eef1f5; color: #1a1a2e; line-height: 1.7; font-size: 15px; }
+    :root {
+      --azul: #1e3a5f; --azul-medio: #2d6a9f; --azul-claro: #dceeff;
+      --win: #2d6a9f; --win-light: #e6f0f9;
+      --linux: #b8542a; --linux-light: #fbeee6;
+      --critico: #b03a2e; --critico-light: #fdf0ee;
+      --importante: #8a6400; --importante-light: #fff9e6;
+      --complementario: #2d6a9f; --complementario-light: #e8f2fb;
+      --exito: #1a6b3a; --exito-light: #e2f0e6;
+      --gris: #667085; --borde: #dde3ec;
+      --sombra: 0 2px 8px rgba(30,58,95,0.07);
+    }
+
+    /* ── Cabecera ───────────────────────────────────────────── */
+    .nav-sor { position: sticky; top: 0; z-index: 100; background: var(--azul); padding: 0 24px; height: 52px; display: flex; align-items: center; }
+    .nav-brand { color: white; font-weight: 600; font-size: 15px; letter-spacing: 0.3px; max-width: 1080px; width: 100%; margin: 0 auto; }
+    .nav-brand span { color: #8fc7a0; font-weight: 700; }
+    .hero { background: linear-gradient(135deg, var(--azul) 0%, var(--azul-medio) 100%); color: white; padding: 40px 24px 34px; text-align: left; }
+    .hero > * { max-width: 1080px; margin-left: auto; margin-right: auto; }
+    .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 4px 14px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px; }
+    .hero h1 { font-size: 25px; font-weight: 700; line-height: 1.35; margin-bottom: 8px; }
+    .hero-sub { font-size: 14px; opacity: 0.8; font-style: italic; margin-bottom: 20px; }
+    .hero-meta { display: flex; gap: 8px; flex-wrap: wrap; font-size: 12px; }
+    .hero-meta span { background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); padding: 4px 13px; border-radius: 20px; font-weight: 600; }
+
+    /* ── Columna medida ─────────────────────────────────────── */
+    .container { max-width: 1080px; margin: 0 auto; padding: 32px 24px 64px; }
+
+    /* ── Ficha del RA ───────────────────────────────────────── */
+    .ra-info { background: white; border-radius: 10px; padding: 22px 26px; margin-bottom: 24px; box-shadow: var(--sombra); }
+    .ra-info h2 { font-size: 18px; color: var(--azul); border-left: 4px solid var(--azul-medio); padding-left: 14px; margin-bottom: 18px; line-height: 1.4; }
+    .peso-grid { display: flex; flex-wrap: wrap; gap: 12px; margin: 14px 0; }
+    .peso-card { flex: 1; min-width: 120px; background: #f7f9fc; border: 1px solid var(--borde); border-radius: 8px; padding: 12px 14px; text-align: center; }
+    .peso-card .numero { font-size: 24px; font-weight: 700; color: var(--azul-medio); line-height: 1.2; }
+    .peso-card .label { font-size: 11px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.6px; }
+    .ce-criticos { background: var(--critico-light); border-left: 4px solid var(--critico); border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 16px 0; font-size: 13px; }
+    .ce-criticos strong { color: var(--critico); }
+    .progress-bar { background: var(--borde); height: 8px; border-radius: 8px; overflow: hidden; margin: 14px 0 2px; }
+    .progress-fill { background: var(--exito); width: 0%; height: 100%; transition: width 0.3s; }
+
+    /* ── Índice ─────────────────────────────────────────────── */
+    .ce-index { background: white; border-radius: 10px; padding: 18px 26px; margin-bottom: 32px; box-shadow: var(--sombra); }
+    .ce-index-titulo { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gris); margin-bottom: 12px; }
+    .ce-index-links { display: flex; flex-wrap: wrap; gap: 6px; }
+    .ce-idx-item { display: flex; align-items: baseline; gap: 8px; padding: 5px 11px; border-radius: 6px; text-decoration: none; font-size: 12.5px; color: #2c3444; border: 1px solid var(--borde); background: #f7f9fc; transition: 0.15s; }
+    .ce-idx-item:hover { background: var(--azul-claro); border-color: var(--azul-medio); }
+    .ce-idx-critico { border-left: 3px solid var(--critico); }
+    .ce-idx-importante { border-left: 3px solid #d4a017; }
+    .ce-idx-complementario { border-left: 3px solid var(--azul-medio); }
+    .ce-idx-letra { font-weight: 800; font-size: 13px; color: var(--azul); }
+    .ce-idx-desc { color: #4a5568; }
+
+    /* ── Bloques: cabecera y cuerpo como dos tarjetas ───────── */
+    .bloque { background: transparent; border: none; box-shadow: none; margin-bottom: 40px; }
+    .bloque-header { background: white; border-left: 5px solid var(--azul-medio); border-radius: 0 8px 8px 0; padding: 15px 20px; margin-bottom: 16px; box-shadow: var(--sombra); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .bloque-titulo { display: flex; align-items: center; gap: 13px; }
+    .bloque-num { background: var(--azul-medio); color: white; font-weight: 700; border-radius: 6px; padding: 4px 11px; font-size: 14px; flex-shrink: 0; align-self: flex-start; margin-top: 3px; }
+    .bloque-num.critico { background: var(--critico); }
+    .bloque-info h3 { font-size: 18px; color: var(--azul); margin-bottom: 3px; line-height: 1.35; }
+    .bloque-info p { font-size: 12px; color: var(--gris); }
+    .bloque-sesiones { background: #f0f3f8; color: var(--gris); border: 1px solid var(--borde); padding: 4px 12px; border-radius: 20px; font-size: 11.5px; font-weight: 600; }
+    .bloque-body { background: white; border-radius: 10px; padding: 24px 28px; box-shadow: var(--sombra); }
+
+    /* ── Escala tipográfica dentro del cuerpo ───────────────── */
+    .bloque-body h3 { font-size: 16px; color: var(--azul); margin: 26px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--borde); }
+    .bloque-body h4 { font-size: 15px; color: var(--azul); margin: 22px 0 10px; }
+    .bloque-body > h3:first-child, .bloque-body > h4:first-child { margin-top: 0; }
+    .bloque-body p { margin-bottom: 11px; }
+    .bloque-body p:last-child { margin-bottom: 0; }
+    .win-col h4, .linux-col h4, .ejercicio h5, .ejemplo-resuelto h5 { margin-top: 0; }
+
+    /* ── Listas ─────────────────────────────────────────────── */
+    .bloque-body ul, .bloque-body ol, .box-critico ul, .box-critico ol, .box-importante ul, .box-importante ol, .box-complementario ul, .box-complementario ol, .win-col ul, .win-col ol, .linux-col ul, .linux-col ol { padding-left: 20px; margin: 10px 0; }
+    .bloque-body li { margin-bottom: 6px; }
+    .bloque-body li::marker { color: var(--azul-medio); }
+
+    /* ── Dos columnas Windows / Linux ───────────────────────── */
+    .dual-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+    .win-col { background: var(--win-light); border: 1px solid #cfe0ee; border-top: 3px solid var(--win); border-radius: 8px; padding: 16px 18px; min-width: 0; }
+    .win-col h4 { color: var(--win); font-size: 14px; margin-bottom: 10px; }
+    .linux-col { background: var(--linux-light); border: 1px solid #f0dcd0; border-top: 3px solid var(--linux); border-radius: 8px; padding: 16px 18px; min-width: 0; }
+    .linux-col h4 { color: var(--linux); font-size: 14px; margin-bottom: 10px; }
+
+    /* ── Cajas semánticas ───────────────────────────────────── */
+    .box-critico, .box-importante, .box-complementario { border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 18px 0; }
+    .box-critico { background: var(--critico-light); border-left: 4px solid var(--critico); }
+    .box-importante { background: var(--importante-light); border-left: 4px solid #d4a017; }
+    .box-complementario { background: var(--complementario-light); border-left: 4px solid var(--complementario); }
+    .box-label { font-weight: 700; font-size: 12px; text-transform: none; letter-spacing: 0.3px; margin-bottom: 5px; display: block; }
+    .box-critico .box-label { color: var(--critico); }
+    .box-importante .box-label { color: var(--importante); }
+    .box-complementario .box-label { color: var(--complementario); }
+
+    /* ── Código y tablas ────────────────────────────────────── */
+    pre { background: #1e293b; color: #e2e8f0; padding: 13px 16px; border-radius: 8px; overflow-x: auto; font-size: 13px; font-family: 'Consolas', 'Courier New', monospace; margin: 14px 0; line-height: 1.6; }
+    pre code { background: none; color: inherit; padding: 0; }
+    code { background: #eef2f7; padding: 1px 6px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 13px; color: #1e3a5f; }
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 18px 0; border-radius: 8px; border: 1px solid var(--borde); }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    thead tr { background: var(--azul); color: white; }
+    th { padding: 10px 14px; text-align: left; font-weight: 600; }
+    tbody tr:nth-child(even) { background: #f7f9fc; }
+    td { padding: 9px 14px; border-bottom: 1px solid var(--borde); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+
+    /* ── Ejercicios ─────────────────────────────────────────── */
+    .ejercicio { background: #fdfaf2; border: 1px solid #eadfc2; border-left: 4px solid #d4a017; border-radius: 0 8px 8px 0; padding: 16px 18px; margin: 20px 0; }
+    .ejercicio h5 { color: #7a5c00; margin-bottom: 4px; font-size: 14px; }
+    .nivel-tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-bottom: 8px; letter-spacing: 0.5px; }
+    .nivel-basico { background: var(--exito-light); color: var(--exito); }
+    .nivel-medio { background: #fdf3d6; color: #7a5c00; }
+    .nivel-avanzado { background: var(--critico-light); color: var(--critico); }
+    .respuesta { background: white; border: 1px solid var(--borde); border-radius: 6px; padding: 12px; min-height: 76px; margin-top: 12px; outline: none; }
+    .respuesta:focus { border-color: var(--azul-medio); box-shadow: 0 0 0 3px rgba(45,106,159,0.1); }
+    .respuesta:empty::before { content: attr(data-placeholder); color: #a0aec0; pointer-events: none; display: block; }
+    .solucion { margin-top: 12px; background: var(--exito-light); border-radius: 6px; padding: 2px 14px; }
+    .solucion summary { cursor: pointer; font-weight: 600; color: var(--exito); padding: 9px 0; list-style: revert; font-size: 13.5px; }
+    .solucion[open] summary { margin-bottom: 6px; }
+
+    /* ── Ejemplo resuelto, diagrama, checklist ──────────────── */
+    .ejemplo-resuelto { background: var(--exito-light); border-left: 4px solid var(--exito); border-radius: 0 8px 8px 0; padding: 16px 18px; margin: 20px 0; }
+    .ejemplo-resuelto h5 { color: var(--exito); margin-bottom: 8px; font-size: 14px; }
+    .diagrama { margin: 22px 0; background: #f7f9fc; border: 1px solid var(--borde); border-radius: 10px; padding: 20px 14px; text-align: center; overflow-x: auto; }
+    .diagrama svg { max-width: 100%; height: auto; display: block; margin: 0 auto; font-family: 'Segoe UI', system-ui, sans-serif; }
+    .diagrama figcaption { font-size: 12.5px; color: var(--gris); margin-top: 14px; font-style: italic; }
+    .checklist { background: #f7f9fc; border: 1px solid var(--borde); border-radius: 10px; padding: 18px 20px; margin-top: 22px; }
+    .checklist strong { color: var(--azul); font-size: 14px; }
+    .checklist ul { list-style: none; padding: 0; margin-top: 10px; }
+    .checklist li { padding: 5px 0; display: flex; align-items: flex-start; gap: 10px; cursor: pointer; border-bottom: 1px solid #eef1f5; }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li input[type="checkbox"] { width: 15px; height: 15px; flex-shrink: 0; cursor: pointer; margin-top: 5px; accent-color: var(--exito); }
+    .checklist li label { cursor: pointer; flex: 1; font-size: 14px; }
+
+    /* ── Varios ─────────────────────────────────────────────── */
+    hr.sep { border: none; border-top: 2px dashed var(--borde); margin: 24px 0; }
+    footer { text-align: center; padding: 28px 24px; color: var(--gris); font-size: 12px; border-top: 1px solid var(--borde); margin-top: 44px; background: white; }
+    .btn-top { position: fixed; bottom: 20px; right: 20px; background: var(--azul); color: white; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-size: 19px; opacity: 0; transition: 0.3s; z-index: 90; }
+    .btn-top.visible { opacity: 1; }
+    .progreso-badge { position: fixed; bottom: 20px; left: 20px; background: var(--azul); color: white; padding: 7px 15px; border-radius: 20px; font-size: 12.5px; font-weight: 600; z-index: 90; }
+
+    @media (max-width: 768px) {
+      body { font-size: 14px; }
+      .container { padding: 18px 14px 44px; }
+      .dual-columns { grid-template-columns: 1fr; gap: 12px; }
+      .hero { padding: 26px 18px 22px; }
+      .hero h1 { font-size: 19px; }
+      .bloque-body { padding: 16px 17px; }
+      .bloque-header { padding: 13px 15px; }
+      pre { font-size: 11.5px; }
+      th, td { padding: 7px 9px; font-size: 12px; }
+    }
+
+    /* ── Fotos reales ───────────────────────────────────────── */
+    .foto { margin: 22px 0; }
+    .foto-sm img { max-width: 620px; margin-left: auto; margin-right: auto; }
+    .foto img { width: 100%; border-radius: 10px; border: 1px solid var(--borde); display: block; }
+    .foto figcaption { font-size: 12.5px; color: var(--gris); margin-top: 10px; font-style: italic; text-align: center; }
+    .foto-pendiente { border: 2px dashed #c3cede; border-radius: 10px; background: #f7f9fc; padding: 26px 20px; text-align: center; color: var(--gris); }
+    .foto-pendiente .icono { font-size: 30px; display: block; margin-bottom: 8px; opacity: 0.6; }
+    .foto-pendiente .archivo { display: inline-block; font-family: 'Consolas', monospace; font-size: 12.5px; background: white; border: 1px solid var(--borde); border-radius: 4px; padding: 2px 8px; color: var(--azul); margin-top: 8px; }
+    .foto-pendiente .que { font-size: 13.5px; color: #4a5568; }
+
+    /* ── Rejilla de tarjetas de contenido ───────────────────── */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: 14px; margin: 20px 0; }
+    .card { background: #f7f9fc; border: 1px solid var(--borde); border-top: 3px solid var(--azul-medio); border-radius: 8px; padding: 15px 17px; }
+    .card h4 { font-size: 14px; color: var(--azul); margin: 0 0 9px; display: flex; align-items: center; gap: 8px; }
+    .card h4 .ico { font-size: 18px; }
+    .card ul { margin: 0; padding-left: 18px; font-size: 13.5px; }
+    .card li { margin-bottom: 5px; }
+
+    /* ── Etiquetas de peligrosidad ──────────────────────────── */
+    .pel { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 1px 8px; border-radius: 4px; letter-spacing: 0.4px; white-space: nowrap; }
+    .pel-baja    { background: #e2f0e6; color: #1a6b3a; }
+    .pel-media   { background: #fdf3d6; color: #7a5c00; }
+    .pel-alta    { background: #fbe6dd; color: #a0522d; }
+    .pel-critica { background: #f7dcd8; color: #8c2f22; }
+
+    /* ── Frase destacada, para romper el bloque de texto ────── */
+    .clave { font-size: 16px; line-height: 1.6; color: var(--azul); border-left: 4px solid #d4a017; padding: 4px 0 4px 16px; margin: 22px 0; font-weight: 600; }
+
+    /* ── Vídeo de apoyo: enlace, no incrustado ──────────────── */
+    .videos { display: flex; flex-direction: column; gap: 8px; margin: 18px 0; }
+    .video { display: flex; align-items: flex-start; gap: 12px; background: #fff; border: 1px solid var(--borde); border-left: 4px solid #a0302a; border-radius: 8px; padding: 12px 14px; text-decoration: none; color: inherit; box-shadow: var(--sombra); }
+    .video:hover { border-color: #a0302a; }
+    .video .play { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; background: #a0302a; color: #fff; font-size: 11px; line-height: 26px; text-align: center; }
+    .video .txt { min-width: 0; }
+    .video .titulo { display: block; font-weight: 600; font-size: 14.5px; color: var(--azul); }
+    .video .desc { display: block; font-size: 13px; color: var(--gris); margin-top: 2px; }
+  </style>
+</head>
+<body>
+
+<nav class="nav-sor">
+  <div class="nav-brand">Montaje y mantenimiento de equipos &nbsp;<span>RA9</span></div>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">Grado Medio Sistemas Microinformáticos y Redes</div>
+  <h1>RA9: Verifica equipos interpretando resultados de las pruebas realizadas.</h1>
+  <p class="hero-sub">Contenido técnico de nivel Grado Medio</p>
+  <div class="hero-meta">
+    <span>Peso: 7%</span>
+    <span>4 sesiones × 55 min</span>
+    <span>5 criterios de evaluación</span>
+    <span>3 CEs críticos</span>
+  </div>
+</div>
+<div class="container">
+<div class="ra-info">
+  <h2>RA9: Verifica equipos interpretando resultados de las pruebas realizadas.</h2>
+  <div class="peso-grid">
+    <div class="peso-card"><div class="numero">7%</div><div class="label">Peso evaluación</div></div>
+    <div class="peso-card"><div class="numero">4</div><div class="label">Sesiones</div></div>
+    <div class="peso-card"><div class="numero">5</div><div class="label">Criterios</div></div>
+    <div class="peso-card"><div class="numero">3</div><div class="label">Críticos</div></div>
+  </div>
+  <div class="ce-criticos"><strong>CEs críticos:</strong> CE-a, CE-b, CE-d</div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+</div>
+<div class="ce-index">
+  <div class="ce-index-titulo">Índice RA9 — 5 criterios</div>
+  <div class="ce-index-links">
+    <a href="#ceA" class="ce-idx-item ce-idx-critico"><span class="ce-idx-letra">a</span><span class="ce-idx-desc">Se han realizado y se conocen las pruebas de integridad y estabilidad.</span></a>
+    <a href="#ceB" class="ce-idx-item ce-idx-critico"><span class="ce-idx-letra">b</span><span class="ce-idx-desc">Se han realizado y se conocen las pruebas de rendimiento.</span></a>
+    <a href="#ceC" class="ce-idx-item ce-idx-importante"><span class="ce-idx-letra">c</span><span class="ce-idx-desc">Se conocen las herramientas de diagnóstico (del sistema operativo y externas).</span></a>
+    <a href="#ceD" class="ce-idx-item ce-idx-critico"><span class="ce-idx-letra">d</span><span class="ce-idx-desc">Se han realizado pruebas con software de diagnóstico.</span></a>
+    <a href="#ceF" class="ce-idx-item ce-idx-importante"><span class="ce-idx-letra">f</span><span class="ce-idx-desc">Se han elaborado Informes sobre pruebas, problemas, reparaciones y soluciones.</span></a>
+  </div>
+</div>
+<div class="bloque" id="ceA">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num critico">a</div>
+      <div class="bloque-info">
+        <h3>Pruebas de integridad y estabilidad del equipo</h3>
+        <p>CE-a · CRÍTICO · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <h4>Dos preguntas que no son la misma</h4>
+    <p>Que un equipo encienda y llegue al escritorio no significa que esté bien. Antes de entregarlo (o de aceptarlo en el taller) hay que responder a dos preguntas distintas, y cada una se comprueba con herramientas distintas.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Concepto</th><th>Qué pregunta responde</th><th>Se comprueba con</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Integridad</strong></td><td>¿Los componentes y los datos guardados están correctos y completos? ¿La memoria devuelve exactamente lo que se le escribe? ¿El disco conserva los archivos sin corromperlos?</td><td>MemTest86, CrystalDiskInfo (SMART), <code>chkdsk</code>, <code>sfc</code></td></tr>
+          <tr><td><strong>Estabilidad</strong></td><td>¿El equipo aguanta trabajando a plena carga sin colgarse, reiniciarse ni bajar drásticamente de rendimiento?</td><td>OCCT, Prime95, FurMark, Cinebench, HWiNFO64</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>El <strong>SMART</strong> (<em>Self-Monitoring, Analysis and Reporting Technology</em>) es un sistema de autodiagnóstico que llevan todos los discos modernos: van guardando un registro interno de errores, sectores reasignados, horas de uso y temperatura, y cualquier programa puede leerlo.</p>
+
+    <p>Un <strong>SSD NVMe</strong> (<em>Non-Volatile Memory Express</em>) es una unidad de estado sólido que se conecta por PCIe y usa ese protocolo, pensado específicamente para almacenamiento; un SSD SATA usa la interfaz SATA. Los NVMe son más rápidos y en Linux aparecen como <code>/dev/nvme0n1</code>, frente a <code>/dev/sda</code> en un disco SATA.</p>
+
+    <div class="clave">Un equipo que arranca no es un equipo sano: la integridad y la estabilidad se comprueban, no se suponen.</div>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 480 180" role="img" aria-label="Flujo de un protocolo de pruebas de integridad y estabilidad">
+        <defs>
+          <marker id="flecha-a-cea" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="10" y="55" width="100" height="80" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="60" y="80" text-anchor="middle" font-size="14" fill="#1a1a2e">Identificar</text>
+        <text x="60" y="102" text-anchor="middle" font-size="13" fill="#667085">CPU-Z</text>
+        <text x="60" y="120" text-anchor="middle" font-size="13" fill="#667085">HWiNFO64</text>
+
+        <line x1="111" y1="95" x2="128" y2="95" stroke="#667085" stroke-width="2" marker-end="url(#flecha-a-cea)"/>
+
+        <rect x="130" y="55" width="100" height="80" rx="10" fill="#f7f9fc" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="180" y="80" text-anchor="middle" font-size="14" fill="#1a1a2e">Integridad</text>
+        <text x="180" y="102" text-anchor="middle" font-size="13" fill="#667085">MemTest86</text>
+        <text x="180" y="120" text-anchor="middle" font-size="13" fill="#667085">SMART</text>
+
+        <line x1="231" y1="95" x2="248" y2="95" stroke="#667085" stroke-width="2" marker-end="url(#flecha-a-cea)"/>
+
+        <rect x="250" y="55" width="100" height="80" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="300" y="80" text-anchor="middle" font-size="14" fill="#1a1a2e">Estabilidad</text>
+        <text x="300" y="102" text-anchor="middle" font-size="13" fill="#667085">OCCT</text>
+        <text x="300" y="120" text-anchor="middle" font-size="13" fill="#667085">FurMark</text>
+
+        <line x1="351" y1="95" x2="368" y2="95" stroke="#667085" stroke-width="2" marker-end="url(#flecha-a-cea)"/>
+
+        <rect x="370" y="55" width="100" height="80" rx="10" fill="#f7f9fc" stroke="#d4a017" stroke-width="2"/>
+        <text x="420" y="80" text-anchor="middle" font-size="14" fill="#1a1a2e">Informe</text>
+        <text x="420" y="102" text-anchor="middle" font-size="13" fill="#667085">resultados</text>
+        <text x="420" y="120" text-anchor="middle" font-size="13" fill="#667085">veredicto</text>
+      </svg>
+      <figcaption>Orden obligatorio del protocolo. Fíjate en que la integridad va antes que la estabilidad: si pruebas la carga de un equipo con la RAM defectuosa, el fallo que aparezca no podrás atribuirlo a la CPU.</figcaption>
+    </figure>
+
+    <h4>Herramientas del aula y qué comprueba cada una</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Herramienta</th><th>Qué comprueba</th><th>Cómo se usa</th></tr></thead>
+        <tbody>
+          <tr><td>CPU-Z 2.14</td><td>Modelo de CPU, placa base, versión de BIOS, módulos de RAM y su canal</td><td>Portable; solo identifica, no prueba nada</td></tr>
+          <tr><td>HWiNFO64 8.16</td><td>Sensores: temperaturas, voltajes y frecuencias en tiempo real</td><td>Se deja abierto en segundo plano durante toda la prueba de carga</td></tr>
+          <tr><td>MemTest86 11.2</td><td>Integridad de la RAM: escribe patrones y los relee</td><td>Arranca desde USB, fuera de Windows</td></tr>
+          <tr><td>CrystalDiskInfo 9.5</td><td>Estado SMART del disco, temperatura, horas de uso, sectores reasignados</td><td>Portable; estado «Bueno» y 0 reasignados = aprobado</td></tr>
+          <tr><td>OCCT 13.1 / Prime95 30.19</td><td>Estabilidad de CPU y RAM bajo carga</td><td>15-20 minutos; OCCT dibuja sus propias gráficas</td></tr>
+          <tr><td>FurMark 1.37</td><td>Estabilidad y temperatura de la tarjeta gráfica</td><td>10-15 minutos, siempre con la temperatura a la vista</td></tr>
+          <tr><td>CrystalDiskMark 8.0.6 / HD Tune</td><td>Rendimiento del disco y lectura completa de su superficie</td><td>Detecta discos que «funcionan» pero van anormalmente lentos</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box-importante">
+      <div class="box-label">IMPORTANTE</div>
+      <p>MemTest86 <strong>no se ejecuta desde Windows</strong>: hay que crear un USB arrancable y arrancar el equipo desde él. Para crearlo se usan utilidades como <strong>Rufus</strong>, que graba una imagen ISO en el USB (se selecciona el USB, la ISO y se pulsa Empezar; borra el contenido), o <strong>Ventoy</strong>, que instala un gestor de arranque en el USB y permite copiar varias ISO y elegir cuál arrancar en el menú (no hay que regrabar para cada imagen). En los equipos del taller, que no tienen sistema operativo, esta es la única vía, igual que arrancar un Windows PE (entorno mínimo de Windows que se carga desde USB y sirve para diagnosticar).</p>
+    </div>
+
+    <h4>Comandos de integridad de archivos y de disco</h4>
+    <p>La integridad no es solo el hardware: los archivos del sistema operativo también se corrompen. Estos comandos se lanzan en una consola abierta <strong>como administrador</strong> (usuario con permisos totales sobre el equipo).</p>
+
+    <pre><code>chkdsk C: /f /r</code></pre>
+    <ul>
+      <li><code>chkdsk</code>: comprobador de disco de Windows; revisa el sistema de archivos, la estructura que organiza los ficheros en la unidad.</li>
+      <li><code>C:</code>: la unidad que se analiza. En este caso, la del sistema.</li>
+      <li><code>/f</code>: corrige (<em>fix</em>) los errores encontrados en el sistema de archivos.</li>
+      <li><code>/r</code>: localiza sectores defectuosos (zonas del disco que ya no guardan datos de forma fiable) e intenta recuperar la información legible. Implica también <code>/f</code> y tarda mucho: en un disco mecánico puede durar horas.</li>
+    </ul>
+
+    <pre><code>sfc /scannow</code></pre>
+    <ul>
+      <li><code>sfc</code>: <em>System File Checker</em>, comprueba los archivos protegidos de Windows comparándolos con su copia de referencia guardada en el sistema.</li>
+      <li><code>/scannow</code>: analiza y repara inmediatamente, sin preguntar.</li>
+    </ul>
+
+    <div class="dual-columns">
+      <div class="win-col"><h4>🪟 Windows</h4><p><code>sfc /scannow</code> y <code>chkdsk</code> para archivos y disco. El estado del disco se mira con CrystalDiskInfo y la RAM con MemTest86 desde USB.</p></div>
+      <div class="linux-col"><h4>🐧 Linux</h4><p><code>sudo smartctl -a /dev/sda</code> lee el SMART del disco: <code>sudo</code> ejecuta como administrador, <code>smartctl</code> es la utilidad de <em>smartmontools</em>, <code>-a</code> muestra toda la información y <code>/dev/sda</code> es la ruta del primer disco (los NVMe aparecen como <code>/dev/nvme0n1</code>). Para el sistema de archivos se usa <code>fsck</code> (<em>file system check</em>): comprueba y repara la estructura del sistema de archivos. Sintaxis habitual: <code>sudo fsck /dev/sda1</code>; con <code>-n</code> solo comprueba y no cambia nada, y con <code>-y</code> responde «sí» a todas las reparaciones. No debe ejecutarse sobre una partición montada: hay que desmontarla antes (<code>sudo umount /dev/sda1</code>) o arrancar desde un live USB, o el resultado puede ser incoherente o dañar datos.</p></div>
+    </div>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p><strong>Tecnoparts SL</strong> recibe un sobremesa de un cliente: «se reinicia solo cuando llevo un rato trabajando». El equipo lleva un i5-12400, 16 GB (2×8) y un SSD NVMe de 500 GB. Hay que decidir si el problema es de hardware y documentarlo.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li><strong>Identificar</strong> con CPU-Z: se confirma el modelo de CPU, la placa y que los dos módulos están en ranuras distintas (doble canal). Sin esta foto inicial no sabremos si algo ha cambiado después.</li>
+        <li><strong>Integridad de la RAM</strong>: MemTest86 desde USB, una pasada completa. Resultado: 0 errores. Si hubiera errores, se repetiría la prueba con un solo módulo para localizar el culpable.</li>
+        <li><strong>Integridad del disco</strong>: CrystalDiskInfo muestra «Bueno», 0 sectores reasignados y 4.200 horas de uso. Se complementa con <code>chkdsk C: /f /r</code> y <code>sfc /scannow</code>, sin errores.</li>
+        <li><strong>Estabilidad</strong>: se abre HWiNFO64 y se lanza OCCT 15 minutos en modo CPU. A los 4 minutos la temperatura del procesador llega a 100 °C y HWiNFO64 marca «Thermal Throttling: Yes»: el procesador reduce su frecuencia para no quemarse y el equipo acaba reiniciándose.</li>
+        <li><strong>Intervención y verificación</strong>: se desmonta el disipador, se limpia el polvo, se retira la pasta térmica seca y se aplica pasta nueva. Se repite OCCT: máximo 78 °C, sin throttling. La prueba ha pasado de fallar a aprobar con la misma herramienta, así que queda demostrado que la causa era la refrigeración.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-a · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>En el aula, el <strong>puesto 12</strong> (Windows 11 25H2) se reinicia de forma aleatoria al abrir una máquina virtual en VirtualBox. Tienes el escritorio con permisos de administrador y una memoria USB. Ordena las pruebas que harías, indica qué herramienta usas en cada una y qué resultado consideras «aprobado».</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>1. Identificar.</strong> CPU-Z: modelo de CPU y placa, número de módulos de RAM y versión de BIOS. Aprobado: coincide con el inventario del aula.</p>
+        <p><strong>2. Integridad del disco.</strong> CrystalDiskInfo: estado «Bueno», 0 sectores reasignados. Después, consola como administrador con <code>sfc /scannow</code> (archivos del sistema) y <code>chkdsk C: /f /r</code> (sistema de archivos y superficie). Aprobado: «no se encontraron errores» y «no se encontraron problemas de integridad».</p>
+        <p><strong>3. Integridad de la RAM.</strong> Crear un USB arrancable con MemTest86 (Rufus) y ejecutarlo. Como la avería es aleatoria, no vale una pasada rápida: mínimo una pasada completa. Aprobado: 0 errores.</p>
+        <p><strong>4. Estabilidad.</strong> Abrir HWiNFO64 en modo sensores y lanzar OCCT 15 minutos. Aprobado: sin reinicios, sin errores del sistema, temperatura por debajo de 90 °C y sin throttling (frecuencia sin desplomarse).</p>
+        <p><strong>5. Conclusión.</strong> Si las cuatro pruebas pasan, el fallo no es de hardware: se anota en el informe y se deriva a software (controladores o la propia VirtualBox). Si una falla, se actúa sobre el componente señalado y se repite esa prueba.</p>
+      </details>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-a · Medio</h5>
+      <span class="nivel-tag nivel-medio">MEDIO</span>
+      <p><strong>Estudio Gráfico Miralba SL</strong> tiene un equipo de edición (32 GB de RAM, tarjeta gráfica dedicada con refrigeración líquida) que «se cuelga al renderizar». Tienes que diseñar el protocolo completo de estabilidad: qué herramientas usas y en qué orden, durante cuánto tiempo, qué valores de temperatura y de frecuencia das por buenos, y qué haces si HWiNFO64 registra un evento WHEA (Windows Hardware Error Architecture: arquitectura de registro de errores de hardware de Windows; sus entradas se consultan en el Visor de eventos, no es un registro en sí mismo). Justifica cada decisión.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-a · Avanzado</h5>
+      <span class="nivel-tag nivel-avanzado">AVANZADO</span>
+      <p><strong>Tecnoparts SL</strong> quiere reacondicionar un lote de 5 equipos del taller, todos <strong>sin sistema operativo</strong>. Diseña un procedimiento repetible, con un solo USB creado con Ventoy (gestor de arranque que permite elegir entre varias ISO) que contenga MemTest86, GParted Live y SystemRescue, que permita decidir en un máximo de 90 minutos por equipo (o 2 horas si el equipo supera 16 GB de RAM) si se reacondiciona o se descarta. GParted Live es una distribución Linux mínima arrancable que incluye GParted, el editor de particiones, y utilidades de disco; SystemRescue es una live Linux de rescate que incluye <code>smartctl</code> y <code>lm-sensors</code>. Define qué pruebas haces, qué criterios de descarte aplicas (memoria, estado SMART del disco, temperatura del disco y temperaturas de CPU/placa), qué datos registras en el informe y cómo garantizas que los cinco equipos se prueban exactamente igual. Para que el tiempo sea realista, especifica cuántas pasadas de MemTest86 haces o qué prueba rápida de RAM usas y justifica la limitación.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-a</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Distingo integridad (componentes y datos) de estabilidad (sometimiento a carga)</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé qué comprueba cada herramienta: CPU-Z, HWiNFO64, MemTest86, CrystalDiskInfo, OCCT, FurMark</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé que MemTest86 se ejecuta desde USB arrancable, no desde Windows</label></li>
+        <li><label><input type="checkbox" class="check-item"> Explico qué es el SMART y qué valores miro en CrystalDiskInfo</label></li>
+        <li><label><input type="checkbox" class="check-item"> Lanzo <code>chkdsk C: /f /r</code> y <code>sfc /scannow</code> en consola de administrador y sé qué repara cada uno</label></li>
+        <li><label><input type="checkbox" class="check-item"> Vigilo temperaturas y throttling con HWiNFO64 durante toda la prueba de carga</label></li>
+        <li><label><input type="checkbox" class="check-item"> Repito la prueba que ha fallado tras la reparación y lo reflejo en el informe</label></li>
+      </ul>
+    </div>
+
+    <div class="box-critico">
+      <div class="box-label">⚠ TRAMPA DE EXAMEN</div>
+      <p>Confundir «ha pasado la prueba» con «el equipo es estable». Un equipo con la pasta térmica seca puede superar una prueba de carga de 3 minutos y reiniciarse a los 8; y un módulo de RAM defectuoso suele dar 0 errores en la primera pasada de MemTest86. Por eso las pruebas tienen <strong>duración mínima</strong> (una pasada completa de MemTest86, 15-20 minutos de OCCT) y se ejecutan <strong>vigilando la temperatura</strong>: un test de carga sin HWiNFO64 abierto no es una prueba, es una forma de romper el equipo.</p>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceB">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num critico">b</div>
+      <div class="bloque-info">
+        <h3>Pruebas de rendimiento: medir cuánto rinde el equipo</h3>
+        <p>CE-b · CRÍTICO · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>En el CE-a comprobamos que el equipo <strong>no falla</strong>: integridad y estabilidad eran preguntas de sí o no. Ahora la pregunta es otra: <strong>¿cuánto rinde y basta para el uso al que se destina?</strong>. Para responderla se usan <strong>benchmarks</strong> o pruebas de rendimiento: programas que ejecutan una tarea siempre igual (renderizar una imagen 3D, leer un archivo de 1 GB) y devuelven un número comparable.</p>
+
+    <p>Ese número se llama <strong>puntuación</strong> (en inglés <em>score</em>) y solo tiene sentido comparado con algo: la <strong>línea base</strong> (rendimiento de referencia del mismo modelo de equipo) o el resultado de otro equipo medido en las mismas condiciones. Sin comparación, un «800 puntos» no dice nada.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Prueba</th><th>Herramienta del aula</th><th>Unidad</th><th>Qué indica</th></tr></thead>
+        <tbody>
+          <tr><td>CPU</td><td>Cinebench 2024 (mononúcleo y multinúcleo)</td><td>puntos</td><td>Capacidad de cálculo: renderizado, compresión, ofimática pesada</td></tr>
+          <tr><td>GPU</td><td>3DMark, Unigine Superposition</td><td>puntos y FPS</td><td>Fluidez gráfica. FPS = fotogramas por segundo</td></tr>
+          <tr><td>Disco</td><td>CrystalDiskMark, HD Tune</td><td>MB/s e IOPS</td><td>Velocidad secuencial y IOPS = operaciones de entrada/salida por segundo</td></tr>
+          <tr><td>Memoria</td><td>AIDA64 Extreme</td><td>GB/s (o MB/s) y ns</td><td>Ancho de banda (GB/s o MB/s: datos transferidos por segundo) y latencia (ns: retardo de un acceso); importa el doble canal</td></tr>
+          <tr><td>Estabilidad (CE-a; no rendimiento)</td><td>PassMark BurnInTest</td><td>sin puntuación de rendimiento</td><td>Somete todos los subsistemas a carga simultánea para detectar errores; no mide rendimiento</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>En la fila de memoria, el <strong>ancho de banda</strong> (GB/s o MB/s) indica cuántos datos puede transferir la memoria por segundo; la <strong>latencia</strong> (ns) indica el retardo entre solicitar un dato y obtenerlo. Ambos valores solo son comparables entre equipos con la misma configuración (por ejemplo, doble canal activado en ambos).</p>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 460 230" role="img" aria-label="Fases de una prueba de rendimiento fiable">
+        <defs>
+          <marker id="flecha-b-ceb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="15" y="30" width="130" height="60" rx="12" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="80" y="55" text-anchor="middle" font-size="14" fill="#1a1a2e">1. Definir</text>
+        <text x="80" y="75" text-anchor="middle" font-size="14" fill="#1a1a2e">objetivo</text>
+        <rect x="165" y="30" width="130" height="60" rx="12" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="230" y="55" text-anchor="middle" font-size="14" fill="#1a1a2e">2. Preparar</text>
+        <text x="230" y="75" text-anchor="middle" font-size="14" fill="#1a1a2e">el entorno</text>
+        <rect x="315" y="30" width="130" height="60" rx="12" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="380" y="55" text-anchor="middle" font-size="14" fill="#1a1a2e">3. Ejecutar</text>
+        <text x="380" y="75" text-anchor="middle" font-size="14" fill="#1a1a2e">la prueba</text>
+        <rect x="315" y="140" width="130" height="60" rx="12" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="380" y="165" text-anchor="middle" font-size="14" fill="#1a1a2e">4. Registrar</text>
+        <text x="380" y="185" text-anchor="middle" font-size="14" fill="#1a1a2e">resultados</text>
+        <rect x="165" y="140" width="130" height="60" rx="12" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="230" y="165" text-anchor="middle" font-size="14" fill="#1a1a2e">5. Comparar</text>
+        <text x="230" y="185" text-anchor="middle" font-size="14" fill="#1a1a2e">con la base</text>
+        <rect x="15" y="140" width="130" height="60" rx="12" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="80" y="165" text-anchor="middle" font-size="14" fill="#1a1a2e">6. Concluir</text>
+        <text x="80" y="185" text-anchor="middle" font-size="14" fill="#1a1a2e">e informar</text>
+        <line x1="145" y1="60" x2="163" y2="60" stroke="#667085" stroke-width="2" marker-end="url(#flecha-b-ceb)"/>
+        <line x1="295" y1="60" x2="313" y2="60" stroke="#667085" stroke-width="2" marker-end="url(#flecha-b-ceb)"/>
+        <line x1="380" y1="90" x2="380" y2="138" stroke="#667085" stroke-width="2" marker-end="url(#flecha-b-ceb)"/>
+        <line x1="315" y1="170" x2="297" y2="170" stroke="#667085" stroke-width="2" marker-end="url(#flecha-b-ceb)"/>
+        <line x1="165" y1="170" x2="147" y2="170" stroke="#667085" stroke-width="2" marker-end="url(#flecha-b-ceb)"/>
+      </svg>
+      <figcaption>Fases de una prueba de rendimiento fiable. Fíjate en que la comparación (5) llega siempre <em>después</em> de registrar el dato (4): sin registro previo no hay informe defendible.</figcaption>
+    </figure>
+
+    <div class="clave">Un benchmark no mide «lo bueno» que es un equipo: mide una tarea concreta. Un portátil puede sacar 1.500 puntos en CPU y arrastrarse en 3D porque su punto débil es otro. Cuando un componente limita el rendimiento global y hace que el equipo rinda por debajo de lo que permitirían los demás, ese componente es el <strong>cuello de botella</strong>.</div>
+
+    <h4>Medir sin interfaz gráfica: la misma prueba desde la terminal</h4>
+    <div class="dual-columns">
+      <div class="win-col">
+        <h4>🪟 Windows</h4>
+        <pre><code>winsat disk -drive c</code></pre>
+        <ul>
+          <li><code>winsat</code>: Windows System Assessment Tool, utilidad de evaluación de rendimiento incluida en Windows.</li>
+          <li><code>disk</code>: subcomando que evalúa la unidad de almacenamiento.</li>
+          <li><code>-drive</code>: indica que el siguiente valor es la unidad a medir.</li>
+          <li><code>c</code>: letra de la unidad evaluada (aquí, el disco del sistema).</li>
+        </ul>
+        <p>Devuelve MB/s de lectura y escritura secuencial. Si <code>winsat</code> no responde en tu equipo, se mide con la interfaz gráfica de CrystalDiskMark y se anota igual el resultado.</p>
+      </div>
+      <div class="linux-col">
+        <h4>🐧 Linux</h4>
+        <pre><code>dd if=/dev/zero of=/home/alumno/prueba.bin bs=1M count=1024 conv=fdatasync</code></pre>
+        <ul>
+          <li><code>dd</code>: herramienta de copia de datos; al terminar informa de la velocidad media.</li>
+          <li><code>if=/dev/zero</code>: origen; dispositivo especial que entrega ceros de forma infinita.</li>
+          <li><code>of=/home/alumno/prueba.bin</code>: archivo de destino. No uses <code>/tmp</code>: puede estar en RAM y medirías la memoria, no el disco.</li>
+          <li><code>bs=1M</code>: tamaño de bloque de 1 MiB.</li>
+          <li><code>count=1024</code>: 1024 bloques, es decir, 1 GiB de datos.</li>
+          <li><code>conv=fdatasync</code>: obliga a escribir físicamente en el disco antes de terminar; sin esto la cifra refleja la caché RAM y sale falsa.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="box-importante"><div class="box-label">IMPORTANTE</div><p>Repetibilidad: para que dos resultados se puedan comparar deben medirse con la <strong>misma versión</strong> de la herramienta, el mismo sistema operativo, el equipo enchufado a la red eléctrica (no en batería), sin programas abiertos y con el plan de energía en «Alto rendimiento». Si cambias una sola condición, el número deja de ser comparable.</p></div>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p><strong>Tecnoparts SL</strong> renueva el puesto de diseño de Marta (Windows 11 25H2, i5 de 12ª generación, 16 GB DDR5, SSD SATA de 2,5") y quiere saber si el equipo sirve antes de instalar el software de diseño.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li>Objetivo: rendimiento de CPU, disco y memoria para trabajo multitarea. La GPU no se prueba porque la tarjeta es integrada y el uso es 2D.</li>
+        <li>Preparo el entorno: cierro navegador y antivirus, plan de energía en alto rendimiento, equipo enchufado y a temperatura ambiente.</li>
+        <li>Ejecuto Cinebench 2024 dos veces: mononúcleo 102 puntos, multinúcleo 812 puntos. Repito la segunda pasada y obtengo 810: la diferencia es <strong>±2 %</strong>, aceptable.</li>
+        <li>CrystalDiskMark sobre C: 520 MB/s lectura y 480 MB/s escritura, valores típicos de un SATA III de 6 Gb/s (límite teórico ~600 MB/s); el rendimiento secuencial es el esperado y no lastra el equipo. La salud del disco no se deduce de los MB/s: se comprueba con SMART/CrystalDiskInfo, que en este caso muestra estado correcto.</li>
+        <li>Vigilo la temperatura con HWiNFO64 durante la prueba: el procesador llega a 92 °C y baja de frecuencia (<em>throttling</em> térmico). Conclusión: el rendimiento está limitado por la refrigeración, no por el chip.</li>
+        <li>Informe: «Equipo apto para 2D; se recomienda limpiar el disipador y renovar la pasta térmica antes de la entrega».</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-b · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>En el taller de Tecnoparts SL tenéis dos equipos sin sistema operativo y la instrucción de instalarlo en el que rinda más. Diseña la secuencia de pruebas que aplicarías y di qué herramienta usarías para cada magnitud, indicando en qué unidad se mide.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p>1) Instalar el mismo sistema operativo Windows 11 (misma versión y edición) en ambos para que sean comparables y para poder ejecutar las herramientas del aula: Cinebench 2024, CrystalDiskMark y AIDA64 Extreme no tienen versión Linux. 2) Actualizar controladores y dejar 10 minutos de reposo. 3) CPU: Cinebench 2024, dos pasadas, se anota el mejor resultado en puntos (mono y multi). 4) Disco: CrystalDiskMark, MB/s e IOPS en lectura y escritura secuencial; para la salud, CrystalDiskInfo/SMART, no los MB/s. 5) Memoria: AIDA64 Extreme, ancho de banda en GB/s (o MB/s) y latencia en ns, comprobando que trabaja en doble canal. 6) Registrar todos los datos en una tabla junto con la versión de cada herramienta y comparar. La decisión se toma sobre el conjunto: un equipo puede ganar en CPU y perder en disco.</p>
+      </details>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-b · Medio</h5>
+      <span class="nivel-tag nivel-medio">MEDIO</span>
+      <p>Dos clientes de Tecnoparts SL dudan entre dos equipos ya usados. Equipo A: Cinebench multinúcleo 1.240 puntos, disco NVMe 3.400 MB/s, memoria 42 GB/s. Equipo B: Cinebench multinúcleo 1.610 puntos, disco SATA 505 MB/s, memoria 38 GB/s. Uno lo usará para editar vídeo y otro para ofimática y facturación. Justifica qué equipo asignas a cada cliente, qué prueba falta por hacer y qué riesgo tiene comparar resultados tomados con versiones distintas de Cinebench.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-b · Avanzado</h5>
+      <span class="nivel-tag nivel-avanzado">AVANZADO</span>
+      <p>Un cliente devuelve un equipo diciendo que «va lento». Datos tomados: CrystalDiskMark 540/490 MB/s (correcto para SATA), Cinebench mononúcleo 98 puntos y multinúcleo 790, Unigine Superposition 14 FPS en calidad media, RAM en 44 GB/s pero <strong>monocanal</strong>, temperatura de CPU 88 °C sostenidos. Redacta el plan de pruebas que harías, identifica el cuello de botella con esos datos, propón dos mejoras priorizadas y explica cómo comprobarías después que la mejora ha funcionado.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-b</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Distingo prueba de estabilidad (CE-a) de prueba de rendimiento</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé qué mide un benchmark y qué significa la puntuación</label></li>
+        <li><label><input type="checkbox" class="check-item"> Asocio cada magnitud (CPU, GPU, disco, RAM) con su herramienta y su unidad</label></li>
+        <li><label><input type="checkbox" class="check-item"> Preparo el entorno para que el resultado sea repetible</label></li>
+        <li><label><input type="checkbox" class="check-item"> Comparo siempre con una línea base o con otro equipo medido igual</label></li>
+        <li><label><input type="checkbox" class="check-item"> Detecto el cuello de botella y el throttling térmico con HWiNFO64</label></li>
+      </ul>
+    </div>
+
+    <div class="box-critico">
+      <div class="box-label">⚠ TRAMPA DE EXAMEN</div>
+      <p>Confundir «más puntos» con «mejor equipo» y medir sin condiciones controladas. Un equipo con 1.600 puntos puede ir más lento en el uso real si su disco es el cuello de botella, y un resultado de 900 puntos medido con el portátil en batería y el navegador abierto no se puede comparar con otro de 1.100. Antes de escribir ninguna conclusión, comprueba tres cosas: misma versión de la herramienta, mismo sistema operativo y mismo estado del equipo (enchufado, sin programas en segundo plano y sin throttling). Si falla una, el dato no vale.</p>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceC">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num">c</div>
+      <div class="bloque-info">
+        <h3>Herramientas de diagnóstico: las del sistema operativo y las externas</h3>
+        <p>CE-c · importante · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>Diagnosticar es <strong>localizar la causa</strong> de un fallo antes de tocar nada. Las herramientas de diagnóstico se dividen en dos familias: las que <strong>vienen incluidas en el sistema operativo</strong> (Windows o Linux) y las <strong>externas</strong>, que son programas portables que no se instalan o medios de arranque (USB) que funcionan aunque el sistema operativo no arranque.</p>
+
+    <div class="clave">Una herramienta de diagnóstico no repara: mide y te dice dónde mirar.</div>
+
+    <div class="cards">
+      <div class="card">
+        <h4><span class="ico">🪟</span> Windows de serie</h4>
+        <ul>
+          <li><strong>Administrador de dispositivos</strong>: lista el hardware y marca con un triángulo amarillo lo que falla.</li>
+          <li><strong>Monitor de rendimiento</strong>: gráficas en tiempo real de CPU, RAM, disco y red.</li>
+          <li><strong>msinfo32</strong>: resumen general de hardware y software del sistema. <strong>dxdiag</strong>: Herramienta de diagnóstico de DirectX; muestra información de pantalla (tarjeta gráfica), sonido y dispositivos de entrada. Ambas se abren desde <strong>Ejecutar</strong> (Win+R) escribiendo <code>msinfo32</code> o <code>dxdiag</code>.</li>
+          <li><strong>mdsched</strong>: prueba la RAM reiniciando el equipo.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">🐧</span> Linux de serie</h4>
+        <ul>
+          <li><strong>lspci</strong> / <strong>lsusb</strong>: dispositivos internos / USB.</li>
+          <li><strong>dmesg</strong>: mensajes del kernel.</li>
+          <li><strong>journalctl</strong>: registro del sistema.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">💾</span> Portables y hardware</h4>
+        <ul>
+          <li><strong>CPU-Z</strong>: datos de placa base, CPU, RAM y frecuencias.</li>
+          <li><strong>GPU-Z</strong>: datos de la tarjeta gráfica (GPU, memoria, temperatura, etc.).</li>
+          <li><strong>HWiNFO64</strong>: sensores y datos detallados de hardware (temperaturas, voltajes, etc.).</li>
+          <li><strong>Core Temp</strong>: temperatura de los núcleos de la CPU.</li>
+          <li><strong>CrystalDiskInfo</strong>: estado SMART del disco. <strong>Victoria</strong>: analiza la superficie del disco, es decir, prueba lectura/escritura y detecta sectores defectuosos.</li>
+          <li><strong>Zumbador del POST</strong>: los pitidos al encender.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">🚑</span> Arranque externo</h4>
+        <ul>
+          <li>Windows PE, SystemRescue, GParted Live (vistos en CE-a).</li>
+          <li>MemTest86 (prueba de memoria RAM) y Rescuezilla (clonación y creación/restauración de imágenes de disco) desde USB.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="box-complementario">
+      <div class="box-label">NOTA</div>
+      <p>El <strong>POST</strong> (<em>Power-On Self-Test</em>) es la autocomprobación que hace la placa base al encender. Si detecta un fallo grave antes de dar imagen, lo avisa con <strong>pitidos</strong> a través del zumbador: cada secuencia de pitidos es un código que documenta el fabricante de la placa y depende del fabricante de la BIOS/UEFI. Por ejemplo, AMI (American Megatrends) es un fabricante de BIOS/UEFI, y sus códigos de pitidos no tienen por qué coincidir con los de otro fabricante.</p>
+    </div>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 520 240" role="img" aria-label="Ruta de elección de herramienta de diagnóstico según si el sistema operativo arranca">
+        <defs>
+          <marker id="flecha-c-cec" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="10" y="90" width="130" height="60" rx="12" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="75" y="115" text-anchor="middle" font-size="14" fill="#1a1a2e">¿Arranca</text>
+        <text x="75" y="135" text-anchor="middle" font-size="14" fill="#1a1a2e">el SO?</text>
+
+        <line x1="140" y1="110" x2="168" y2="60" stroke="#667085" stroke-width="2" marker-end="url(#flecha-c-cec)"/>
+        <text x="150" y="85" text-anchor="middle" font-size="12" fill="#1a6b3a">sí</text>
+        <line x1="140" y1="130" x2="168" y2="180" stroke="#667085" stroke-width="2" marker-end="url(#flecha-c-cec)"/>
+        <text x="152" y="160" text-anchor="middle" font-size="12" fill="#b03a2e">no</text>
+
+        <rect x="170" y="20" width="170" height="60" rx="12" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="255" y="45" text-anchor="middle" font-size="14" fill="#1a1a2e">Herramientas</text>
+        <text x="255" y="65" text-anchor="middle" font-size="14" fill="#1a1a2e">del SO</text>
+
+        <rect x="170" y="160" width="170" height="60" rx="12" fill="#f7f9fc" stroke="#b03a2e" stroke-width="2"/>
+        <text x="255" y="185" text-anchor="middle" font-size="14" fill="#1a1a2e">Arranque</text>
+        <text x="255" y="205" text-anchor="middle" font-size="14" fill="#1a1a2e">externo (USB)</text>
+
+        <line x1="340" y1="50" x2="368" y2="50" stroke="#667085" stroke-width="2" marker-end="url(#flecha-c-cec)"/>
+        <line x1="340" y1="190" x2="368" y2="190" stroke="#667085" stroke-width="2" marker-end="url(#flecha-c-cec)"/>
+
+        <rect x="370" y="20" width="140" height="60" rx="12" fill="#f7f9fc" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="440" y="45" text-anchor="middle" font-size="14" fill="#1a1a2e">Portables de</text>
+        <text x="440" y="65" text-anchor="middle" font-size="14" fill="#1a1a2e">hardware</text>
+
+        <rect x="370" y="160" width="140" height="60" rx="12" fill="#f7f9fc" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="440" y="185" text-anchor="middle" font-size="14" fill="#1a1a2e">MemTest86</text>
+        <text x="440" y="205" text-anchor="middle" font-size="14" fill="#1a1a2e">GParted Live</text>
+      </svg>
+      <figcaption>Qué herramienta usar según el estado del equipo. Fíjate en que si el SO no arranca, ninguna herramienta instalada en él sirve: hay que salir desde USB.</figcaption>
+    </figure>
+
+    <div class="dual-columns">
+      <div class="win-col">
+        <h4>🪟 Windows</h4>
+        <p>Todo está en menús o en el cuadro <strong>Ejecutar</strong> (Win+R): el <strong>Administrador de dispositivos</strong> marca con un triángulo amarillo el dispositivo con problemas y, en sus propiedades, muestra un <strong>código de error</strong>; el <strong>Monitor de rendimiento</strong> dibuja gráficas de CPU, RAM, disco y red; y el <strong>Visor de eventos</strong> (visto en CE-a) guarda los errores.</p>
+      </div>
+      <div class="linux-col">
+        <h4>🐧 Linux</h4>
+        <p>Se trabaja en la <strong>terminal</strong> (la ventana donde se escriben órdenes): <code>lspci</code> lista los dispositivos de los buses PCI/PCIe, <code>lsusb</code> los de USB, <code>dmesg</code> muestra el registro del <strong>kernel</strong> (el núcleo del sistema) y <code>journalctl</code> el registro general.</p>
+      </div>
+    </div>
+
+    <p>Para ver el adaptador gráfico en Linux se filtra la salida de <code>lspci</code>:</p>
+    <pre><code>lspci -nn | grep -i vga</code></pre>
+    <ul>
+      <li><strong>Privilegios</strong>: <code>lspci -nn</code> no necesita <code>sudo</code>; lista los dispositivos PCI como usuario normal. Solo opciones como <code>-vvv</code> o <code>-xxx</code>, que leen el espacio de configuración extendido, requieren root.</li>
+      <li><code>lspci</code>: enumera los dispositivos conectados a los buses PCI y PCIe (los canales por los que la placa comunica sus componentes, vistos en RA1).</li>
+      <li><code>-nn</code>: muestra el nombre del dispositivo <em>y</em> sus identificadores numéricos de fabricante y modelo; sirven para buscar el controlador exacto.</li>
+      <li><code>|</code>: la <strong>tubería</strong>; conecta la salida del primer programa con la entrada del segundo, es decir, lo que imprime <code>lspci</code> se lo entrega a <code>grep</code>.</li>
+      <li><code>grep</code>: filtra y deja pasar solo las líneas que contienen el texto indicado.</li>
+      <li><code>-i</code>: ignora mayúsculas y minúsculas, para que encuentre «VGA» y «vga».</li>
+      <li><code>vga</code>: texto buscado; VGA es el estándar histórico de vídeo, así que localiza la tarjeta gráfica.</li>
+    </ul>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p>Biblioteca Municipal de Alcalá, puesto 3, con Windows 11 25H2: «se reinicia solo, sobre todo por la mañana».</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li>El equipo arranca Windows, así que empiezo por lo menos invasivo: el <strong>Visor de eventos</strong> (CE-a). Aparece un error crítico de apagado inesperado, sin controlador identificado: el software no es el culpable.</li>
+        <li>Compruebo temperaturas con <strong>HWiNFO64</strong> (CE-b) en modo portable: valores normales. Descartado el sobrecalentamiento.</li>
+        <li>Lanzo <strong>mdsched</strong> desde Ejecutar: reinicia el equipo y prueba la RAM fuera de Windows. Detecta un módulo defectuoso.</li>
+        <li>Confirmo con <strong>MemTest86</strong> desde USB (CE-a) y sustituyo el módulo. El fallo deja de reproducirse.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-c</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>Talleres Ribera SL tiene dos equipos averiados sobre la mesa. <strong>Equipo A</strong>: Windows 11 26H2 arranca en modo seguro (arranque mínimo, solo con controladores básicos) pero no arranca con normalidad; no hay errores de hardware conocidos. <strong>Equipo B</strong>: chasis ATX (norma de formato de placas base y cajas) sin sistema operativo, no da imagen y emite tres pitidos del POST. Indica qué herramienta usarías en cada uno, qué información buscarías y qué descartas con ella.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>Equipo A.</strong> Si arranca en modo seguro, el hardware básico responde y el problema viene de un controlador o programa que se carga al inicio. Herramientas del sistema operativo: el <strong>Administrador de dispositivos</strong>, buscando el triángulo amarillo y su código de error; el <strong>Visor de eventos</strong>, para ver el módulo o controlador que falla en el arranque normal; y <code>msinfo32</code> para comprobar qué controladores hay. Con estos datos se descarta el hardware como causa principal.</p>
+        <p><strong>Equipo B.</strong> Al no dar imagen, no puedo usar herramientas que necesiten ver la pantalla (MemTest86, Windows PE, etc.). Empiezo por el código de pitidos del POST: consulto el manual de la placa/BIOS, porque los códigos dependen del fabricante. Tres pitidos en muchas BIOS AMI (American Megatrends, fabricante de BIOS/UEFI) suelen orientar a un fallo o ausencia de memoria RAM, pero no es universal. Compruebo que los módulos están bien encajados, limpio contactos, pruebo de uno en uno y cambio de zócalo; si puedo, pruebo los módulos en otro equipo. Si al retirar toda la RAM el pitido no cambia, la placa no detecta el cambio de memoria: eso apunta a la placa base (zócalo, controlador o BIOS), no permite descartarla. La fuente no se descarta sin medir voltajes; que haya pitidos indica alimentación básica, pero no garantiza que todas las tensiones sean correctas. No usaría MemTest86 hasta tener imagen y poder arrancar desde USB y ver sus resultados.</p>
+        <p><strong>Razonamiento de fondo:</strong> primero lo menos invasivo y siempre de fuera hacia dentro, comprobando un componente cada vez.</p>
+      </details>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-c</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Distingo entre herramientas de diagnóstico del sistema operativo y externas</label></li>
+        <li><label><input type="checkbox" class="check-item"> Localizo el Administrador de dispositivos y leo el código de error de un componente</label></li>
+        <li><label><input type="checkbox" class="check-item"> Obtengo información general con msinfo32 y de pantalla/sonido con dxdiag</label></li>
+        <li><label><input type="checkbox" class="check-item"> Lanzo el Diagnóstico de memoria de Windows (mdsched) y sé explicar qué hace</label></li>
+        <li><label><input type="checkbox" class="check-item"> Uso lspci y dmesg en Linux para identificar hardware y errores</label></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceD">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num critico">d</div>
+      <div class="bloque-info">
+        <h3>Pruebas con software de diagnóstico: ejecutar, interpretar y documentar</h3>
+        <p>CE-d · CRÍTICO · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>En CE-c aprendimos <strong>qué herramientas de diagnóstico existen</strong> y para qué sirve cada una. En CE-d damos el paso que de verdad se paga en un taller: <strong>ejecutar la prueba</strong>, leer el resultado, compararlo con un valor de referencia y dejarlo por escrito. Una <strong>prueba de diagnóstico</strong> es un procedimiento que somete a un componente a una lectura o una carga controlada y devuelve un resultado medible: un número, un estado ("Bueno") o un código.</p>
+
+    <div class="clave">Una prueba no termina cuando el programa muestra un resultado: termina cuando ese resultado se compara con un valor de referencia y se justifica una decisión.</div>
+
+    <p>El <strong>valor de referencia</strong> (o <strong>umbral</strong>) es la cifra o el estado a partir del cual consideramos que el componente está fuera de especificación. Sin umbral, un número no dice nada: 54 °C puede ser normal en un portátil y preocupante en un disco SSD.</p>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 640 170" role="img" aria-label="Fases de una prueba de diagnóstico">
+        <defs>
+          <marker id="flecha-d-ced" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="10" y="50" width="140" height="70" rx="12" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="80" y="80" text-anchor="middle" font-size="15" fill="#1a1a2e">1. Definir</text>
+        <text x="80" y="100" text-anchor="middle" font-size="13" fill="#667085">objetivo y umbral</text>
+
+        <line x1="150" y1="85" x2="173" y2="85" stroke="#667085" stroke-width="2" marker-end="url(#flecha-d-ced)"/>
+
+        <rect x="175" y="50" width="140" height="70" rx="12" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="245" y="80" text-anchor="middle" font-size="15" fill="#1a1a2e">2. Ejecutar</text>
+        <text x="245" y="100" text-anchor="middle" font-size="13" fill="#667085">la prueba</text>
+
+        <line x1="315" y1="85" x2="338" y2="85" stroke="#667085" stroke-width="2" marker-end="url(#flecha-d-ced)"/>
+
+        <rect x="340" y="50" width="150" height="70" rx="12" fill="#fdf3d6" stroke="#d4a017" stroke-width="2"/>
+        <text x="415" y="80" text-anchor="middle" font-size="15" fill="#1a1a2e">3. Leer y</text>
+        <text x="415" y="100" text-anchor="middle" font-size="13" fill="#667085">comparar</text>
+
+        <line x1="490" y1="85" x2="513" y2="85" stroke="#667085" stroke-width="2" marker-end="url(#flecha-d-ced)"/>
+
+        <rect x="515" y="50" width="115" height="70" rx="12" fill="#f7f9fc" stroke="#667085" stroke-width="2"/>
+        <text x="572" y="80" text-anchor="middle" font-size="15" fill="#1a1a2e">4. Concluir</text>
+        <text x="572" y="100" text-anchor="middle" font-size="13" fill="#667085">e informar</text>
+      </svg>
+      <figcaption>Las cuatro fases de cualquier prueba de diagnóstico. Fíjate en que la fase 3 (comparar) es la que convierte un dato en un diagnóstico; si se salta, el informe no vale.</figcaption>
+    </figure>
+
+    <h4>Qué pruebas se ejecutan y contra qué se comparan</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Prueba</th><th>Herramienta</th><th>Qué se mide</th><th>Resultado correcto</th></tr></thead>
+        <tbody>
+          <tr><td>Memoria RAM</td><td>MemTest86 11.2 (USB)</td><td>Errores de lectura/escritura en cada celda</td><td>0 errores en al menos 1 pasada completa</td></tr>
+          <tr><td>Estado del disco</td><td>CrystalDiskInfo 9.5</td><td>Sectores reasignados, horas, temperatura y desgaste: Percentage Used en NVMe o Wear Leveling Count en SATA</td><td>"Bueno", 0 reasignados, temperatura inferior a 50 °C y desgaste dentro de lo esperado</td></tr>
+          <tr><td>Sistema de archivos</td><td><code>chkdsk C: /f /r</code> (CE-a)</td><td>Sectores defectuosos y errores de índice</td><td>"No se encontraron problemas"</td></tr>
+          <tr><td>Archivos del sistema</td><td><code>sfc /scannow</code> (CE-a)</td><td>Corrupción de archivos protegidos</td><td>"no ha encontrado ninguna infracción"</td></tr>
+          <tr><td>Temperatura de CPU</td><td>HWiNFO64 8.20 / Core Temp</td><td>°C por núcleo y aparición de throttling</td><td>Por debajo de TjMax y sin throttling</td></tr>
+          <tr><td>Autotest del disco</td><td><code>smartctl</code></td><td>Errores en la prueba interna del disco</td><td>"Completed without error"</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Raíles de tensión de la fuente y tolerancia ATX</h4>
+    <p>La fuente de alimentación de un PC no entrega una única tensión: genera varios <strong>raíles</strong> o líneas de tensión, principalmente +12 V, +5 V y +3,3 V (además de +5 VSB y −12 V en equipos ATX). Cada raíl tiene un valor nominal y una tolerancia. En la especificación ATX 3.1, los raíles principales +12 V, +5 V y +3,3 V admiten una tolerancia de <strong>±5 %</strong>; por tanto, sus rangos aceptables son: +12 V entre 11,40 V y 12,60 V; +5 V entre 4,75 V y 5,25 V; +3,3 V entre 3,14 V y 3,47 V. Una lectura por debajo del mínimo o por encima del máximo está fuera de especificación. Que un valor quede justo en el límite, como 11,40 V en +12 V, es aceptable pero sin margen; conviene confirmarlo con un multímetro o un comprobador de fuentes bajo carga, porque los sensores de la placa pueden desviarse. Por ejemplo, 4,6 V en +5 V queda por debajo del mínimo de 4,75 V y, por tanto, fuera de especificación, mientras que 11,4 V en +12 V está justo en el límite inferior aceptable.</p>
+
+    <p>El <strong>TjMax</strong> es la temperatura máxima de trabajo del procesador; por encima de ella la CPU baja su frecuencia para no dañarse (el <em>thermal throttling</em> que ya vimos en CE-a). Un disco SSD tiene un indicador de <strong>desgaste</strong>: en CrystalDiskInfo 9.5 no aparece con el nombre genérico "Wear"; si el disco es NVMe se muestra como <strong>Percentage Used</strong> (porcentaje de vida consumido; 0 % es un disco nuevo) y si es SATA como el atributo SMART <strong>Wear Leveling Count</strong> (valor normalizado y valor bruto de ciclos de escritura). En PowerShell, en cambio, el contador de fiabilidad sí se llama <code>Wear</code>. Los <strong>sectores pendientes</strong> son sectores que el disco no ha podido leer y espera a reasignar; si no son cero, el disco está avisando. El <strong>autotest</strong> es una prueba que el propio disco ejecuta internamente y guarda en su registro.</p>
+
+    <h4>Lanzar la prueba: mismos datos, dos consolas</h4>
+    <div class="dual-columns">
+      <div class="win-col">
+        <h4>🪟 Windows (PowerShell)</h4>
+        <p><strong>PowerShell</strong> es la consola de comandos moderna de Windows; se abre con <code>Win + X</code> → <em>Terminal</em>.</p>
+        <pre><code>Get-PhysicalDisk | Get-StorageReliabilityCounter | Select-Object DeviceId, Temperature, Wear, PowerOnHours, ReadErrorsTotal</code></pre>
+        <ul>
+          <li><code>Get-PhysicalDisk</code>: lista los discos físicos conectados al equipo.</li>
+          <li><code>|</code>: la <strong>tubería</strong> (vista en CE-c) entrega la salida del comando anterior como entrada del siguiente.</li>
+          <li><code>Get-StorageReliabilityCounter</code>: pide al disco sus contadores de fiabilidad, los mismos datos que muestra SMART.</li>
+          <li><code>Select-Object</code>: elige qué columnas se muestran y oculta el resto.</li>
+          <li><code>DeviceId</code>: número identificador del disco.</li>
+          <li><code>Temperature</code>: temperatura en grados centígrados.</li>
+          <li><code>Wear</code>: desgaste en porcentaje según el contador de fiabilidad de Windows (0 = sin uso). No es el nombre que usa CrystalDiskInfo.</li>
+          <li><code>PowerOnHours</code>: horas totales que el disco ha estado encendido.</li>
+          <li><code>ReadErrorsTotal</code>: errores de lectura acumulados desde el primer día.</li>
+        </ul>
+      </div>
+      <div class="linux-col">
+        <h4>🐧 Linux (live USB)</h4>
+        <p>Arrancamos con un <strong>live USB</strong> (CE-a) para probar el disco sin tocar su contenido. Primero identifica el disco objetivo; no supongas que <code>/dev/sda</code> es el disco a probar, porque al arrancar desde el live USB suele ser el propio pendrive.</p>
+        <pre><code>lsblk -o NAME,SIZE,MODEL,TRAN
+sudo smartctl --scan
+sudo smartctl -t short /dev/sdX
+sudo smartctl -l selftest /dev/sdX</code></pre>
+        <ul>
+          <li><code>lsblk -o NAME,SIZE,MODEL,TRAN</code>: muestra discos y particiones con tamaño, modelo y tipo de conexión; permite reconocer el disco objetivo por su capacidad y modelo.</li>
+          <li><code>sudo smartctl --scan</code>: lista los dispositivos que smartctl detecta y en qué rutas; ayuda a elegir el disco correcto, por ejemplo <code>/dev/sdb</code> o <code>/dev/nvme0n1</code>.</li>
+          <li><code>sudo</code>: ejecuta con privilegios de administrador (CE-c), necesario para acceder al disco en bruto.</li>
+          <li><code>smartctl</code>: herramienta de smartmontools que habla directamente con el disco (CE-a).</li>
+          <li><code>-t short</code>: lanza un autotest <em>corto</em>, de unos dos minutos, que revisa electrónica y superficies críticas.</li>
+          <li><code>/dev/sdX</code>: ruta del disco objetivo, que debes sustituir tras identificarlo con <code>lsblk</code> o <code>smartctl --scan</code>; en NVMe será <code>/dev/nvme0n1</code>. No uses el dispositivo del live USB: si smartctl devuelve <em>Unknown USB bridge</em>, estás apuntando al puente USB del pendrive o a un adaptador no compatible.</li>
+          <li><code>-l selftest</code>: muestra el registro de autotests ya realizados, con su resultado y porcentaje restante.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p><strong>TecnoParts SL</strong> recibe un sobremesa del aula 3: "va lento y a veces se reinicia". El técnico ejecuta tres pruebas y debe decidir qué componente sustituir.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li><strong>Disco (CrystalDiskInfo):</strong> estado "Bueno", <em>Reallocated Sectors</em> 0, <em>Pending</em> 0, desgaste 12 % (Percentage Used, disco NVMe), <em>Power On Hours</em> 21.450, temperatura 54 °C. Comparación: el disco está sano (0 reasignados), pero 54 °C supera el umbral de 50 °C → el disco no es el culpable, aunque conviene mejorar la ventilación.</li>
+        <li><strong>CPU (HWiNFO64, 10 minutos de uso normal):</strong> núcleos a 97 °C con TjMax de 100 °C e indicador <em>Thermal Throttling: Yes</em>. Comparación: está al límite y bajando frecuencia → explica la lentitud.</li>
+        <li><strong>RAM (MemTest86, 2 pasadas completas):</strong> 0 errores. Se descarta la memoria como causa de los reinicios.</li>
+        <li><strong>Conclusión e informe:</strong> causa raíz = sobrecalentamiento (disipador obstruido y pasta térmica seca). Acción: limpieza con aire comprimido, sustitución de pasta térmica y repetir la medición; si tras la limpieza sigue por encima de 90 °C, se revisa el ventilador. Se anota en el parte: prueba realizada, valor obtenido, umbral y decisión.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-d · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>Gestoría Ruiz SL, PC de administración con Windows 11 25H2 y SSD NVMe. Tras ejecutar CrystalDiskInfo 9.5 sobre el SSD del sistema obtienes: Estado <em>Bueno</em>, Temperatura 38 °C, Power On Hours 4.100, Percentage Used 3 %, Reallocated Sectors 0, Pending Sectors 0. Redacta la conclusión del técnico (3-4 líneas) indicando si el disco es apto y qué prueba complementaria lanzarías antes de dar el equipo por bueno.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>1. Comparar cada valor con su referencia:</strong> estado "Bueno" (correcto), temperatura 38 °C, por debajo de 50 °C (correcto), 0 sectores reasignados y 0 pendientes (correcto), Percentage Used 3 % (disco prácticamente nuevo) y 4.100 horas de encendido (uso moderado, unas 8 h/día durante año y medio).</p>
+        <p><strong>2. Decisión:</strong> el disco es apto; no procede sustitución.</p>
+        <p><strong>3. Prueba complementaria:</strong> como el disco está sano pero el equipo podría tener otros problemas, se ejecuta <code>sfc /scannow</code> para comprobar la integridad de los archivos del sistema y una pasada de MemTest86 para descartar la RAM.</p>
+        <p><strong>4. Registro:</strong> se anotan herramienta, versión (CrystalDiskInfo 9.5), valores obtenidos, umbral aplicado y conclusión en el parte de trabajo.</p>
+      </details>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-d · Medio</h5>
+      <span class="nivel-tag nivel-medio">MEDIO</span>
+      <p>Clínica Dental Aravaca, equipo de recepción que "se apaga solo cada dos horas". Tienes estos resultados: CrystalDiskInfo → Estado "Bueno", 0 reasignados, 41 °C, Percentage Used 8 % (SSD NVMe); HWiNFO64 → CPU a 71 °C, sin throttling, pero el sensor <em>+12V</em> marca 11,4 V y <em>+5V</em> marca 4,6 V. Indica qué prueba ejecutarías a continuación, con qué herramienta, qué umbral aplicarías según ATX 3.1 y qué conclusión provisional redactarías.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-d · Avanzado</h5>
+      <span class="nivel-tag nivel-avanzado">AVANZADO</span>
+      <p>En el taller hay un equipo viejo sin sistema operativo que queréis reutilizar como puesto de consulta. No hay tarjeta de diagnóstico POST, pero sí el zumbador de placa base y un live USB con MemTest86 y smartmontools (conocimientos de CE-c). Diseña el plan de pruebas completo: orden de ejecución, herramienta de cada una, criterio de aceptación numérico y qué harías si el equipo no emite ningún pitido al arrancar. Incluye el informe final con los campos mínimos que anotarías.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-d</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Distingo entre "abrir la herramienta" y "ejecutar la prueba"</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé definir un valor de referencia o umbral antes de medir</label></li>
+        <li><label><input type="checkbox" class="check-item"> Interpreto los atributos SMART básicos: reasignados, pendientes, desgaste (Percentage Used en NVMe o Wear Leveling Count en SATA) y Power On Hours</label></li>
+        <li><label><input type="checkbox" class="check-item"> Identifico el disco objetivo con lsblk o smartctl --scan y lanzo/leo un autotest con smartctl -t short y -l selftest</label></li>
+        <li><label><input type="checkbox" class="check-item"> Obtengo contadores de fiabilidad del disco en PowerShell</label></li>
+        <li><label><input type="checkbox" class="check-item"> Redacto una conclusión con prueba, valor, umbral y decisión</label></li>
+      </ul>
+    </div>
+
+    <div class="box-critico">
+      <div class="box-label">⚠ TRAMPA DE EXAMEN</div>
+      <p>El error más frecuente es dar la prueba por buena porque <strong>CrystalDiskInfo muestra "Bueno" en azul</strong>. Ese estado es solo un resumen automático: un disco puede salir "Bueno" con 60 °C y 40.000 horas de encendido, y seguir siendo un riesgo. Hay que leer los atributos uno a uno y compararlos con su umbral. El segundo error clásico: lanzar MemTest86, ver 0 errores a los cinco minutos y detenerlo. Una prueba de RAM solo es válida con <strong>al menos una pasada completa</strong>; si la detienes antes, no has probado toda la memoria y el informe no vale.</p>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceF">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num">f</div>
+      <div class="bloque-info">
+        <h3>El informe técnico: documentar pruebas, problemas, reparaciones y soluciones</h3>
+        <p>CE-f · importante · 0 sesiones</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">0 sesiones</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>Un <strong>informe técnico</strong> es el documento escrito donde dejas constancia de qué le has hecho a un equipo, qué has encontrado y con qué resultado. Sin informe, el trabajo no existe: dentro de seis meses nadie podrá demostrar qué se probó, qué pieza se cambió ni por qué.</p>
+
+    <p>El informe es la última fase de cualquier intervención y la primera que se consulta cuando el equipo vuelve a fallar. Todo lo que has practicado en este RA (pruebas de integridad en CE-a, de rendimiento en CE-b, herramientas de diagnóstico en CE-c y pruebas con software de diagnóstico en CE-d) acaba convertido en datos dentro de un informe.</p>
+
+    <div class="cards">
+      <div class="card">
+        <h4><span class="ico">🧪</span> Informe de pruebas</h4>
+        <ul><li>Qué se probó y con qué herramienta</li><li>Valor obtenido frente al umbral</li></ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">⚠️</span> Informe de incidencia</h4>
+        <ul><li>Síntoma que declara el usuario</li><li>Diagnóstico y causa raíz</li></ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">🔧</span> Informe de reparación</h4>
+        <ul><li>Piezas sustituidas con referencia</li><li>Pruebas de verificación posteriores</li></ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">📈</span> Informe de ampliación</h4>
+        <ul><li>Componente añadido o actualizado</li><li>Compatibilidad comprobada</li></ul>
+      </div>
+    </div>
+
+    <p>La <strong>trazabilidad</strong> es la capacidad de reconstruir toda la historia del equipo a partir de sus informes: quién lo tocó, cuándo y para qué. Un <strong>activo</strong> es cualquier equipo que la empresa debe controlar (un PC, un monitor, un switch); en el informe se identifica por marca, modelo y <strong>número de serie</strong>, la etiqueta única que pone el fabricante.</p>
+
+    <div class="clave">Un informe no se escribe para el técnico que lo redacta, sino para el que lo leerá dentro de seis meses sin poder preguntarte nada.</div>
+
+    <h4>Secciones de un informe completo</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Sección</th><th>Qué se escribe</th><th>Ejemplo</th></tr></thead>
+        <tbody>
+          <tr><td>Cabecera</td><td>Nº de informe, fecha y hora, técnico, cliente y ubicación</td><td>INF-2026-0412 · 14/10/2026 · J. Ruiz · Tecnoparts SL · Aula 2</td></tr>
+          <tr><td>Activo</td><td>Marca, modelo, número de serie y sistema operativo</td><td>HP ProDesk 400 G7 · SN 4CV8123 · Windows 11 25H2</td></tr>
+          <tr><td>Síntoma</td><td>Lo que declara el usuario, entrecomillado y sin interpretar</td><td>«Se reinicia solo cuando abro la hoja de cálculo»</td></tr>
+          <tr><td>Pruebas y resultados</td><td>Herramienta, prueba y valor obtenido frente al valor de referencia</td><td>MemTest86 11.2: 0 errores en 4 pasadas</td></tr>
+          <tr><td>Diagnóstico</td><td>La causa técnica concreta, no el síntoma repetido</td><td>CPU a 96 °C por disipador obstruido; apagado térmico</td></tr>
+          <tr><td>Actuación</td><td>Lo realizado, con piezas y referencias</td><td>Limpieza, pasta térmica nueva, ventilador 92 mm sustituido</td></tr>
+          <tr><td>Verificación y pendientes</td><td>Pruebas tras reparar y lo que queda abierto</td><td>OCCT 30 min sin throttling; pendiente revisar flujo de aire del aula</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Reglas de redacción</h4>
+    <ul>
+      <li><strong>Hechos, no opiniones:</strong> «el ventilador no gira», nunca «el ventilador está mal».</li>
+      <li><strong>Unidades siempre:</strong> 78 °C, 12,04 V, 512 GB. Un número sin unidad no significa nada.</li>
+      <li><strong>Cada prueba con su valor de referencia:</strong> no basta «el disco está bien», hay que decir qué contador SMART se miró y qué valor tenía.</li>
+      <li><strong>Sin datos personales del usuario:</strong> basta la ruta del fichero, no su contenido. Lo exige el RGPD (Reglamento General de Protección de Datos).</li>
+      <li><strong>Nunca se borra una línea errónea:</strong> se tacha, se corrige al lado y se firma.</li>
+    </ul>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 760 190" role="img" aria-label="Ciclo de una intervención técnica desde la recepción del equipo hasta el informe final">
+        <defs>
+          <marker id="flecha-f-cef" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="16" y="55" width="128" height="80" rx="12" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="80" y="85" text-anchor="middle" font-size="14" fill="#1a1a2e">Recepción</text>
+        <text x="80" y="105" text-anchor="middle" font-size="12" fill="#667085">datos del activo</text>
+
+        <rect x="166" y="55" width="128" height="80" rx="12" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="230" y="85" text-anchor="middle" font-size="14" fill="#1a1a2e">Pruebas</text>
+        <text x="230" y="105" text-anchor="middle" font-size="12" fill="#667085">evidencias</text>
+
+        <rect x="316" y="55" width="128" height="80" rx="12" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="380" y="85" text-anchor="middle" font-size="14" fill="#1a1a2e">Diagnóstico</text>
+        <text x="380" y="105" text-anchor="middle" font-size="12" fill="#667085">causa raíz</text>
+
+        <rect x="466" y="55" width="128" height="80" rx="12" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="530" y="85" text-anchor="middle" font-size="14" fill="#1a1a2e">Actuación</text>
+        <text x="530" y="105" text-anchor="middle" font-size="12" fill="#667085">reparar o ampliar</text>
+
+        <rect x="616" y="55" width="128" height="80" rx="12" fill="#f7f9fc" stroke="#d4a017" stroke-width="2"/>
+        <text x="680" y="85" text-anchor="middle" font-size="14" fill="#1a1a2e">Cierre</text>
+        <text x="680" y="105" text-anchor="middle" font-size="12" fill="#667085">informe firmado</text>
+
+        <line x1="144" y1="95" x2="162" y2="95" stroke="#667085" stroke-width="2" marker-end="url(#flecha-f-cef)"/>
+        <line x1="294" y1="95" x2="312" y2="95" stroke="#667085" stroke-width="2" marker-end="url(#flecha-f-cef)"/>
+        <line x1="444" y1="95" x2="462" y2="95" stroke="#667085" stroke-width="2" marker-end="url(#flecha-f-cef)"/>
+        <line x1="594" y1="95" x2="612" y2="95" stroke="#667085" stroke-width="2" marker-end="url(#flecha-f-cef)"/>
+      </svg>
+      <figcaption>Fases de una intervención. Fíjate en que el informe no es un trámite final: las pruebas de verificación se hacen antes de cerrar, y sin evidencia recogida en la fase 2 no hay nada que redactar.</figcaption>
+    </figure>
+
+    <h4>Recoger la evidencia</h4>
+    <div class="dual-columns">
+      <div class="win-col">
+        <h4>🪟 Windows</h4>
+        <p>El <strong>Visor de eventos</strong> (visto en CE-c) guarda los errores del sistema y de hardware con fecha y hora. Se puede exportar el evento concreto como archivo y adjuntarlo al informe, o pegar su descripción literal en la sección de pruebas.</p>
+      </div>
+      <div class="linux-col">
+        <h4>🐧 Linux</h4>
+        <p><strong>journalctl</strong> (visto en CE-c) muestra el registro del sistema. Para localizar el fallo se filtra por fecha y por nivel de gravedad; por ejemplo: <code>journalctl --since "2026-10-20 08:00" --until "2026-10-20 10:00" -p err</code>. El flag <code>--since</code> limita el inicio del intervalo (y <code>--until</code> el final); <code>-p err</code> muestra solo los mensajes de prioridad «error» y superiores. Se copia la línea exacta en el informe, indicando equipo y día.</p>
+      </div>
+    </div>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p>Tecnoparts SL, puesto de contabilidad. El usuario informa: «el PC se apaga solo cuando abro la hoja de cálculo grande». Equipo HP ProDesk 400 G7, Windows 11 25H2, técnico J. Ruiz, 14/10/2026.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li>Cabecera y activo: se anota el número de serie de la etiqueta trasera y se abre el informe como INF-2026-0412. Sin identificar el activo, el informe no sirve para nada.</li>
+        <li>Pruebas: se lanza HWiNFO64 y se observa la temperatura de CPU en reposo (48 °C). Se abre la hoja de cálculo y en dos minutos sube a 96 °C; el equipo se apaga. Se anota también el evento del Visor de eventos: «Kernel-Power, ID 41: apagado inesperado del sistema», compatible con la protección térmica; no se usa Kernel-Processor-Power, que con ID 37 registra limitación de velocidad por firmware.</li>
+        <li>Diagnóstico: no es la fuente ni la RAM, es sobrecalentamiento. Se desmonta el disipador y se confirma que está obstruido por polvo y que la pasta térmica está seca.</li>
+        <li>Actuación: limpieza con aire comprimido, retirada de la pasta vieja con alcohol isopropílico, pasta nueva y remontaje del disipador.</li>
+        <li>Verificación: 30 minutos de OCCT sin pasar de 74 °C y sin throttling. Se repite la apertura de la hoja de cálculo sin apagón. Se redacta el cierre con la prueba, el valor y la conclusión, y se firma.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-f · Único</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>Academia Nexo, aula 3, 20/10/2026, técnico/a: tú. El PC del puesto 7 «no arranca: pantalla negra y pitidos». Comprobaciones ya realizadas: el zumbador de la placa (AMI) emite 8 pitidos cortos; con otro módulo de RAM el equipo sigue igual; con otra fuente de alimentación el equipo arranca correctamente; al medir la fuente original, el raíl de +12 V da 11,2 V. Redacta el informe técnico completo con los datos disponibles, indicando qué falta por comprobar.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>Cabecera:</strong> INF-2026-1043 · 20/10/2026 · [técnico] · Academia Nexo · Aula 3, puesto 7.<br>
+        <strong>Activo:</strong> PC de sobremesa del puesto 7, número de serie de la etiqueta trasera (hay que anotarlo) y sistema operativo instalado.</p>
+        <p><strong>Síntoma:</strong> «No arranca: pantalla negra y pitidos» (declaración del usuario, entrecomillada).</p>
+        <p><strong>Pruebas y resultados:</strong></p>
+        <ul>
+          <li>Zumbador de placa con BIOS AMI: 8 pitidos cortos → fallo en la prueba de lectura/escritura de la memoria de vídeo según la tabla AMI. El patrón 1 pitido largo + 2 cortos corresponde a Award, no a AMI; por eso no se usa aquí.</li>
+          <li>Sustitución del módulo de RAM por otro conocido bueno: el fallo persiste → se descarta la memoria como causa principal inmediata.</li>
+          <li>Sustitución de la fuente de alimentación por una de taller: el equipo arranca con normalidad y sin pitidos.</li>
+          <li>Medida con multímetro en el raíl de +12 V de la fuente original: 11,2 V. El valor de referencia es 12 V con tolerancia ±5 % (de 11,4 a 12,6 V), como vimos en CE-d; está fuera de especificación.</li>
+        </ul>
+        <p><strong>Diagnóstico:</strong> fuente de alimentación ATX degradada, con el raíl de +12 V por debajo de tolerancia. Esa alimentación insuficiente puede impedir que el POST complete la inicialización de la memoria de vídeo y explicar los 8 pitidos cortos de AMI, aunque el código apunte al subsistema de vídeo. La sustitución de la fuente hace arrancar el equipo, por lo que la fuente es la causa inmediata; no obstante, como el código inicial era de vídeo, no se cierra el caso sin comprobar el subsistema de vídeo.</p>
+        <p><strong>Actuación:</strong> sustitución de la fuente por una del mismo formato y potencia igual o superior. Se anota la referencia de la fuente retirada y la de la instalada.</p>
+        <p><strong>Verificación y pendientes:</strong> con la fuente nueva, arranque correcto y POST sin pitidos; se ejecuta una prueba de estabilidad de 30 minutos y se comprueban temperaturas antes de dar el equipo por reparado. Queda pendiente revisar la salida de vídeo: probar el monitor y el cable, comprobar el puerto de vídeo y, si el equipo dispone de tarjeta gráfica dedicada, sustituirla por otra conocida buena y repetir la prueba de imagen. También queda pendiente revisar la instalación eléctrica del aula, porque una fuente degradada puede repetirse si hay picos de tensión. Solo cuando la imagen sea estable y repetible se dará el equipo por reparado.</p>
+      </details>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-f</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Sé qué es un informe técnico y para qué se usa</label></li>
+        <li><label><input type="checkbox" class="check-item"> Enumero las secciones de un informe completo</label></li>
+        <li><label><input type="checkbox" class="check-item"> Distingo síntoma, diagnóstico y actuación</label></li>
+        <li><label><input type="checkbox" class="check-item"> Anoto cada prueba con su herramienta, su valor y su referencia</label></li>
+        <li><label><input type="checkbox" class="check-item"> Identifico el activo por marca, modelo y número de serie</label></li>
+        <li><label><input type="checkbox" class="check-item"> Redacto con hechos, unidades y sin datos personales del usuario</label></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="resumen">
+  <div class="bloque-header" style="border-left-color:#1a6b3a;">
+    <div class="bloque-titulo">
+      <div class="bloque-num" style="background:#1a6b3a;">★</div>
+      <div class="bloque-info">
+        <h3>Puntos clave — RA9</h3>
+        <p>Repasa esto antes del examen</p>
+      </div>
+    </div>
+  </div>
+  <div class="bloque-body">
+    <ol>
+      <li style="margin-bottom:8px;"><strong>CE-a.</strong> Distingue pruebas de integridad (¿están bien los datos y los componentes?) de pruebas de estabilidad (¿aguanta funcionando sin fallos?): con MemTest86 11.2 verificas la RAM desde un USB arrancable, con CrystalDiskInfo 9.5 lees el estado SMART del disco y con OCCT 13.1, Prime95 30.19, FurMark 1.37 y Cinebench 2024.1.0 sometes CPU y GPU a carga controlada, vigilando temperaturas y posibles reinicios.</li>
+      <li style="margin-bottom:8px;"><strong>CE-a.</strong> En Windows 11 25H2/26H2 conoces la reparación del sistema de archivos con <em>chkdsk C: /f /r</em> (corrige errores y busca sectores defectuosos) y la integridad de ficheros del sistema con <em>sfc /scannow</em>; en Ubuntu 26.04 LTS, Ubuntu 24.04 LTS y Debian 13.0 usas <em>sudo fsck /dev/sda1</em> con las opciones <em>-n</em> (solo comprobar) y <em>-y</em> (responder sí), siempre tras <em>sudo umount /dev/sda1</em> porque no se comprueba una partición montada.</li>
+      <li style="margin-bottom:8px;"><strong>CE-a.</strong> En equipos sin sistema operativo o que no arrancan empleas medios de arranque creados con Rufus 4.6, Ventoy 1.1.05, balenaEtcher 1.19.25 o Windows PE 10.1.26100, y desde un live USB de GParted Live 1.6.0-3 o SystemRescue revisas particiones, SMART con <em>sudo smartctl -a /dev/sda</em> (smartmontools) y sensores con <em>lm-sensors</em>; también compruebas que no haya Thermal Throttling, que la BIOS/UEFI detecte el doble canal de memoria y que el disipador y la pasta térmica estén bien colocados.</li>
+      <li style="margin-bottom:8px;"><strong>CE-b.</strong> Interpretas una puntuación (score) comparándola con una línea base: Cinebench 2024.1.0 da resultados de mononúcleo y multinúcleo de CPU, 3DMark 2.31 y Unigine Superposition 1.1 miden GPU en FPS, y AIDA64 Extreme 7.60 informa de ancho de banda en GB/s y latencia en ns, útil para comprobar la mejora del doble canal frente al monocanal.</li>
+      <li style="margin-bottom:8px;"><strong>CE-b.</strong> Mides el rendimiento del almacenamiento con CrystalDiskMark 8.0.6 y HD Tune Pro 6.10 en MB/s e IOPS, y en Linux (Ubuntu 26.04 LTS, Ubuntu 24.04 LTS, Debian 13.0) con <em>dd if=/dev/zero of=/home/alumno/prueba.bin bs=1M count=1024 conv=fdatasync</em>, teniendo en cuenta que la caché RAM falsea el resultado y que la prueba debe repetirse (repetibilidad) con el plan de energía en Alto rendimiento y sin throttling térmico.</li>
+      <li style="margin-bottom:8px;"><strong>CE-b.</strong> Con PassMark BurnInTest 11.0 y las pruebas <em>winsat disk -drive c</em> de Windows 11 completas la comparativa de rendimiento y detectas el cuello de botella: si el equipo va lento no siempre es la CPU, puede ser un disco SATA III (6 Gb/s) frente a un NVMe, o una memoria en monocanal.</li>
+      <li style="margin-bottom:8px;"><strong>CE-c.</strong> Conoces las herramientas de diagnóstico propias del sistema: en Windows 11 el Administrador de dispositivos, el Monitor de rendimiento, <em>msinfo32</em>, <em>dxdiag</em> (información de DirectX), <em>mdsched</em> para la memoria y el Visor de eventos (incluidos los avisos WHEA); en Ubuntu y Debian, <em>lspci</em>, <em>lsusb</em>, <em>dmesg</em> para el kernel y <em>journalctl</em> para el registro del sistema, filtrando con <em>grep</em> y tuberías (por ejemplo <em>lspci -nn</em>).</li>
+      <li style="margin-bottom:8px;"><strong>CE-c.</strong> Manejas las herramientas externas portables descargadas de su web oficial: CPU-Z 2.15 y GPU-Z 2.62 (identificación de CPU, placa, memoria y tarjeta gráfica), Core Temp 1.19 (temperatura del procesador), CrystalDiskInfo 9.5 (SMART), Victoria 5.37 (sectores defectuosos) y Rescuezilla 2.6 para clonación e imágenes de disco; y sabes interpretar el POST con el zumbador de la placa base y sus códigos de pitidos.</li>
+      <li style="margin-bottom:8px;"><strong>CE-d.</strong> Al ejecutar la prueba de diagnóstico comparas cada valor con su valor de referencia y su umbral: en CrystalDiskInfo 9.5 revisas Reallocated Sectors, Pending Sectors, Percentage Used, Wear Leveling Count y Power On Hours; en HWiNFO64 8.20 compruebas TjMax, el desgaste del SSD y las líneas de tensión +12 V, +5 V, +3,3 V, +5 VSB y −12 V frente a la tolerancia ±5 % de la ATX 3.1, apoyándote en el multímetro o el comprobador de fuentes.</li>
+      <li style="margin-bottom:8px;"><strong>CE-d.</strong> En Windows 11 lanzas la autocomprobación con MemTest86 11.2 desde USB y consultas el disco con PowerShell (Win + X → Terminal): <em>Get-PhysicalDisk</em>, <em>Get-StorageReliabilityCounter</em> y <em>Select-Object</em> sobre DeviceId, Temperature, Wear, PowerOnHours y ReadErrorsTotal. En Ubuntu 26.04 LTS, Ubuntu 24.04 LTS y Debian 13.0 usas <em>lsblk -o NAME,SIZE,MODEL,TRAN</em>, <em>smartctl --scan</em>, <em>smartctl -t short /dev/sdX</em> y <em>smartctl -l selftest</em>, sabiendo que <em>/dev/nvme0n1</em> es NVMe y <em>/dev/sdX</em> es SATA, y que "Unknown USB bridge" indica que el adaptador USB no deja leer el SMART.</li>
+      <li style="margin-bottom:8px;"><strong>CE-f.</strong> Redactas el informe técnico con cabecera (activo, número de serie, fecha), síntoma, pruebas y resultados con sus unidades, diagnóstico, actuación, verificación y pendientes, separando hechos de opiniones, citando la causa raíz y firmándolo; en él encajan las evidencias recogidas: Kernel-Power ID 41 y Kernel-Processor-Power ID 37 del Visor de eventos, <em>journalctl --since --until -p err</em>, un pitido del zumbador de la BIOS AMI que apunta a la RAM, un raíl +12 V fuera de ±5 % medido con multímetro o un problema de memoria de vídeo en una tarjeta gráfica dedicada.</li>
+      <li style="margin-bottom:8px;"><strong>CE-f.</strong> Todo informe respeta la trazabilidad y el RGPD: se identifica el equipo y el usuario sin datos personales innecesarios, se anotan las versiones de las herramientas empleadas (HWiNFO64 8.20, OCCT 13.1, CrystalDiskInfo 9.5, MemTest86 11.2) y se guarda el informe firmado junto al parte de trabajo, de forma que otra persona pueda repetir las pruebas y obtener los mismos resultados.</li>
+    </ol>
+  </div>
+</div>
+</div>
+
+<footer>Montaje y mantenimiento de equipos · Grado Medio · RA9: Verifica equipos interpretando resultados de las pruebas realizadas.</footer>
+
+<button class="btn-top" id="btnTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="progreso-badge" id="progresoBadge">Progreso: 0%</div>
+
+<script>
+
+  window.addEventListener('scroll', function() {
+    document.getElementById('btnTop').classList.toggle('visible', window.scrollY > 300);
+  });
+  function updateProgress() {
+    var all = document.querySelectorAll('.check-item');
+    var checked = document.querySelectorAll('.check-item:checked');
+    var pct = all.length > 0 ? Math.round((checked.length / all.length) * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progresoBadge').textContent = 'Progreso: ' + pct + '%';
+    try { localStorage.setItem('progreso_ra9_montaje_y_mantenimie', pct); } catch(e) {}
+  }
+  document.querySelectorAll('.check-item').forEach(function(cb, i) {
+    try { if (localStorage.getItem('cb_ra9_montaje_y_mantenimie_' + i) === 'true') cb.checked = true; } catch(e) {}
+    cb.addEventListener('change', function() {
+      try { localStorage.setItem('cb_ra9_montaje_y_mantenimie_' + i, cb.checked); } catch(e) {}
+      updateProgress();
+    });
+  });
+  document.querySelectorAll('.respuesta[contenteditable="true"]').forEach(function(div, i) {
+    try { var s = localStorage.getItem('resp_ra9_montaje_y_mantenimie_' + i); if (s) div.innerHTML = s; } catch(e) {}
+    div.addEventListener('input', function() {
+      try { localStorage.setItem('resp_ra9_montaje_y_mantenimie_' + i, div.innerHTML); } catch(e) {}
+    });
+  });
+  updateProgress();
+
+</script>
+</body>
+</html>

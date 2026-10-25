@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RA6 — Montaje y mantenimiento de equipos: Reconoce nuevas tendencias en el ensamblaje de equipos microinformáticos describiendo sus ventajas y adaptándolas a las características de uso de los equipos.</title>
+  <style>
+    html { scroll-behavior: smooth; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #eef1f5; color: #1a1a2e; line-height: 1.7; font-size: 15px; }
+    :root {
+      --azul: #1e3a5f; --azul-medio: #2d6a9f; --azul-claro: #dceeff;
+      --win: #2d6a9f; --win-light: #e6f0f9;
+      --linux: #b8542a; --linux-light: #fbeee6;
+      --critico: #b03a2e; --critico-light: #fdf0ee;
+      --importante: #8a6400; --importante-light: #fff9e6;
+      --complementario: #2d6a9f; --complementario-light: #e8f2fb;
+      --exito: #1a6b3a; --exito-light: #e2f0e6;
+      --gris: #667085; --borde: #dde3ec;
+      --sombra: 0 2px 8px rgba(30,58,95,0.07);
+    }
+
+    /* ── Cabecera ───────────────────────────────────────────── */
+    .nav-sor { position: sticky; top: 0; z-index: 100; background: var(--azul); padding: 0 24px; height: 52px; display: flex; align-items: center; }
+    .nav-brand { color: white; font-weight: 600; font-size: 15px; letter-spacing: 0.3px; max-width: 1080px; width: 100%; margin: 0 auto; }
+    .nav-brand span { color: #8fc7a0; font-weight: 700; }
+    .hero { background: linear-gradient(135deg, var(--azul) 0%, var(--azul-medio) 100%); color: white; padding: 40px 24px 34px; text-align: left; }
+    .hero > * { max-width: 1080px; margin-left: auto; margin-right: auto; }
+    .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 4px 14px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px; }
+    .hero h1 { font-size: 25px; font-weight: 700; line-height: 1.35; margin-bottom: 8px; }
+    .hero-sub { font-size: 14px; opacity: 0.8; font-style: italic; margin-bottom: 20px; }
+    .hero-meta { display: flex; gap: 8px; flex-wrap: wrap; font-size: 12px; }
+    .hero-meta span { background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); padding: 4px 13px; border-radius: 20px; font-weight: 600; }
+
+    /* ── Columna medida ─────────────────────────────────────── */
+    .container { max-width: 1080px; margin: 0 auto; padding: 32px 24px 64px; }
+
+    /* ── Ficha del RA ───────────────────────────────────────── */
+    .ra-info { background: white; border-radius: 10px; padding: 22px 26px; margin-bottom: 24px; box-shadow: var(--sombra); }
+    .ra-info h2 { font-size: 18px; color: var(--azul); border-left: 4px solid var(--azul-medio); padding-left: 14px; margin-bottom: 18px; line-height: 1.4; }
+    .peso-grid { display: flex; flex-wrap: wrap; gap: 12px; margin: 14px 0; }
+    .peso-card { flex: 1; min-width: 120px; background: #f7f9fc; border: 1px solid var(--borde); border-radius: 8px; padding: 12px 14px; text-align: center; }
+    .peso-card .numero { font-size: 24px; font-weight: 700; color: var(--azul-medio); line-height: 1.2; }
+    .peso-card .label { font-size: 11px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.6px; }
+    .ce-criticos { background: var(--critico-light); border-left: 4px solid var(--critico); border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 16px 0; font-size: 13px; }
+    .ce-criticos strong { color: var(--critico); }
+    .progress-bar { background: var(--borde); height: 8px; border-radius: 8px; overflow: hidden; margin: 14px 0 2px; }
+    .progress-fill { background: var(--exito); width: 0%; height: 100%; transition: width 0.3s; }
+
+    /* ── Índice ─────────────────────────────────────────────── */
+    .ce-index { background: white; border-radius: 10px; padding: 18px 26px; margin-bottom: 32px; box-shadow: var(--sombra); }
+    .ce-index-titulo { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gris); margin-bottom: 12px; }
+    .ce-index-links { display: flex; flex-wrap: wrap; gap: 6px; }
+    .ce-idx-item { display: flex; align-items: baseline; gap: 8px; padding: 5px 11px; border-radius: 6px; text-decoration: none; font-size: 12.5px; color: #2c3444; border: 1px solid var(--borde); background: #f7f9fc; transition: 0.15s; }
+    .ce-idx-item:hover { background: var(--azul-claro); border-color: var(--azul-medio); }
+    .ce-idx-critico { border-left: 3px solid var(--critico); }
+    .ce-idx-importante { border-left: 3px solid #d4a017; }
+    .ce-idx-complementario { border-left: 3px solid var(--azul-medio); }
+    .ce-idx-letra { font-weight: 800; font-size: 13px; color: var(--azul); }
+    .ce-idx-desc { color: #4a5568; }
+
+    /* ── Bloques: cabecera y cuerpo como dos tarjetas ───────── */
+    .bloque { background: transparent; border: none; box-shadow: none; margin-bottom: 40px; }
+    .bloque-header { background: white; border-left: 5px solid var(--azul-medio); border-radius: 0 8px 8px 0; padding: 15px 20px; margin-bottom: 16px; box-shadow: var(--sombra); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .bloque-titulo { display: flex; align-items: center; gap: 13px; }
+    .bloque-num { background: var(--azul-medio); color: white; font-weight: 700; border-radius: 6px; padding: 4px 11px; font-size: 14px; flex-shrink: 0; align-self: flex-start; margin-top: 3px; }
+    .bloque-num.critico { background: var(--critico); }
+    .bloque-info h3 { font-size: 18px; color: var(--azul); margin-bottom: 3px; line-height: 1.35; }
+    .bloque-info p { font-size: 12px; color: var(--gris); }
+    .bloque-sesiones { background: #f0f3f8; color: var(--gris); border: 1px solid var(--borde); padding: 4px 12px; border-radius: 20px; font-size: 11.5px; font-weight: 600; }
+    .bloque-body { background: white; border-radius: 10px; padding: 24px 28px; box-shadow: var(--sombra); }
+
+    /* ── Escala tipográfica dentro del cuerpo ───────────────── */
+    .bloque-body h3 { font-size: 16px; color: var(--azul); margin: 26px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--borde); }
+    .bloque-body h4 { font-size: 15px; color: var(--azul); margin: 22px 0 10px; }
+    .bloque-body > h3:first-child, .bloque-body > h4:first-child { margin-top: 0; }
+    .bloque-body p { margin-bottom: 11px; }
+    .bloque-body p:last-child { margin-bottom: 0; }
+    .win-col h4, .linux-col h4, .ejercicio h5, .ejemplo-resuelto h5 { margin-top: 0; }
+
+    /* ── Listas ─────────────────────────────────────────────── */
+    .bloque-body ul, .bloque-body ol, .box-critico ul, .box-critico ol, .box-importante ul, .box-importante ol, .box-complementario ul, .box-complementario ol, .win-col ul, .win-col ol, .linux-col ul, .linux-col ol { padding-left: 20px; margin: 10px 0; }
+    .bloque-body li { margin-bottom: 6px; }
+    .bloque-body li::marker { color: var(--azul-medio); }
+
+    /* ── Dos columnas Windows / Linux ───────────────────────── */
+    .dual-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+    .win-col { background: var(--win-light); border: 1px solid #cfe0ee; border-top: 3px solid var(--win); border-radius: 8px; padding: 16px 18px; min-width: 0; }
+    .win-col h4 { color: var(--win); font-size: 14px; margin-bottom: 10px; }
+    .linux-col { background: var(--linux-light); border: 1px solid #f0dcd0; border-top: 3px solid var(--linux); border-radius: 8px; padding: 16px 18px; min-width: 0; }
+    .linux-col h4 { color: var(--linux); font-size: 14px; margin-bottom: 10px; }
+
+    /* ── Cajas semánticas ───────────────────────────────────── */
+    .box-critico, .box-importante, .box-complementario { border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 18px 0; }
+    .box-critico { background: var(--critico-light); border-left: 4px solid var(--critico); }
+    .box-importante { background: var(--importante-light); border-left: 4px solid #d4a017; }
+    .box-complementario { background: var(--complementario-light); border-left: 4px solid var(--complementario); }
+    .box-label { font-weight: 700; font-size: 12px; text-transform: none; letter-spacing: 0.3px; margin-bottom: 5px; display: block; }
+    .box-critico .box-label { color: var(--critico); }
+    .box-importante .box-label { color: var(--importante); }
+    .box-complementario .box-label { color: var(--complementario); }
+
+    /* ── Código y tablas ────────────────────────────────────── */
+    pre { background: #1e293b; color: #e2e8f0; padding: 13px 16px; border-radius: 8px; overflow-x: auto; font-size: 13px; font-family: 'Consolas', 'Courier New', monospace; margin: 14px 0; line-height: 1.6; }
+    pre code { background: none; color: inherit; padding: 0; }
+    code { background: #eef2f7; padding: 1px 6px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 13px; color: #1e3a5f; }
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 18px 0; border-radius: 8px; border: 1px solid var(--borde); }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    thead tr { background: var(--azul); color: white; }
+    th { padding: 10px 14px; text-align: left; font-weight: 600; }
+    tbody tr:nth-child(even) { background: #f7f9fc; }
+    td { padding: 9px 14px; border-bottom: 1px solid var(--borde); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+
+    /* ── Ejercicios ─────────────────────────────────────────── */
+    .ejercicio { background: #fdfaf2; border: 1px solid #eadfc2; border-left: 4px solid #d4a017; border-radius: 0 8px 8px 0; padding: 16px 18px; margin: 20px 0; }
+    .ejercicio h5 { color: #7a5c00; margin-bottom: 4px; font-size: 14px; }
+    .nivel-tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-bottom: 8px; letter-spacing: 0.5px; }
+    .nivel-basico { background: var(--exito-light); color: var(--exito); }
+    .nivel-medio { background: #fdf3d6; color: #7a5c00; }
+    .nivel-avanzado { background: var(--critico-light); color: var(--critico); }
+    .respuesta { background: white; border: 1px solid var(--borde); border-radius: 6px; padding: 12px; min-height: 76px; margin-top: 12px; outline: none; }
+    .respuesta:focus { border-color: var(--azul-medio); box-shadow: 0 0 0 3px rgba(45,106,159,0.1); }
+    .respuesta:empty::before { content: attr(data-placeholder); color: #a0aec0; pointer-events: none; display: block; }
+    .solucion { margin-top: 12px; background: var(--exito-light); border-radius: 6px; padding: 2px 14px; }
+    .solucion summary { cursor: pointer; font-weight: 600; color: var(--exito); padding: 9px 0; list-style: revert; font-size: 13.5px; }
+    .solucion[open] summary { margin-bottom: 6px; }
+
+    /* ── Ejemplo resuelto, diagrama, checklist ──────────────── */
+    .ejemplo-resuelto { background: var(--exito-light); border-left: 4px solid var(--exito); border-radius: 0 8px 8px 0; padding: 16px 18px; margin: 20px 0; }
+    .ejemplo-resuelto h5 { color: var(--exito); margin-bottom: 8px; font-size: 14px; }
+    .diagrama { margin: 22px 0; background: #f7f9fc; border: 1px solid var(--borde); border-radius: 10px; padding: 20px 14px; text-align: center; overflow-x: auto; }
+    .diagrama svg { max-width: 100%; height: auto; display: block; margin: 0 auto; font-family: 'Segoe UI', system-ui, sans-serif; }
+    .diagrama figcaption { font-size: 12.5px; color: var(--gris); margin-top: 14px; font-style: italic; }
+    .checklist { background: #f7f9fc; border: 1px solid var(--borde); border-radius: 10px; padding: 18px 20px; margin-top: 22px; }
+    .checklist strong { color: var(--azul); font-size: 14px; }
+    .checklist ul { list-style: none; padding: 0; margin-top: 10px; }
+    .checklist li { padding: 5px 0; display: flex; align-items: flex-start; gap: 10px; cursor: pointer; border-bottom: 1px solid #eef1f5; }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li input[type="checkbox"] { width: 15px; height: 15px; flex-shrink: 0; cursor: pointer; margin-top: 5px; accent-color: var(--exito); }
+    .checklist li label { cursor: pointer; flex: 1; font-size: 14px; }
+
+    /* ── Varios ─────────────────────────────────────────────── */
+    hr.sep { border: none; border-top: 2px dashed var(--borde); margin: 24px 0; }
+    footer { text-align: center; padding: 28px 24px; color: var(--gris); font-size: 12px; border-top: 1px solid var(--borde); margin-top: 44px; background: white; }
+    .btn-top { position: fixed; bottom: 20px; right: 20px; background: var(--azul); color: white; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-size: 19px; opacity: 0; transition: 0.3s; z-index: 90; }
+    .btn-top.visible { opacity: 1; }
+    .progreso-badge { position: fixed; bottom: 20px; left: 20px; background: var(--azul); color: white; padding: 7px 15px; border-radius: 20px; font-size: 12.5px; font-weight: 600; z-index: 90; }
+
+    @media (max-width: 768px) {
+      body { font-size: 14px; }
+      .container { padding: 18px 14px 44px; }
+      .dual-columns { grid-template-columns: 1fr; gap: 12px; }
+      .hero { padding: 26px 18px 22px; }
+      .hero h1 { font-size: 19px; }
+      .bloque-body { padding: 16px 17px; }
+      .bloque-header { padding: 13px 15px; }
+      pre { font-size: 11.5px; }
+      th, td { padding: 7px 9px; font-size: 12px; }
+    }
+
+    /* ── Fotos reales ───────────────────────────────────────── */
+    .foto { margin: 22px 0; }
+    .foto-sm img { max-width: 620px; margin-left: auto; margin-right: auto; }
+    .foto img { width: 100%; border-radius: 10px; border: 1px solid var(--borde); display: block; }
+    .foto figcaption { font-size: 12.5px; color: var(--gris); margin-top: 10px; font-style: italic; text-align: center; }
+    .foto-pendiente { border: 2px dashed #c3cede; border-radius: 10px; background: #f7f9fc; padding: 26px 20px; text-align: center; color: var(--gris); }
+    .foto-pendiente .icono { font-size: 30px; display: block; margin-bottom: 8px; opacity: 0.6; }
+    .foto-pendiente .archivo { display: inline-block; font-family: 'Consolas', monospace; font-size: 12.5px; background: white; border: 1px solid var(--borde); border-radius: 4px; padding: 2px 8px; color: var(--azul); margin-top: 8px; }
+    .foto-pendiente .que { font-size: 13.5px; color: #4a5568; }
+
+    /* ── Rejilla de tarjetas de contenido ───────────────────── */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: 14px; margin: 20px 0; }
+    .card { background: #f7f9fc; border: 1px solid var(--borde); border-top: 3px solid var(--azul-medio); border-radius: 8px; padding: 15px 17px; }
+    .card h4 { font-size: 14px; color: var(--azul); margin: 0 0 9px; display: flex; align-items: center; gap: 8px; }
+    .card h4 .ico { font-size: 18px; }
+    .card ul { margin: 0; padding-left: 18px; font-size: 13.5px; }
+    .card li { margin-bottom: 5px; }
+
+    /* ── Etiquetas de peligrosidad ──────────────────────────── */
+    .pel { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 1px 8px; border-radius: 4px; letter-spacing: 0.4px; white-space: nowrap; }
+    .pel-baja    { background: #e2f0e6; color: #1a6b3a; }
+    .pel-media   { background: #fdf3d6; color: #7a5c00; }
+    .pel-alta    { background: #fbe6dd; color: #a0522d; }
+    .pel-critica { background: #f7dcd8; color: #8c2f22; }
+
+    /* ── Frase destacada, para romper el bloque de texto ────── */
+    .clave { font-size: 16px; line-height: 1.6; color: var(--azul); border-left: 4px solid #d4a017; padding: 4px 0 4px 16px; margin: 22px 0; font-weight: 600; }
+
+    /* ── Vídeo de apoyo: enlace, no incrustado ──────────────── */
+    .videos { display: flex; flex-direction: column; gap: 8px; margin: 18px 0; }
+    .video { display: flex; align-items: flex-start; gap: 12px; background: #fff; border: 1px solid var(--borde); border-left: 4px solid #a0302a; border-radius: 8px; padding: 12px 14px; text-decoration: none; color: inherit; box-shadow: var(--sombra); }
+    .video:hover { border-color: #a0302a; }
+    .video .play { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; background: #a0302a; color: #fff; font-size: 11px; line-height: 26px; text-align: center; }
+    .video .txt { min-width: 0; }
+    .video .titulo { display: block; font-weight: 600; font-size: 14.5px; color: var(--azul); }
+    .video .desc { display: block; font-size: 13px; color: var(--gris); margin-top: 2px; }
+  </style>
+</head>
+<body>
+
+<nav class="nav-sor">
+  <div class="nav-brand">Montaje y mantenimiento de equipos &nbsp;<span>RA6</span></div>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">Grado Medio Sistemas Microinformáticos y Redes</div>
+  <h1>RA6: Reconoce nuevas tendencias en el ensamblaje de equipos microinformáticos describiendo sus ventajas y adaptándolas a las características de uso de los equipos.</h1>
+  <p class="hero-sub">Contenido técnico de nivel Grado Medio</p>
+  <div class="hero-meta">
+    <span>Peso: 5%</span>
+    <span>4 sesiones × 55 min</span>
+    <span>4 criterios de evaluación</span>
+    <span>2 CEs críticos</span>
+  </div>
+</div>
+<div class="container">
+<div class="ra-info">
+  <h2>RA6: Reconoce nuevas tendencias en el ensamblaje de equipos microinformáticos describiendo sus ventajas y adaptándolas a las características de uso de los equipos.</h2>
+  <div class="peso-grid">
+    <div class="peso-card"><div class="numero">5%</div><div class="label">Peso evaluación</div></div>
+    <div class="peso-card"><div class="numero">4</div><div class="label">Sesiones</div></div>
+    <div class="peso-card"><div class="numero">4</div><div class="label">Criterios</div></div>
+    <div class="peso-card"><div class="numero">2</div><div class="label">Críticos</div></div>
+  </div>
+  <div class="ce-criticos"><strong>CEs críticos:</strong> CE-c, CE-e</div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+</div>
+<div class="ce-index">
+  <div class="ce-index-titulo">Índice RA6 — 4 criterios</div>
+  <div class="ce-index-links">
+    <a href="#ceC" class="ce-idx-item ce-idx-critico"><span class="ce-idx-letra">c</span><span class="ce-idx-desc">Se han descrito las características de los ordenadores de entretenimiento multim…</span></a>
+    <a href="#ceD" class="ce-idx-item ce-idx-complementario"><span class="ce-idx-letra">d</span><span class="ce-idx-desc">Se han descrito las características diferenciales que demandan los equipos infor…</span></a>
+    <a href="#ceE" class="ce-idx-item ce-idx-critico"><span class="ce-idx-letra">e</span><span class="ce-idx-desc">Se ha evaluado la presencia de la informática móvil como mercado emergente, con …</span></a>
+    <a href="#ceF" class="ce-idx-item ce-idx-complementario"><span class="ce-idx-letra">f</span><span class="ce-idx-desc">Se ha evaluado la presencia del «modding» como corriente alternativa al ensambla…</span></a>
+  </div>
+</div>
+<div class="bloque" id="ceC">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num critico">c</div>
+      <div class="bloque-info">
+        <h3>HTPC: ordenadores de entretenimiento multimedia, chasis y componentes</h3>
+        <p>CE-c · CRÍTICO · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>Un <strong>HTPC</strong> (<em>Home Theater Personal Computer</em>, ordenador personal para cine en casa) es un equipo diseñado para vivir conectado a un televisor, proyector o equipo de audio y reproducir vídeo, música y juegos ligeros desde el salón. No es un sobremesa metido en una caja más pequeña: un sobremesa prioriza potencia y ampliación; un HTPC prioriza <strong>silencio, tamaño reducido, bajo consumo y calidad de salida de vídeo y audio</strong>.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Aspecto</th><th>Sobremesa estándar</th><th>HTPC</th></tr></thead>
+        <tbody>
+          <tr><td>Volumen y forma</td><td>Torre ATX, 40-50 cm de alto</td><td>Caja slim o cubo pequeño, a menudo colgada detrás del televisor con soporte VESA (estándar de separación de taladros de anclaje, por ejemplo 75×75 o 100×100 mm)</td></tr>
+          <tr><td>Ruido</td><td>Tolerable; varios ventiladores</td><td>Prioritario: se escucha en una sala silenciosa, debe quedar por debajo del ruido ambiente</td></tr>
+          <tr><td>Consumo y calor</td><td>CPU de 95-125 W <abbr title="Thermal Design Power: calor que debe evacuar el disipador">TDP</abbr></td><td>CPU de 35-65 W TDP y gráficos integrados</td></tr>
+          <tr><td>Salida de vídeo/audio</td><td>DisplayPort al monitor</td><td>HDMI 2.1b hacia TV o receptor AV, con audio en el mismo cable</td></tr>
+          <tr><td>Ampliación</td><td>Varias bahías y ranuras PCIe</td><td>Casi nula: 1 placa mini-ITX, 1-2 discos</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <h4><span class="ico">📦</span> Chasis y formato</h4>
+        <ul>
+          <li>Caja <strong>mini-ITX</strong>: admite placas de 17 × 17 cm.</li>
+          <li>Perfil bajo (<em>slim</em>): 6-10 cm de alto.</li>
+          <li>Filtros antipolvo y ventiladores de 80 mm o sin ventilador.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">🧠</span> CPU y disipador</h4>
+        <ul>
+          <li>Procesador de bajo TDP con <strong>gráficos integrados</strong> (iGPU) que decodifican 4K.</li>
+          <li>Disipador de <strong>bajo perfil</strong>: debe caber bajo la tapa y no tocar la RAM.</li>
+          <li>Ventilador grande girando despacio = menos ruido que uno pequeño a tope.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">🔌</span> Fuente de alimentación</h4>
+        <ul>
+          <li><strong>SFX</strong> o <strong>TFX</strong> (formatos reducidos) en lugar de ATX.</li>
+          <li>Alternativa: <strong>PicoPSU</strong>, una placa que toma corriente de un transformador externo.</li>
+          <li>Certificación 80 PLUS (certifica la eficiencia energética de la fuente; menos pérdidas implican menos calor y ruido) y 150-300 W bastan.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">💾</span> Almacenamiento y conectividad</h4>
+        <ul>
+          <li>SSD <strong>M.2 NVMe</strong>: sin cables, silencioso y rápido.</li>
+          <li>HDMI 2.1b / DisplayPort 2.1 para 4K y 8K.</li>
+          <li>Wi-Fi 7 si no hay cable de red hasta el salón.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="clave">En un HTPC se elige primero el espacio y el ruido; la potencia se ajusta después a ese límite.</div>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 680 190" role="img" aria-label="Cadena de reproducción de un HTPC desde el contenido hasta el televisor">
+        <defs>
+          <marker id="flecha-c-cec" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="15" y="55" width="145" height="75" rx="12" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="87" y="85" text-anchor="middle" font-size="15" fill="#1a1a2e">Contenido</text>
+        <text x="87" y="107" text-anchor="middle" font-size="13" fill="#667085">NAS o streaming</text>
+
+        <line x1="160" y1="92" x2="192" y2="92" stroke="#667085" stroke-width="2" marker-end="url(#flecha-c-cec)"/>
+
+        <rect x="195" y="55" width="165" height="75" rx="12" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="277" y="85" text-anchor="middle" font-size="15" fill="#1a1a2e">HTPC</text>
+        <text x="277" y="107" text-anchor="middle" font-size="13" fill="#667085">CPU + iGPU</text>
+
+        <line x1="360" y1="92" x2="392" y2="92" stroke="#667085" stroke-width="2" marker-end="url(#flecha-c-cec)"/>
+
+        <rect x="395" y="55" width="140" height="75" rx="12" fill="#fdf3d6" stroke="#d4a017" stroke-width="2"/>
+        <text x="465" y="85" text-anchor="middle" font-size="15" fill="#1a1a2e">HDMI 2.1</text>
+        <text x="465" y="107" text-anchor="middle" font-size="13" fill="#667085">vídeo y audio</text>
+
+        <line x1="535" y1="92" x2="567" y2="92" stroke="#667085" stroke-width="2" marker-end="url(#flecha-c-cec)"/>
+
+        <rect x="570" y="55" width="95" height="75" rx="12" fill="#f7f9fc" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="617" y="85" text-anchor="middle" font-size="15" fill="#1a1a2e">TV / AV</text>
+        <text x="617" y="107" text-anchor="middle" font-size="12" fill="#667085">pantalla</text>
+
+        <text x="277" y="155" text-anchor="middle" font-size="12" fill="#667085">TDP bajo y ventilador lento</text>
+        <text x="465" y="155" text-anchor="middle" font-size="12" fill="#667085">un solo cable</text>
+      </svg>
+      <figcaption>Cadena de reproducción de un HTPC. Un NAS (<em>Network Attached Storage</em>) es un servidor de almacenamiento en red al que el HTPC accede por la red local para leer los archivos. Fíjate en que el audio viaja por el mismo HDMI que la imagen: no hace falta tarjeta de sonido ni cable de audio adicional.</figcaption>
+    </figure>
+
+    <div class="box-complementario">
+      <div class="box-label">NOTA</div>
+      <p>En el taller no disponemos de chasis HTPC comercial. Trabajaremos sus componentes con el material real del aula (placas, CPU, disipadores, SSD, fuentes ATX, pasta térmica y pulsera antiestática) y compararemos mentalmente las diferencias de formato: la lógica de montaje es la misma que ya viste en RA2, solo cambia el espacio disponible.</p>
+    </div>
+
+    <h4>Criterios para elegir un HTPC</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Característica</th><th>Qué significa</th><th>Qué elegir según el uso</th></tr></thead>
+        <tbody>
+          <tr><td>Formato de caja</td><td>Volumen y altura disponible en el mueble</td><td>Medir el hueco antes de comprar; slim bajo 10 cm o cubo si hay más sitio</td></tr>
+          <tr><td>TDP del procesador</td><td>Calor que hay que evacuar</td><td>35-65 W para salón; subir solo si se van a reproducir archivos muy pesados</td></tr>
+          <tr><td>Fuente</td><td>Formato, potencia y eficiencia; 80 PLUS certifica la eficiencia energética y reduce calor y ruido</td><td>SFX o PicoPSU, 80 PLUS, 150-300 W; la ATX no entra en cajas slim</td></tr>
+          <tr><td>Salida de vídeo</td><td>Resolución y frecuencia que soporta</td><td>HDMI 2.1b si el televisor es 4K 120 Hz; DisplayPort 2.1 para monitores</td></tr>
+          <tr><td>Almacenamiento</td><td>Tipo y ruido</td><td>SSD M.2 para sistema; disco grande solo si el contenido es local</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p><strong>CineLocal S.L.</strong>, un cineclub de barrio, quiere un equipo para proyectar películas 4K desde un NAS (servidor de almacenamiento en red) y reproducir música. El hueco del mueble mide 40 cm de ancho, 35 cm de fondo y solo 12 cm de alto; durante la proyección no debe oírse ningún ventilador.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li><strong>Descartar ATX.</strong> Una torre ATX ronda los 45 cm de alto: no cabe. Buscamos caja mini-ITX slim de altura inferior a 12 cm, con margen para los cables.</li>
+        <li><strong>Placa mini-ITX (17 × 17 cm).</strong> Es el único formato que entra en esa caja; comprobamos que lleva HDMI 2.1 y ranura M.2.</li>
+        <li><strong>CPU de bajo TDP con iGPU.</strong> Un procesador de 35 W genera menos calor y permite un disipador pequeño; sus gráficos integrados decodifican 4K sin tarjeta dedicada.</li>
+        <li><strong>Disipador de bajo perfil.</strong> Medimos: su altura, sumada al zócalo, debe quedar por debajo de la tapa de la caja. Preferimos uno pasivo o con ventilador de 80 mm a bajas revoluciones.</li>
+        <li><strong>Fuente SFX de 250 W con 80 PLUS.</strong> Comprobamos conectores (24 pines y EPS 4+4; este último es la alimentación específica de la CPU y la fuente debe incluirlo para que el procesador reciba la energía que la placa no le puede dar solo por el conector de 24 pines) y que la potencia cubre CPU + SSD con holgura. La fuente ATX del taller no sirve por tamaño.</li>
+        <li><strong>SSD M.2 NVMe de 500 GB.</strong> Sin cables ni partes móviles: nada que haga ruido. Las películas se quedan en el NAS (servidor de almacenamiento en red).</li>
+        <li><strong>Montaje y prueba.</strong> Pulsera antiestática, capa fina de pasta térmica, cables sujetos con bridas y comprobación del <abbr title="Power-On Self-Test: prueba automática de arranque de la placa base">POST</abbr> con el zumbador antes de cerrar la tapa.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-c · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p><strong>TecnoAula S.L.</strong> dispone en el taller de una caja mini-ITX de 9 cm de alto y una placa mini-ITX con zócalo AM5. Antes de pedir el disipador y la fuente, indica qué dos comprobaciones harías en cada uno y por qué.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>Disipador:</strong> (1) altura total, que debe quedar por debajo de los 9 cm de la caja dejando margen para la tapa; (2) compatibilidad con el zócalo AM5 y capacidad de disipar el TDP del procesador elegido. Un disipador que no cabe o que no cubre el calor produce sobrecalentamiento (visto en RA4).</p>
+        <p><strong>Fuente:</strong> (1) formato SFX o TFX, porque una ATX no entra en una caja slim; (2) potencia y conectores: debe tener 24 pines, EPS 4+4 para la CPU y potencia suficiente para el TDP del procesador más el resto de componentes.</p>
+      </details>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-c · Medio</h5>
+      <span class="nivel-tag nivel-medio">MEDIO</span>
+      <p><strong>StreamHouse</strong> emite un programa de radio por streaming 8 horas al día y quiere un HTPC para el estudio. Requisitos: silencio absoluto, dos monitores 4K, entrada de audio USB, 2 TB de almacenamiento local y que quepa en una estantería de 15 cm de alto. Elige chasis, placa, procesador, disipador, fuente y almacenamiento, y justifica cada elección con su compatibilidad.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-c · Avanzado</h5>
+      <span class="nivel-tag nivel-avanzado">AVANZADO</span>
+      <p><strong>GimnasioFit</strong> tiene un HTPC que se apaga solo a los 20 minutos de reproducir 4K y cuyo ventilador suena como un secador. Datos recogidos: CPU de 95 W TDP, disipador de serie de 4 cm, caja sin filtros y con polvo acumulado, fuente genérica de 500 W. Explica las causas probables y diseña un plan de comprobación realizable en el aula, donde dispones de HWiNFO64 o Core Temp para medir temperaturas y de un sonómetro (o app de medición de ruido) para medir el ruido; el taller solo se emplea para desmontar, limpiar y revisar el ventilador. Indica en qué orden comprobarías cada causa y qué solución propondrías.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-c</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Defino HTPC y lo diferencio de un sobremesa estándar</label></li>
+        <li><label><input type="checkbox" class="check-item"> Relaciono mini-ITX, perfil bajo y formato SFX con el espacio disponible</label></li>
+        <li><label><input type="checkbox" class="check-item"> Explico por qué el TDP bajo reduce el ruido del equipo</label></li>
+        <li><label><input type="checkbox" class="check-item"> Identifico HDMI 2.1b como salida única de vídeo y audio</label></li>
+        <li><label><input type="checkbox" class="check-item"> Compruebo altura de disipador y formato de fuente antes de comprar</label></li>
+      </ul>
+    </div>
+
+    <div class="box-critico">
+      <div class="box-label">⚠ TRAMPA DE EXAMEN</div>
+      <p>Confundir HTPC con «un PC pequeño». El error típico es elegir componentes por potencia (CPU de 125 W, tarjeta gráfica dedicada grande) o montar una fuente ATX dentro de una caja slim. En un HTPC el primer filtro es el espacio y el ruido; la potencia se ajusta después a ese límite. Si en un enunciado te dan la altura del mueble, ese dato manda sobre cualquier otra preferencia.</p>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceD">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num">d</div>
+      <div class="bloque-info">
+        <h3>Equipos para campos de aplicación específicos</h3>
+        <p>CE-d · complementario · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+    <p>Un equipo microinformático estándar (el que describimos en RA1) está pensado para ofimática, navegación y correo. Pero cuando el equipo se destina a un <strong>campo de aplicación específico</strong> —diseño, vídeo, servidor, gaming o comercio— cambian las prioridades: se refuerza una pieza clave y se rebajan otras para no disparar el coste.</p>
+
+    <div class="clave">No existe el "mejor equipo": existe el equipo que cubre la necesidad del campo al que se destina.</div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Campo de aplicación</th><th>Qué demanda</th><th>Piezas que cambian</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Diseño gráfico y CAD 3D (CAD: diseño asistido por computador)</td>
+            <td>Precisión de color y cálculo de millones de polígonos (las piezas geométricas que forman un modelo 3D)</td>
+            <td>Tarjeta gráfica dedicada con VRAM abundante (memoria propia de la gráfica), 32 GB de RAM o más y monitor con buena fidelidad de color</td>
+          </tr>
+          <tr>
+            <td>Edición de vídeo y audio</td>
+            <td>Mover archivos enormes y codificarlos (convertirlos al formato final) sin esperas</td>
+            <td>CPU de muchos núcleos, SSD NVMe rápido para el proyecto + HDD (disco duro mecánico) grande para el archivo, y tarjeta de sonido</td>
+          </tr>
+          <tr>
+            <td>Servidor de archivos o NAS</td>
+            <td>Estar encendido 24/7 y no perder datos</td>
+            <td>Discos en RAID 1 (espejo: cada disco guarda una copia idéntica), RAID 5/6 o RAID 10 (niveles con redundancia: si falla un disco, los datos sobreviven y el servicio puede continuar; RAID 0 no protege), memoria ECC (detecta y corrige errores), fuente redundante (dos fuentes con conmutación: si una falla, la otra sigue alimentando el equipo) y ventilación continua</td>
+          </tr>
+          <tr>
+            <td>Gaming</td>
+            <td>Fotogramas por segundo (FPS) altos y gráficos fluidos</td>
+            <td>GPU potente, CPU de frecuencia alta, buena refrigeración, fuente de calidad y monitor de alta tasa de refresco (Hz)</td>
+          </tr>
+          <tr>
+            <td>TPV (Terminal Punto de Venta) y entorno industrial</td>
+            <td>No fallar con polvo, calor ni cortes de luz, y consumir poco</td>
+            <td>SSD en lugar de disco mecánico, refrigeración pasiva (sin ventilador, como vimos en CE-c), chasis cerrado y fuente eficiente 80 PLUS</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box-complementario">
+      <div class="box-label">NOTA</div>
+      <p>En el taller podemos tocar estas diferencias con lo que hay: comparar una tarjeta gráfica dedicada con los gráficos integrados de la placa, un SSD frente a un disco mecánico, o mirar cuántos conectores de disco admite cada fuente ATX.</p>
+    </div>
+
+    <div class="ejemplo-resuelto">
+      <h5>Ejemplo resuelto · Elegir equipos para una consulta veterinaria</h5>
+      <p>Una consulta veterinaria necesita tres equipos: (1) recepción y facturación, (2) puesto de diagnóstico por imagen y (3) servidor para historiales. Decide en qué invertir y en qué ahorrar en cada uno, justificándolo.</p>
+      <ol>
+        <li><strong>Recepción y facturación:</strong> es un uso de ofimática. Invertir en un SSD de 500 GB, 16 GB de RAM y una CPU de gama media; ahorrar en GPU dedicada, tarjeta de sonido y monitor avanzado. La prioridad es que el sistema arranque rápido y sea fiable para el trabajo diario.</li>
+        <li><strong>Diagnóstico por imagen:</strong> se visualizan radiografías y ecografías. Invertir en un monitor con buena fidelidad de color y resolución, una GPU dedicada con VRAM suficiente y 32 GB de RAM; ahorrar en capacidad de archivo masiva, que se centraliza en el servidor. La prioridad es ver la imagen con precisión y moverla sin tirones.</li>
+        <li><strong>Servidor de historiales:</strong> debe estar disponible y no perder datos. Invertir en dos discos en RAID 1 (espejo) o en un nivel redundante como RAID 5/6/10; nunca RAID 0, porque no protege ante el fallo de un disco. Añadir fuente redundante (dos fuentes con conmutación) y ventilación; ahorrar en GPU y monitor. La prioridad es la integridad y la continuidad del servicio.</li>
+        <li><strong>Cierre:</strong> comparar el coste de cada configuración con el coste de una pérdida de datos o de una parada del trabajo. El presupuesto se asigna a la pieza que limita la tarea principal de cada puesto, no a mejorar todas las piezas por igual.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-d · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>El estudio de arquitectura <strong>López y Asociados SL</strong> debe renovar tres puestos con un presupuesto ajustado: (1) un puesto de modelado 3D y renderizado, (2) el puesto de recepción y contabilidad, (3) un pequeño servidor de archivos para los 6 proyectistas. Indica en qué componente invertirías el dinero en cada puesto y en cuál ahorrarías, justificándolo.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>Resolución paso a paso:</strong></p>
+        <ol>
+          <li>Puesto 3D — invertir en GPU dedicada con VRAM alta, 32 GB de RAM y SSD NVMe; ahorrar en tarjeta de sonido y en capacidad de disco. El renderizado (generar la imagen final desde el modelo) es lo que más tiempo consume y lo que más se acelera con la gráfica y la memoria.</li>
+          <li>Recepción y contabilidad — invertir poco: CPU de gama media, 16 GB de RAM y SSD de 500 GB; ahorrar en GPU (los gráficos integrados bastan) y en fuente grande. Es un uso estándar de ofimática.</li>
+          <li>Servidor de archivos — invertir en fiabilidad: dos discos en RAID 1 (espejo: cada disco guarda una copia idéntica) o un nivel redundante como RAID 5/6/10; nunca RAID 0, que no protege ante el fallo de un disco. Añadir memoria ECC si la placa lo admite, fuente de calidad y ventilación; ahorrar en GPU y en monitor. Aquí el coste de perder los proyectos es mucho mayor que el del hardware.</li>
+          <li>Cierre — dejar por escrito en el informe por qué cada puesto tiene esa configuración: el cliente compra una solución a su necesidad, no una lista de piezas.</li>
+        </ol>
+      </details>
+    </div>
+  </div>
+</div>
+<div class="bloque" id="ceE">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num critico">e</div>
+      <div class="bloque-info">
+        <h3>Informática móvil: mercado emergente y dispositivos con características propias</h3>
+        <p>CE-e · CRÍTICO · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>Hasta ahora hemos trabajado con equipos que se quedan quietos encima de una mesa: el HTPC y el sobremesa del CE-c, el equipo de CAD o de gaming del CE-d. Pero el mercado ha cambiado: hoy se venden muchos más dispositivos <strong>móviles</strong> que ordenadores de sobremesa. Ese es el sentido de este criterio: entender que la <strong>informática móvil</strong> es un mercado emergente, con una demanda altísima de equipos que tienen <strong>características técnicas específicas</strong> y distintas de las de un PC.</p>
+
+    <div class="clave">Un dispositivo móvil no es un PC pequeño: es un equipo diseñado desde cero con otras prioridades (tamaño, consumo y autonomía) y con otras renuncias (potencia y ampliabilidad).</div>
+
+    <p>Llamamos <strong>informática móvil</strong> al conjunto de dispositivos que una persona puede llevar consigo, que funcionan con batería y que realizan tareas de computación y comunicación. El criterio menciona explícitamente «móviles, PDA, navegadores, entre otros». Ojo con una palabra: aquí <strong>«navegador» no es el programa para ver páginas web</strong>, sino el <strong>navegador GPS</strong>, el aparato que se pone en el salpicadero del coche para guiarte por mapas.</p>
+
+    <div class="cards">
+      <div class="card">
+        <h4><span class="ico">📱</span> Smartphone</h4>
+        <ul>
+          <li>Teléfono inteligente: pantalla táctil, sistema operativo completo (Android, iOS) y tienda de aplicaciones.</li>
+          <li>Es el dispositivo que ha absorbido a casi todos los demás.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">📟</span> PDA</h4>
+        <ul>
+          <li><em>Personal Digital Assistant</em> (asistente digital personal): ordenador de bolsillo con pantalla táctil y puntero (<em>stylus</em>).</li>
+          <li>Precursor del smartphone; hoy extinto como categoría.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">🧭</span> Navegador GPS</h4>
+        <ul>
+          <li>Dispositivo dedicado a la navegación por satélite, con mapas y pantalla.</li>
+          <li><strong>GPS</strong>: <em>Global Positioning System</em>, sistema de satélites que da la posición.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">📲</span> Tablet</h4>
+        <ul>
+          <li>Pantalla grande táctil, sin teclado físico.</li>
+          <li>Uso típico: lectura, presentaciones, TPV (como vimos en CE-d).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">⌚</span> Wearable</h4>
+        <ul>
+          <li>Tecnología «vestible»: reloj inteligente, pulsera de actividad.</li>
+          <li>Y el <strong>IoT</strong> (<em>Internet of Things</em>, Internet de las Cosas): sensores conectados.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h4>Qué cambia técnicamente respecto a un PC</h4>
+    <p>En un equipo móvil no hay sitio, no hay enchufe permanente y no se puede abrir para ampliar. Eso obliga al fabricante a integrarlo todo en muy poco espacio. La pieza clave es el <strong>SoC</strong> (<em>System on Chip</em>, sistema en un chip): un único chip que contiene la CPU, la GPU, el controlador de memoria y los módulos de conectividad. Frente a la arquitectura <strong>x86</strong> del PC (la de Intel y AMD; por ejemplo, con zócalo AM5, visto en CE-c, o con zócalo LGA —<em>Land Grid Array</em>: contactos en el zócalo y almohadillas en el procesador—), el móvil usa la arquitectura <strong>ARM</strong> (<em>Advanced RISC Machine</em>; familia de arquitecturas RISC, <em>Reduced Instruction Set Computer</em> o conjunto reducido de instrucciones, licenciada por Arm Ltd. y diseñada para bajo consumo), pensada para gastar muy poca energía. La <strong>litografía</strong> —el tamaño de los transistores, medido en nanómetros— también es más fina en el móvil, y eso es lo que permite que un chip tan pequeño rinda tanto gastando tan poco.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Aspecto</th><th>PC de sobremesa (RA1)</th><th>Dispositivo móvil</th></tr></thead>
+        <tbody>
+          <tr><td>CPU</td><td>x86 en zócalo, sustituible</td><td>ARM dentro de un SoC soldado</td></tr>
+          <tr><td>Memoria RAM</td><td>Módulos <strong>DIMM</strong> (<em>Dual Inline Memory Module</em>: placa de memoria que se inserta en una ranura) en ranuras</td><td><strong>LPDDR</strong> (<em>Low Power Double Data Rate</em>: RAM de bajo consumo) soldada a la placa</td></tr>
+          <tr><td>Almacenamiento</td><td>SSD M.2 / disco de 2,5"</td><td><strong>UFS</strong> (<em>Universal Flash Storage</em>) o <strong>eMMC</strong> (<em>Embedded MultiMediaCard</em>): chips de almacenamiento flash soldados a la placa; UFS es más rápido que eMMC y ninguno tiene ranura de ampliación</td></tr>
+          <tr><td>Refrigeración</td><td>Disipador + ventiladores</td><td>Pasiva, sin ventilador: <strong>grafeno</strong> (lámina de carbono de alta conductividad térmica que reparte el calor) y <strong>cámara de vapor</strong> (recinto cerrado con líquido que se evapora en la zona caliente y condensa en la fría para transportar el calor)</td></tr>
+          <tr><td>Alimentación</td><td>Fuente ATX 3.1 (RA3)</td><td>Batería de litio en <strong>mAh</strong> (miliamperios-hora, capacidad) con carga rápida por USB-C</td></tr>
+          <tr><td>Red</td><td><strong>Ethernet 2.5GBASE-T</strong> (red cableada de 2,5 Gbit/s sobre par trenzado, estándar IEEE 802.3bz)</td><td>Wi-Fi 7 (red inalámbrica local), <strong>Bluetooth 5.4</strong> (conexión inalámbrica de corto alcance; el número indica la versión del estándar), <strong>5G</strong> (quinta generación de red celular móvil), <strong>eSIM</strong> (tarjeta SIM integrada en el chip, sin plástico)</td></tr>
+          <tr><td>Ampliabilidad</td><td>Ranuras PCIe, bahías</td><td>Nula: lo que compras es lo que tienes</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 720 230" role="img" aria-label="Escala de movilidad de los dispositivos informáticos">
+        <defs>
+          <marker id="flecha-e-cee" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="20" y="60" width="120" height="70" rx="12" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="80" y="88" text-anchor="middle" font-size="15" fill="#1a1a2e">Wearable</text>
+        <text x="80" y="108" text-anchor="middle" font-size="13" fill="#667085">reloj, pulsera</text>
+
+        <rect x="160" y="60" width="120" height="70" rx="12" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="220" y="88" text-anchor="middle" font-size="15" fill="#1a1a2e">Smartphone</text>
+        <text x="220" y="108" text-anchor="middle" font-size="13" fill="#667085">SoC ARM</text>
+
+        <rect x="300" y="60" width="120" height="70" rx="12" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="360" y="88" text-anchor="middle" font-size="15" fill="#1a1a2e">Tablet</text>
+        <text x="360" y="108" text-anchor="middle" font-size="13" fill="#667085">sin teclado</text>
+
+        <rect x="440" y="60" width="120" height="70" rx="12" fill="#f7f9fc" stroke="#667085" stroke-width="2"/>
+        <text x="500" y="88" text-anchor="middle" font-size="15" fill="#1a1a2e">Portátil</text>
+        <text x="500" y="108" text-anchor="middle" font-size="13" fill="#667085">ampliable</text>
+
+        <rect x="580" y="60" width="120" height="70" rx="12" fill="#f7f9fc" stroke="#667085" stroke-width="2"/>
+        <text x="640" y="88" text-anchor="middle" font-size="15" fill="#1a1a2e">Sobremesa</text>
+        <text x="640" y="108" text-anchor="middle" font-size="13" fill="#667085">ATX</text>
+
+        <line x1="140" y1="95" x2="158" y2="95" stroke="#667085" stroke-width="2" marker-end="url(#flecha-e-cee)"/>
+        <line x1="280" y1="95" x2="298" y2="95" stroke="#667085" stroke-width="2" marker-end="url(#flecha-e-cee)"/>
+        <line x1="420" y1="95" x2="438" y2="95" stroke="#667085" stroke-width="2" marker-end="url(#flecha-e-cee)"/>
+        <line x1="560" y1="95" x2="578" y2="95" stroke="#667085" stroke-width="2" marker-end="url(#flecha-e-cee)"/>
+        <text x="360" y="175" text-anchor="middle" font-size="14" fill="#2d6a9f">aumentan potencia, tamaño y ampliabilidad →</text>
+        <text x="360" y="200" text-anchor="middle" font-size="14" fill="#1a6b3a">← aumentan movilidad y autonomía</text>
+      </svg>
+      <figcaption>La informática móvil ocupa el extremo izquierdo de la escala. Fíjate en que cuanto más a la izquierda, más integrado va todo (SoC, RAM y almacenamiento soldados) y menos se puede ampliar.</figcaption>
+    </figure>
+
+    <h4>Qué mirar para elegir un dispositivo móvil profesional</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Característica</th><th>Qué significa</th><th>Qué elegir según el uso</th></tr></thead>
+        <tbody>
+          <tr><td>SoC y RAM</td><td>Potencia del chip y memoria integrada</td><td>Oficina y TPV: gama media. Edición o CAD ligero: gama alta</td></tr>
+          <tr><td>Batería (mAh)</td><td>Autonomía; a más mAh, más horas</td><td>Trabajo en la calle: 5.000 mAh o más y carga rápida</td></tr>
+          <tr><td>Resistencia (IP68)</td><td><strong>IP68</strong>: <strong>IP</strong> (<em>Ingress Protection</em>) indica el grado de protección contra polvo y agua; el primer dígito (6) significa protección total contra el polvo y el segundo (8) resistencia a inmersión prolongada en agua en las condiciones que especifica el fabricante</td><td>Taller, obra, reparto: IP68 y carcasa reforzada</td></tr>
+          <tr><td>Conectividad</td><td>Wi-Fi, <strong>5G</strong> (red celular de quinta generación), <strong>Bluetooth</strong> (conexión inalámbrica de corto alcance), NFC (<em>Near Field Communication</em>, para pagos y etiquetas)</td><td>Almacén: Wi-Fi 6/7 y NFC para lectura de etiquetas</td></tr>
+          <tr><td>Soporte y actualizaciones</td><td>Años de versiones de sistema operativo garantizadas</td><td>Empresa: mínimo 4-5 años de actualizaciones</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p>La empresa de reparto <strong>LogiRuta SL</strong> tiene 12 conductores que usan PDA antiguas con Windows Mobile: se han quedado sin actualizaciones, las baterías duran dos horas y el software de rutas ya no se instala. Piden asesoramiento para sustituirlas.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li><strong>Identificar la categoría.</strong> Lo que necesitan ya no son PDA (categoría extinta), sino <em>smartphones</em> o <em>tablets</em> rugerizados, es decir, reforzados para uso industrial.</li>
+        <li><strong>Fijar requisitos por puesto.</strong> Trabajo en la calle, 8 horas de jornada, uso con lluvia y con guantes. Requisitos mínimos: IP68, batería ≥ 5.000 mAh, 5G y NFC si leen etiquetas.</li>
+        <li><strong>Descartar lo que no encaja.</strong> Un portátil se descarta por peso y batería; un wearable se descarta por pantalla y autonomía insuficientes para manejar el software de rutas.</li>
+        <li><strong>Comparar con criterios, no con marcas.</strong> Se valoran SoC y RAM (que muevan el programa de rutas), años de actualizaciones y existencia de accesorios de carga para vehículo.</li>
+        <li><strong>Justificar la decisión.</strong> El informe concluye que la informática móvil no es un capricho: es el segmento donde el equipo se diseña para el puesto de trabajo, y la elección se hace por características técnicas, no por precio de catálogo.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-e · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>En el taller del IES hay un lote de equipos viejos para desmontar: un smartphone roto, una PDA de 2004, un navegador GPS de coche y una tablet. Clasifícalos dentro de la informática móvil, indica qué característica técnica los define y di cuál de ellos ha absorbido la función de los otros tres.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p>Todos pertenecen a la informática móvil porque funcionan con batería, se transportan y no se amplían.</p>
+        <ul>
+          <li><strong>Smartphone:</strong> SoC ARM, pantalla táctil, sistema operativo completo y conectividad celular.</li>
+          <li><strong>PDA:</strong> ordenador de bolsillo con <em>stylus</em>; sin conectividad celular moderna ni tienda de aplicaciones actual. Categoría extinta.</li>
+          <li><strong>Navegador GPS:</strong> dispositivo dedicado solo a la navegación por satélite; función única y cerrada.</li>
+          <li><strong>Tablet:</strong> pantalla grande táctil, sin teclado físico, con el mismo tipo de SoC que un móvil.</li>
+        </ul>
+        <p>El <strong>smartphone</strong> ha absorbido a los otros tres: hace las funciones de agenda de la PDA, las de navegación del GPS y, con una pantalla mayor o un accesorio, las de la tablet. Por eso decimos que es un mercado emergente que ha reordenado todo el sector.</p>
+      </details>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-e · Medio</h5>
+      <span class="nivel-tag nivel-medio">MEDIO</span>
+      <p>La clínica dental <strong>Sonrisa Norte</strong> quiere 6 tablets para que los pacientes firmen el consentimiento y para mostrar radiografías. Usa las webs oficiales de dos fabricantes y elabora una tabla comparativa de tres columnas (característica / dispositivo A / dispositivo B) con estos datos: SoC, RAM, almacenamiento, batería en mAh, resistencia IP y años de actualizaciones. Después indica cuál recomendarías y por qué, sin mencionar precios.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <p><strong>Vocabulario previo del ejercicio avanzado:</strong> una <strong>máquina virtual</strong> es un ordenador simulado por software que ejecuta un sistema operativo dentro de otro equipo físico; <strong>VirtualBox</strong> es un programa de virtualización gratuito de Oracle que permite crear y gestionar máquinas virtuales sobre ese equipo físico.</p>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-e · Avanzado</h5>
+      <span class="nivel-tag nivel-avanzado">AVANZADO</span>
+      <p>En el taller se quiere montar un panel de control (<em>dashboard</em>) que muestre el estado de varias máquinas virtuales de VirtualBox y que permanezca encendido en la pared del aula. El inventario disponible es: 3 mini-PC x86 con 8 GB de RAM y 64 GB de SSD (sin sistema operativo instalado, pero se puede instalar uno ligero), 2 monitores, 1 switch Ethernet, cables de red, regletas y una toma de corriente permanente; no hay smartphones utilizables porque carecen de batería. Analiza si es viable usar un dispositivo móvil como panel y justifica la respuesta con al menos tres limitaciones técnicas de la informática móvil (refrigeración, alimentación, ampliabilidad o actualizaciones). Después propón una alternativa con los equipos del inventario, indicando qué elementos usarías y cómo conectarías el panel a la red.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-e</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Explico qué es la informática móvil y por qué se considera un mercado emergente</label></li>
+        <li><label><input type="checkbox" class="check-item"> Distingo smartphone, PDA, navegador GPS, tablet y wearable</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé que «navegador» en este contexto es un navegador GPS, no un programa de Internet</label></li>
+        <li><label><input type="checkbox" class="check-item"> Defino SoC, ARM, litografía, mAh, eSIM, IP68 y NFC</label></li>
+        <li><label><input type="checkbox" class="check-item"> Comparo un PC de sobremesa con un móvil en CPU, RAM, almacenamiento, refrigeración y ampliabilidad</label></li>
+        <li><label><input type="checkbox" class="check-item"> Elijo un dispositivo móvil profesional por criterios técnicos, no por marca</label></li>
+      </ul>
+    </div>
+
+    <div class="box-critico">
+      <div class="box-label">⚠ TRAMPA DE EXAMEN</div>
+      <p>Dos confusiones caen siempre. <strong>Primera:</strong> leer «navegadores» y hablar de Chrome o Firefox. En este criterio, el navegador es el <strong>navegador GPS</strong> del coche. <strong>Segunda:</strong> decir que un móvil es «un ordenador con menos potencia» o que se le puede «ampliar la RAM». No: en un dispositivo móvil la RAM y el almacenamiento están <strong>soldados</strong> y no hay refrigeración por ventilador ni fuente ATX, sino disipación pasiva y batería de litio. Si en un ejercicio escribes «se le cambia el módulo de RAM», has suspendido ese apartado.</p>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceF">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num">f</div>
+      <div class="bloque-info">
+        <h3>El modding como corriente alternativa al ensamblado</h3>
+        <p>CE-f · complementario · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>El <strong>modding</strong> (del inglés <em>modify</em>, «modificar») es la práctica de alterar un equipo informático más allá de lo que indica el fabricante, con un fin estético (que se vea distinto) o funcional (que refrigere mejor, que suene menos, que aloje algo no previsto). Frente al ensamblado estándar —el que seguimos al pie de la letra con los planos y manuales, como vimos en RA2 y en CE-c—, el modding reinterpreta el equipo: mismo hardware, otra presentación.</p>
+
+    <div class="clave">El modding no cambia qué componentes montas, sino cómo los montas y con qué acabado.</div>
+
+    <p>Para interpretar correctamente las propuestas de este bloque, conviene aclarar dos materiales habituales de modding: el <strong>metacrilato</strong> es una plancha de plástico rígido y transparente (PMMA) que puede sustituir al cristal en ventanas o paneles decorativos; para cortarla o perforarla se necesita herramienta específica. El <strong>vinilo</strong> es una lámina adhesiva de PVC que se aplica sobre una superficie para cambiar su color o acabado, sin aportar resistencia estructural.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Corriente</th><th>Qué se modifica</th><th>¿Posible en nuestro taller?</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Estética</td><td>Ventana lateral de metacrilato, pintura, LED y ARGB (LED direccionables en color), <em>sleeving</em> (fundas trenzadas en los cables)</td><td>Parcial: cable management con bridas; pintura o vinilo solo si se aportan. No completo: la ventana lateral exige plancha de metacrilato y herramienta de corte, y las luces LED/ARGB no están disponibles.</td></tr>
+          <tr><td>Silencio</td><td>Ventiladores de bajas revoluciones, insonorización, anclaje elástico de discos</td><td>Sí, parcialmente</td></tr>
+          <tr><td>Refrigeración</td><td><em>Custom loop</em> (circuito de refrigeración líquida montado pieza a pieza)</td><td>No: no hay depósito, bomba ni líquido; sí ventiladores y disipadores</td></tr>
+          <tr><td>Estructural</td><td>Cortar chapa con <em>dremel</em> (herramienta rotativa), <em>scratch build</em> (chasis construido desde cero)</td><td>No: sin herramienta de corte ni gafas de protección; las gafas se tratarán en RA8</td></tr>
+          <tr><td>Temática</td><td>Equipos «de autor»: vinilo, réplica de consola, estilo industrial</td><td>Parcial: con vinilo o pintura en aerosol si se dispone de ellos</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ejemplo-resuelto">
+      <h4>Ejemplo resuelto: cable management y ordenación de ventiladores</h4>
+      <p><strong>Objetivo:</strong> mejorar el aspecto interno y el flujo de aire de un chasis ATX sin comprar materiales de modding, usando solo chasis, tornillería, destornilladores, bridas, ventiladores y disipadores.</p>
+      <ol>
+        <li><strong>Planificación:</strong> retirar los paneles laterales, fotografiar el cableado original y localizar los puntos de anclaje de bridas y los canales detrás de la bandeja de la placa.</li>
+        <li><strong>Ordenación de cables:</strong> pasar los cables de alimentación por detrás de la bandeja siempre que su longitud lo permita. Separar los cables de datos de los de alimentación y agruparlos con bridas sin aplastarlos ni forzar los conectores.</li>
+        <li><strong>Distribución de ventiladores:</strong> colocar los ventiladores de entrada en la parte frontal o inferior y los de salida en la trasera o superior. Comprobar la flecha de flujo de cada ventilador antes de atornillarlo; si no hay roscas disponibles, sujetarlo con bridas sin que estas toquen las aspas.</li>
+        <li><strong>Montaje del disipador:</strong> montar el disipador según su manual, comprobar que no roza cables ni memorias y que deja espacio para cerrar el panel lateral.</li>
+        <li><strong>Prueba y ajuste:</strong> encender el equipo, comprobar que todos los ventiladores giran y que ningún cable toca las aspas. Medir temperaturas de CPU y GPU con HWiNFO64 tras unos minutos de carga y verificar que el chasis cierra sin forzar.</li>
+        <li><strong>Resultado:</strong> el interior queda ordenado, el flujo de aire es coherente y no se ha necesitado metacrilato, tiras LED ni herramienta de corte. Si el cliente insistiera en ventana lateral o luces, habría que adquirir plancha de metacrilato, tiras LED/ARGB y herramienta de corte, por lo que quedaría fuera del material disponible.</li>
+      </ol>
+    </div>
+
+    <div class="box-complementario">
+      <div class="box-label">NOTA</div>
+      <p>Modificar un equipo casi siempre anula la garantía comercial y puede empeorar el flujo de aire si se tapa una rejilla. Antes de modificar hay que comprobar que la temperatura no sube y que no quedan bordes cortantes a la vista (riesgo que se tratará en RA8).</p>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-f · Caso práctico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>El estudio de streaming <strong>PixelOnda SL</strong> quiere dos equipos para su plató con un acabado cuidado y silencioso, reutilizando el material del taller y sin comprar piezas de modding. En concreto, piden que los cables queden recogidos y que el interior tenga buen flujo de aire. Disponéis de chasis ATX del taller, tornillería, destornilladores, bridas, ventiladores y disipadores. Responde: a) ¿Las mejoras de ordenación de cables y flujo de aire son ensamblado estándar o modding? Justifica. b) Propón dos modificaciones realizables con el material disponible y una que debas descartar, explicando por qué. c) Indica dos comprobaciones posteriores a la modificación.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>a)</strong> El montaje base de los componentes es ensamblado estándar, pero las mejoras propuestas son modding funcional: se interviene en el recorrido de los cables y en la distribución del flujo de aire para mejorar el acabado y el comportamiento térmico, no solo para montar según el manual.</p>
+        <p><strong>b)</strong> Realizables: (1) <em>cable management</em> con bridas, agrupando los cables por canales, sujetándolos sin tensarlos y separando los de alimentación de los de datos; (2) optimización del flujo de aire colocando ventiladores de entrada en la parte frontal o inferior y de salida en la trasera o superior, usando tornillería o bridas y comprobando la orientación de las aspas. A descartar: la ventana lateral de metacrilato y las tiras LED/ARGB, porque no hay plancha de metacrilato, tiras LED ni herramienta de corte/perforado; cortar chapa exigiría además protección ocular. También se descarta el <em>custom loop</em> por falta de bomba, depósito y líquido.</p>
+        <p><strong>c)</strong> Comprobar las temperaturas de CPU y GPU tras cerrar el chasis (con HWiNFO64, ya usado en CE-c) para verificar que la ordenación no ha empeorado el flujo de aire, y revisar que no queden cables rozando aspas de ventilador ni bridas que impidan el giro o el cierre de los paneles.</p>
+      </details>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="resumen">
+  <div class="bloque-header" style="border-left-color:#1a6b3a;">
+    <div class="bloque-titulo">
+      <div class="bloque-num" style="background:#1a6b3a;">★</div>
+      <div class="bloque-info">
+        <h3>Puntos clave — RA6</h3>
+        <p>Repasa esto antes del examen</p>
+      </div>
+    </div>
+  </div>
+  <div class="bloque-body">
+    <ol>
+      <li style="margin-bottom:8px;"><strong>CE-c.</strong> Describir las características de un HTPC: caja slim o cubo pequeño, soporte VESA 75×75/100×100, placa mini-ITX, fuente SFX/TFX/PicoPSU, perfil bajo, filtros antipolvo, ventiladores de 80 mm, disipador de bajo perfil, SSD M.2 NVMe, salidas HDMI 2.1b y DisplayPort 2.1, Wi-Fi 7 y conexión a receptor AV para reproducción 4K/8K.</li>
+      <li style="margin-bottom:8px;"><strong>CE-c.</strong> Ensamblar un HTPC eligiendo CPU con gráficos integrados (iGPU) según el TDP, aplicando pasta térmica, usando pulsera antiestática, conectando 24 pines y EPS 4+4, ordenando con bridas y comprobando el POST con el zumbador.</li>
+      <li style="margin-bottom:8px;"><strong>CE-c.</strong> Evaluar ruido y refrigeración en un HTPC: disipador pasivo o ventiladores a bajas revoluciones, chasis con filtros antipolvo, fuente 80 PLUS y control de sobrecalentamiento midiendo con HWiNFO64, Core Temp, sonómetro, app de medición de ruido y entrada de audio USB.</li>
+      <li style="margin-bottom:8px;"><strong>CE-d.</strong> Identificar equipos para CAD y diseño asistido por computador: necesitan tarjeta gráfica dedicada con VRAM, fidelidad de color, SSD NVMe o HDD, CPU y RAM adecuadas, y se diferencian de un sobremesa estándar.</li>
+      <li style="margin-bottom:8px;"><strong>CE-d.</strong> Configurar un servidor de archivos o NAS: RAID 1 en espejo, RAID 5/6/10 con redundancia, RAID 0 sin redundancia, memoria ECC, fuente redundante con conmutación y ventilación continua.</li>
+      <li style="margin-bottom:8px;"><strong>CE-d.</strong> Distinguir equipos gaming, TPV, diagnóstico por imagen y renderizado: gaming prioriza FPS, GPU/CPU y tasa de refresco en Hz; TPV usa refrigeración pasiva, chasis cerrado, 80 PLUS y gráficos integrados; diagnóstico por imagen, modelado 3D y renderizado requieren tarjeta gráfica dedicada y buena refrigeración.</li>
+      <li style="margin-bottom:8px;"><strong>CE-e.</strong> Definir la informática móvil como mercado emergente: smartphone, PDA con stylus, navegador GPS, tablet, wearable e IoT; comparar SoC x86 frente a ARM/RISC y la litografía en nanómetros.</li>
+      <li style="margin-bottom:8px;"><strong>CE-e.</strong> Reconocer componentes y características móviles: LPDDR, UFS/eMMC, soldado y ampliabilidad nula; batería en mAh, USB-C, carga rápida, cámara de vapor y grafeno; conectividad Wi-Fi 7, Bluetooth 5.4, 5G, eSIM, NFC, IP68 y Ethernet 2.5GBASE-T (IEEE 802.3bz).</li>
+      <li style="margin-bottom:8px;"><strong>CE-e.</strong> Analizar usos y limitaciones de la informática móvil: mini-PC, dashboard, switch Ethernet y máquinas virtuales con VirtualBox para pruebas; equipos rugerizados con refrigeración pasiva; valorar que móviles y wearables suelen tener ampliabilidad nula.</li>
+      <li style="margin-bottom:8px;"><strong>CE-f.</strong> Definir el modding como corriente alternativa al ensamblado: modificar chasis con metacrilato/PMMA, vinilo, PVC, ARGB y LED direccionables, sleeving, custom loop y scratch build, usando dremel con precaución.</li>
+      <li style="margin-bottom:8px;"><strong>CE-f.</strong> Aplicar cable management y refrigeración en modding: bridas para ordenar cables, ventiladores de bajas revoluciones, insonorización y anclaje elástico de discos para reducir vibraciones.</li>
+      <li style="margin-bottom:8px;"><strong>CE-f.</strong> Evaluar el flujo de aire tras un modding: planificar entrada y salida, mantener filtros antipolvo, evitar obstrucciones y comprobar temperaturas con HWiNFO64 y Core Temp después de modificar el chasis.</li>
+    </ol>
+  </div>
+</div>
+</div>
+
+<footer>Montaje y mantenimiento de equipos · Grado Medio · RA6: Reconoce nuevas tendencias en el ensamblaje de equipos microinformáticos describiendo sus ventajas y adaptándolas a las características de uso de los equipos.</footer>
+
+<button class="btn-top" id="btnTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="progreso-badge" id="progresoBadge">Progreso: 0%</div>
+
+<script>
+
+  window.addEventListener('scroll', function() {
+    document.getElementById('btnTop').classList.toggle('visible', window.scrollY > 300);
+  });
+  function updateProgress() {
+    var all = document.querySelectorAll('.check-item');
+    var checked = document.querySelectorAll('.check-item:checked');
+    var pct = all.length > 0 ? Math.round((checked.length / all.length) * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progresoBadge').textContent = 'Progreso: ' + pct + '%';
+    try { localStorage.setItem('progreso_ra6_montaje_y_mantenimie', pct); } catch(e) {}
+  }
+  document.querySelectorAll('.check-item').forEach(function(cb, i) {
+    try { if (localStorage.getItem('cb_ra6_montaje_y_mantenimie_' + i) === 'true') cb.checked = true; } catch(e) {}
+    cb.addEventListener('change', function() {
+      try { localStorage.setItem('cb_ra6_montaje_y_mantenimie_' + i, cb.checked); } catch(e) {}
+      updateProgress();
+    });
+  });
+  document.querySelectorAll('.respuesta[contenteditable="true"]').forEach(function(div, i) {
+    try { var s = localStorage.getItem('resp_ra6_montaje_y_mantenimie_' + i); if (s) div.innerHTML = s; } catch(e) {}
+    div.addEventListener('input', function() {
+      try { localStorage.setItem('resp_ra6_montaje_y_mantenimie_' + i, div.innerHTML); } catch(e) {}
+    });
+  });
+  updateProgress();
+
+</script>
+</body>
+</html>

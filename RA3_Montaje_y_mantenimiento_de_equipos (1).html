@@ -1,0 +1,1932 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RA3 — Montaje y mantenimiento de equipos: Mide parámetros eléctricos, identificando el tipo de señal y relacionándola con sus unidades características.</title>
+  <style>
+    html { scroll-behavior: smooth; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #eef1f5; color: #1a1a2e; line-height: 1.7; font-size: 15px; }
+    :root {
+      --azul: #1e3a5f; --azul-medio: #2d6a9f; --azul-claro: #dceeff;
+      --win: #2d6a9f; --win-light: #e6f0f9;
+      --linux: #b8542a; --linux-light: #fbeee6;
+      --critico: #b03a2e; --critico-light: #fdf0ee;
+      --importante: #8a6400; --importante-light: #fff9e6;
+      --complementario: #2d6a9f; --complementario-light: #e8f2fb;
+      --exito: #1a6b3a; --exito-light: #e2f0e6;
+      --gris: #667085; --borde: #dde3ec;
+      --sombra: 0 2px 8px rgba(30,58,95,0.07);
+    }
+
+    /* ── Cabecera ───────────────────────────────────────────── */
+    .nav-sor { position: sticky; top: 0; z-index: 100; background: var(--azul); padding: 0 24px; height: 52px; display: flex; align-items: center; }
+    .nav-brand { color: white; font-weight: 600; font-size: 15px; letter-spacing: 0.3px; max-width: 1080px; width: 100%; margin: 0 auto; }
+    .nav-brand span { color: #8fc7a0; font-weight: 700; }
+    .hero { background: linear-gradient(135deg, var(--azul) 0%, var(--azul-medio) 100%); color: white; padding: 40px 24px 34px; text-align: left; }
+    .hero > * { max-width: 1080px; margin-left: auto; margin-right: auto; }
+    .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 4px 14px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px; }
+    .hero h1 { font-size: 25px; font-weight: 700; line-height: 1.35; margin-bottom: 8px; }
+    .hero-sub { font-size: 14px; opacity: 0.8; font-style: italic; margin-bottom: 20px; }
+    .hero-meta { display: flex; gap: 8px; flex-wrap: wrap; font-size: 12px; }
+    .hero-meta span { background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); padding: 4px 13px; border-radius: 20px; font-weight: 600; }
+
+    /* ── Columna medida ─────────────────────────────────────── */
+    .container { max-width: 1080px; margin: 0 auto; padding: 32px 24px 64px; }
+
+    /* ── Ficha del RA ───────────────────────────────────────── */
+    .ra-info { background: white; border-radius: 10px; padding: 22px 26px; margin-bottom: 24px; box-shadow: var(--sombra); }
+    .ra-info h2 { font-size: 18px; color: var(--azul); border-left: 4px solid var(--azul-medio); padding-left: 14px; margin-bottom: 18px; line-height: 1.4; }
+    .peso-grid { display: flex; flex-wrap: wrap; gap: 12px; margin: 14px 0; }
+    .peso-card { flex: 1; min-width: 120px; background: #f7f9fc; border: 1px solid var(--borde); border-radius: 8px; padding: 12px 14px; text-align: center; }
+    .peso-card .numero { font-size: 24px; font-weight: 700; color: var(--azul-medio); line-height: 1.2; }
+    .peso-card .label { font-size: 11px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.6px; }
+    .ce-criticos { background: var(--critico-light); border-left: 4px solid var(--critico); border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 16px 0; font-size: 13px; }
+    .ce-criticos strong { color: var(--critico); }
+    .progress-bar { background: var(--borde); height: 8px; border-radius: 8px; overflow: hidden; margin: 14px 0 2px; }
+    .progress-fill { background: var(--exito); width: 0%; height: 100%; transition: width 0.3s; }
+
+    /* ── Índice ─────────────────────────────────────────────── */
+    .ce-index { background: white; border-radius: 10px; padding: 18px 26px; margin-bottom: 32px; box-shadow: var(--sombra); }
+    .ce-index-titulo { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gris); margin-bottom: 12px; }
+    .ce-index-links { display: flex; flex-wrap: wrap; gap: 6px; }
+    .ce-idx-item { display: flex; align-items: baseline; gap: 8px; padding: 5px 11px; border-radius: 6px; text-decoration: none; font-size: 12.5px; color: #2c3444; border: 1px solid var(--borde); background: #f7f9fc; transition: 0.15s; }
+    .ce-idx-item:hover { background: var(--azul-claro); border-color: var(--azul-medio); }
+    .ce-idx-critico { border-left: 3px solid var(--critico); }
+    .ce-idx-importante { border-left: 3px solid #d4a017; }
+    .ce-idx-complementario { border-left: 3px solid var(--azul-medio); }
+    .ce-idx-letra { font-weight: 800; font-size: 13px; color: var(--azul); }
+    .ce-idx-desc { color: #4a5568; }
+
+    /* ── Bloques: cabecera y cuerpo como dos tarjetas ───────── */
+    .bloque { background: transparent; border: none; box-shadow: none; margin-bottom: 40px; }
+    .bloque-header { background: white; border-left: 5px solid var(--azul-medio); border-radius: 0 8px 8px 0; padding: 15px 20px; margin-bottom: 16px; box-shadow: var(--sombra); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .bloque-titulo { display: flex; align-items: center; gap: 13px; }
+    .bloque-num { background: var(--azul-medio); color: white; font-weight: 700; border-radius: 6px; padding: 4px 11px; font-size: 14px; flex-shrink: 0; align-self: flex-start; margin-top: 3px; }
+    .bloque-num.critico { background: var(--critico); }
+    .bloque-info h3 { font-size: 18px; color: var(--azul); margin-bottom: 3px; line-height: 1.35; }
+    .bloque-info p { font-size: 12px; color: var(--gris); }
+    .bloque-sesiones { background: #f0f3f8; color: var(--gris); border: 1px solid var(--borde); padding: 4px 12px; border-radius: 20px; font-size: 11.5px; font-weight: 600; }
+    .bloque-body { background: white; border-radius: 10px; padding: 24px 28px; box-shadow: var(--sombra); }
+
+    /* ── Escala tipográfica dentro del cuerpo ───────────────── */
+    .bloque-body h3 { font-size: 16px; color: var(--azul); margin: 26px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--borde); }
+    .bloque-body h4 { font-size: 15px; color: var(--azul); margin: 22px 0 10px; }
+    .bloque-body > h3:first-child, .bloque-body > h4:first-child { margin-top: 0; }
+    .bloque-body p { margin-bottom: 11px; }
+    .bloque-body p:last-child { margin-bottom: 0; }
+    .win-col h4, .linux-col h4, .ejercicio h5, .ejemplo-resuelto h5 { margin-top: 0; }
+
+    /* ── Listas ─────────────────────────────────────────────── */
+    .bloque-body ul, .bloque-body ol, .box-critico ul, .box-critico ol, .box-importante ul, .box-importante ol, .box-complementario ul, .box-complementario ol, .win-col ul, .win-col ol, .linux-col ul, .linux-col ol { padding-left: 20px; margin: 10px 0; }
+    .bloque-body li { margin-bottom: 6px; }
+    .bloque-body li::marker { color: var(--azul-medio); }
+
+    /* ── Dos columnas Windows / Linux ───────────────────────── */
+    .dual-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+    .win-col { background: var(--win-light); border: 1px solid #cfe0ee; border-top: 3px solid var(--win); border-radius: 8px; padding: 16px 18px; min-width: 0; }
+    .win-col h4 { color: var(--win); font-size: 14px; margin-bottom: 10px; }
+    .linux-col { background: var(--linux-light); border: 1px solid #f0dcd0; border-top: 3px solid var(--linux); border-radius: 8px; padding: 16px 18px; min-width: 0; }
+    .linux-col h4 { color: var(--linux); font-size: 14px; margin-bottom: 10px; }
+
+    /* ── Cajas semánticas ───────────────────────────────────── */
+    .box-critico, .box-importante, .box-complementario { border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 18px 0; }
+    .box-critico { background: var(--critico-light); border-left: 4px solid var(--critico); }
+    .box-importante { background: var(--importante-light); border-left: 4px solid #d4a017; }
+    .box-complementario { background: var(--complementario-light); border-left: 4px solid var(--complementario); }
+    .box-label { font-weight: 700; font-size: 12px; text-transform: none; letter-spacing: 0.3px; margin-bottom: 5px; display: block; }
+    .box-critico .box-label { color: var(--critico); }
+    .box-importante .box-label { color: var(--importante); }
+    .box-complementario .box-label { color: var(--complementario); }
+
+    /* ── Código y tablas ────────────────────────────────────── */
+    pre { background: #1e293b; color: #e2e8f0; padding: 13px 16px; border-radius: 8px; overflow-x: auto; font-size: 13px; font-family: 'Consolas', 'Courier New', monospace; margin: 14px 0; line-height: 1.6; }
+    pre code { background: none; color: inherit; padding: 0; }
+    code { background: #eef2f7; padding: 1px 6px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 13px; color: #1e3a5f; }
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 18px 0; border-radius: 8px; border: 1px solid var(--borde); }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    thead tr { background: var(--azul); color: white; }
+    th { padding: 10px 14px; text-align: left; font-weight: 600; }
+    tbody tr:nth-child(even) { background: #f7f9fc; }
+    td { padding: 9px 14px; border-bottom: 1px solid var(--borde); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+
+    /* ── Ejercicios ─────────────────────────────────────────── */
+    .ejercicio { background: #fdfaf2; border: 1px solid #eadfc2; border-left: 4px solid #d4a017; border-radius: 0 8px 8px 0; padding: 16px 18px; margin: 20px 0; }
+    .ejercicio h5 { color: #7a5c00; margin-bottom: 4px; font-size: 14px; }
+    .nivel-tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-bottom: 8px; letter-spacing: 0.5px; }
+    .nivel-basico { background: var(--exito-light); color: var(--exito); }
+    .nivel-medio { background: #fdf3d6; color: #7a5c00; }
+    .nivel-avanzado { background: var(--critico-light); color: var(--critico); }
+    .respuesta { background: white; border: 1px solid var(--borde); border-radius: 6px; padding: 12px; min-height: 76px; margin-top: 12px; outline: none; }
+    .respuesta:focus { border-color: var(--azul-medio); box-shadow: 0 0 0 3px rgba(45,106,159,0.1); }
+    .respuesta:empty::before { content: attr(data-placeholder); color: #a0aec0; pointer-events: none; display: block; }
+    .solucion { margin-top: 12px; background: var(--exito-light); border-radius: 6px; padding: 2px 14px; }
+    .solucion summary { cursor: pointer; font-weight: 600; color: var(--exito); padding: 9px 0; list-style: revert; font-size: 13.5px; }
+    .solucion[open] summary { margin-bottom: 6px; }
+
+    /* ── Ejemplo resuelto, diagrama, checklist ──────────────── */
+    .ejemplo-resuelto { background: var(--exito-light); border-left: 4px solid var(--exito); border-radius: 0 8px 8px 0; padding: 16px 18px; margin: 20px 0; }
+    .ejemplo-resuelto h5 { color: var(--exito); margin-bottom: 8px; font-size: 14px; }
+    .diagrama { margin: 22px 0; background: #f7f9fc; border: 1px solid var(--borde); border-radius: 10px; padding: 20px 14px; text-align: center; overflow-x: auto; }
+    .diagrama svg { max-width: 100%; height: auto; display: block; margin: 0 auto; font-family: 'Segoe UI', system-ui, sans-serif; }
+    .diagrama figcaption { font-size: 12.5px; color: var(--gris); margin-top: 14px; font-style: italic; }
+    .checklist { background: #f7f9fc; border: 1px solid var(--borde); border-radius: 10px; padding: 18px 20px; margin-top: 22px; }
+    .checklist strong { color: var(--azul); font-size: 14px; }
+    .checklist ul { list-style: none; padding: 0; margin-top: 10px; }
+    .checklist li { padding: 5px 0; display: flex; align-items: flex-start; gap: 10px; cursor: pointer; border-bottom: 1px solid #eef1f5; }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li input[type="checkbox"] { width: 15px; height: 15px; flex-shrink: 0; cursor: pointer; margin-top: 5px; accent-color: var(--exito); }
+    .checklist li label { cursor: pointer; flex: 1; font-size: 14px; }
+
+    /* ── Varios ─────────────────────────────────────────────── */
+    hr.sep { border: none; border-top: 2px dashed var(--borde); margin: 24px 0; }
+    footer { text-align: center; padding: 28px 24px; color: var(--gris); font-size: 12px; border-top: 1px solid var(--borde); margin-top: 44px; background: white; }
+    .btn-top { position: fixed; bottom: 20px; right: 20px; background: var(--azul); color: white; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-size: 19px; opacity: 0; transition: 0.3s; z-index: 90; }
+    .btn-top.visible { opacity: 1; }
+    .progreso-badge { position: fixed; bottom: 20px; left: 20px; background: var(--azul); color: white; padding: 7px 15px; border-radius: 20px; font-size: 12.5px; font-weight: 600; z-index: 90; }
+
+    @media (max-width: 768px) {
+      body { font-size: 14px; }
+      .container { padding: 18px 14px 44px; }
+      .dual-columns { grid-template-columns: 1fr; gap: 12px; }
+      .hero { padding: 26px 18px 22px; }
+      .hero h1 { font-size: 19px; }
+      .bloque-body { padding: 16px 17px; }
+      .bloque-header { padding: 13px 15px; }
+      pre { font-size: 11.5px; }
+      th, td { padding: 7px 9px; font-size: 12px; }
+    }
+
+    /* ── Fotos reales ───────────────────────────────────────── */
+    .foto { margin: 22px 0; }
+    .foto-sm img { max-width: 620px; margin-left: auto; margin-right: auto; }
+    .foto img { width: 100%; border-radius: 10px; border: 1px solid var(--borde); display: block; }
+    .foto figcaption { font-size: 12.5px; color: var(--gris); margin-top: 10px; font-style: italic; text-align: center; }
+    .foto-pendiente { border: 2px dashed #c3cede; border-radius: 10px; background: #f7f9fc; padding: 26px 20px; text-align: center; color: var(--gris); }
+    .foto-pendiente .icono { font-size: 30px; display: block; margin-bottom: 8px; opacity: 0.6; }
+    .foto-pendiente .archivo { display: inline-block; font-family: 'Consolas', monospace; font-size: 12.5px; background: white; border: 1px solid var(--borde); border-radius: 4px; padding: 2px 8px; color: var(--azul); margin-top: 8px; }
+    .foto-pendiente .que { font-size: 13.5px; color: #4a5568; }
+
+    /* ── Rejilla de tarjetas de contenido ───────────────────── */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: 14px; margin: 20px 0; }
+    .card { background: #f7f9fc; border: 1px solid var(--borde); border-top: 3px solid var(--azul-medio); border-radius: 8px; padding: 15px 17px; }
+    .card h4 { font-size: 14px; color: var(--azul); margin: 0 0 9px; display: flex; align-items: center; gap: 8px; }
+    .card h4 .ico { font-size: 18px; }
+    .card ul { margin: 0; padding-left: 18px; font-size: 13.5px; }
+    .card li { margin-bottom: 5px; }
+
+    /* ── Etiquetas de peligrosidad ──────────────────────────── */
+    .pel { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 1px 8px; border-radius: 4px; letter-spacing: 0.4px; white-space: nowrap; }
+    .pel-baja    { background: #e2f0e6; color: #1a6b3a; }
+    .pel-media   { background: #fdf3d6; color: #7a5c00; }
+    .pel-alta    { background: #fbe6dd; color: #a0522d; }
+    .pel-critica { background: #f7dcd8; color: #8c2f22; }
+
+    /* ── Frase destacada, para romper el bloque de texto ────── */
+    .clave { font-size: 16px; line-height: 1.6; color: var(--azul); border-left: 4px solid #d4a017; padding: 4px 0 4px 16px; margin: 22px 0; font-weight: 600; }
+
+    /* ── Vídeo de apoyo: enlace, no incrustado ──────────────── */
+    .videos { display: flex; flex-direction: column; gap: 8px; margin: 18px 0; }
+    .video { display: flex; align-items: flex-start; gap: 12px; background: #fff; border: 1px solid var(--borde); border-left: 4px solid #a0302a; border-radius: 8px; padding: 12px 14px; text-decoration: none; color: inherit; box-shadow: var(--sombra); }
+    .video:hover { border-color: #a0302a; }
+    .video .play { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; background: #a0302a; color: #fff; font-size: 11px; line-height: 26px; text-align: center; }
+    .video .txt { min-width: 0; }
+    .video .titulo { display: block; font-weight: 600; font-size: 14.5px; color: var(--azul); }
+    .video .desc { display: block; font-size: 13px; color: var(--gris); margin-top: 2px; }
+  </style>
+</head>
+<body>
+
+<nav class="nav-sor">
+  <div class="nav-brand">Montaje y mantenimiento de equipos &nbsp;<span>RA3</span></div>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">Grado Medio Sistemas Microinformáticos y Redes</div>
+  <h1>RA3: Mide parámetros eléctricos, identificando el tipo de señal y relacionándola con sus unidades características.</h1>
+  <p class="hero-sub">Contenido técnico de nivel Grado Medio</p>
+  <div class="hero-meta">
+    <span>Peso: 12%</span>
+    <span>11 sesiones × 55 min</span>
+    <span>10 criterios de evaluación</span>
+    <span>5 CEs críticos</span>
+  </div>
+</div>
+<div class="container">
+<div class="ra-info">
+  <h2>RA3: Mide parámetros eléctricos, identificando el tipo de señal y relacionándola con sus unidades características.</h2>
+  <div class="peso-grid">
+    <div class="peso-card"><div class="numero">12%</div><div class="label">Peso evaluación</div></div>
+    <div class="peso-card"><div class="numero">11</div><div class="label">Sesiones</div></div>
+    <div class="peso-card"><div class="numero">10</div><div class="label">Criterios</div></div>
+    <div class="peso-card"><div class="numero">5</div><div class="label">Críticos</div></div>
+  </div>
+  <div class="ce-criticos"><strong>CEs críticos:</strong> CE-a, CE-b, CE-d, CE-f, CE-i</div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+</div>
+<div class="ce-index">
+  <div class="ce-index-titulo">Índice RA3 — 10 criterios</div>
+  <div class="ce-index-links">
+    <a href="#ceA" class="ce-idx-item ce-idx-critico"><span class="ce-idx-letra">a</span><span class="ce-idx-desc">Se ha identificado el tipo de señal a medir con el aparato correspondiente.</span></a>
+    <a href="#ceB" class="ce-idx-item ce-idx-critico"><span class="ce-idx-letra">b</span><span class="ce-idx-desc">Se ha seleccionado la magnitud, el rango de medida y se ha conectado el aparato …</span></a>
+    <a href="#ceC" class="ce-idx-item ce-idx-importante"><span class="ce-idx-letra">c</span><span class="ce-idx-desc">Se ha relacionado la medida obtenida con los valores típicos.</span></a>
+    <a href="#ceD" class="ce-idx-item ce-idx-critico"><span class="ce-idx-letra">d</span><span class="ce-idx-desc">Se han identificado los bloques de una fuente de alimentación (F.A.) para un ord…</span></a>
+    <a href="#ceE" class="ce-idx-item ce-idx-importante"><span class="ce-idx-letra">e</span><span class="ce-idx-desc">Se han enumerado las tensiones proporcionadas por una F.A. típica.</span></a>
+    <a href="#ceF" class="ce-idx-item ce-idx-critico"><span class="ce-idx-letra">f</span><span class="ce-idx-desc">Se han medido las tensiones en F.A. típicas de ordenadores personales.</span></a>
+    <a href="#ceG" class="ce-idx-item ce-idx-importante"><span class="ce-idx-letra">g</span><span class="ce-idx-desc">Se han identificado los bloques de un sistema de alimentación ininterrumpida.</span></a>
+    <a href="#ceH" class="ce-idx-item ce-idx-importante"><span class="ce-idx-letra">h</span><span class="ce-idx-desc">Se han medido las señales en los puntos significativos de un SAI.</span></a>
+    <a href="#ceI" class="ce-idx-item ce-idx-critico"><span class="ce-idx-letra">i</span><span class="ce-idx-desc">Se han reconocido los tipos de circuitos eléctricos: C.A. /C.C. y se conocen las…</span></a>
+    <a href="#ceJ" class="ce-idx-item ce-idx-complementario"><span class="ce-idx-letra">j</span><span class="ce-idx-desc">Se conocen los aparatos de medida.</span></a>
+  </div>
+</div>
+<div class="bloque" id="ceA">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num critico">a</div>
+      <div class="bloque-info">
+        <h3>Qué señal mido y con qué aparato: el polímetro en el taller</h3>
+        <p>CE-a · CRÍTICO · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>Un equipo informático funciona con electricidad, pero no toda la electricidad que hay dentro de una caja es igual. Antes de coger un aparato de medida hay que responder a una pregunta: <strong>¿qué señal quiero comprobar?</strong> El aparato se elige por la magnitud, nunca al revés.</p>
+
+    <p>Una <strong>señal eléctrica</strong> es la variación de una magnitud eléctrica (tensión o corriente) que transporta energía o información. Las magnitudes que vamos a manejar son la <strong>tensión</strong> (diferencia de potencial entre dos puntos, en voltios, V), la <strong>corriente</strong> (cantidad de electrones que atraviesa un conductor por segundo, en amperios, A) y la <strong>resistencia</strong> (oposición de un material al paso de la corriente, en ohmios, Ω). Si la tensión mantiene siempre el mismo valor hablamos de <strong>corriente continua</strong> (CC o DC), que es la que entrega una fuente ATX; si cambia de sentido cíclicamente hablamos de <strong>corriente alterna</strong> (CA o AC), la de la red eléctrica, que en España es de 230 V y 50 Hz (50 hercios; 1 Hz = 1 ciclo por segundo), de modo que completa 50 ciclos por segundo y cambia de sentido 100 veces por segundo, porque hay dos cambios de sentido en cada ciclo.</p>
+
+    <h4>Las señales que se miden en el taller</h4>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Señal</th><th>Qué es</th><th>Unidad</th><th>Aparato y modo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Tensión continua</td><td>Valor constante en el tiempo, como los raíles de 12 V y 5 V de una fuente</td><td>voltio (V)</td><td>Polímetro en <code>V=</code> (DCV), en paralelo, circuito encendido</td></tr>
+          <tr><td>Tensión alterna</td><td>Cambia de sentido periódicamente; es la de la toma de corriente</td><td>voltio (V)</td><td>Polímetro en <code>V~</code> (ACV), en paralelo</td></tr>
+          <tr><td>Corriente</td><td>Caudal de electrones que atraviesa un conductor</td><td>amperio (A)</td><td>Polímetro en <code>A</code>, <strong>en serie</strong>, circuito encendido</td></tr>
+          <tr><td>Resistencia</td><td>Oposición de un material al paso de la corriente</td><td>ohmio (Ω)</td><td>Polímetro en <code>Ω</code>, en paralelo, circuito apagado</td></tr>
+          <tr><td>Continuidad</td><td>¿Existe camino eléctrico? Se considera que sí por debajo de unos 30 Ω</td><td>— (pitido)</td><td>Polímetro en modo continuidad, circuito apagado</td></tr>
+          <tr><td>Aviso del POST</td><td>Pitidos o pulsos lógicos del autodiagnóstico de la placa al arrancar</td><td>—</td><td>Zumbador/altavoz de la placa o tarjeta de diagnóstico POST</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>El <strong>POST</strong> (Power-On Self-Test) es la comprobación automática que hace la placa base al encender: si todo está bien emite un pitido corto, y si algo falla emite secuencias de pitidos distintas según el fabricante. El <strong>zumbador</strong> es el pequeño altavoz piezoeléctrico que se conecta a la placa para oír esos avisos.</p>
+
+    <div class="clave">Tensión: en paralelo y con el circuito encendido. Resistencia y continuidad: en paralelo y sin tensión. Corriente: en serie y con el circuito encendido.</div>
+
+    <h4>El polímetro: bornas y selector</h4>
+    <p>El <strong>polímetro</strong> o multímetro digital es el aparato que mide tensión, corriente, resistencia y continuidad. Sus tres <strong>bornas</strong> (orificios donde se enchufan las puntas de prueba) son:</p>
+    <ul>
+      <li><strong>COM</strong>: borna común, siempre el cable negro. Es la referencia de 0 V (masa o GND).</li>
+      <li><strong>VΩmA</strong>: borna del cable rojo para tensión, resistencia y corrientes pequeñas (hasta 200-400 mA según modelo).</li>
+      <li><strong>10A</strong>: borna del cable rojo solo para corrientes grandes, hasta 10 A.</li>
+    </ul>
+    <p>El <strong>selector</strong> elige la magnitud y la <strong>escala</strong> (el valor máximo que puede leer). En un polímetro con autorrango basta con elegir la magnitud, pero conviene saber qué rango está usando: si medimos 12 V en una escala de 200 mV el aparato marcará <code>1</code> o <code>OL</code> (fuera de rango). Las <strong>puntas de prueba</strong> son los cables con punta; las <strong>pinzas</strong> son las mismas puntas con forma de cocodrilo, útiles para fijarlas a un conector mientras se mira la pantalla.</p>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 480 240" role="img" aria-label="Diagrama de decisión para elegir el modo del polímetro según la señal a medir">
+        <defs>
+          <marker id="flecha-a-cea" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="140" y="10" width="200" height="50" rx="12" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="240" y="40" text-anchor="middle" font-size="15" fill="#1a1a2e">¿Qué quiero comprobar?</text>
+        <line x1="240" y1="60" x2="240" y2="75" stroke="#667085" stroke-width="2"/>
+        <line x1="62" y1="75" x2="408" y2="75" stroke="#667085" stroke-width="2"/>
+        <line x1="62" y1="75" x2="62" y2="108" stroke="#667085" stroke-width="2" marker-end="url(#flecha-a-cea)"/>
+        <line x1="177" y1="75" x2="177" y2="108" stroke="#667085" stroke-width="2" marker-end="url(#flecha-a-cea)"/>
+        <line x1="292" y1="75" x2="292" y2="108" stroke="#667085" stroke-width="2" marker-end="url(#flecha-a-cea)"/>
+        <line x1="408" y1="75" x2="408" y2="108" stroke="#667085" stroke-width="2" marker-end="url(#flecha-a-cea)"/>
+        <rect x="10" y="110" width="105" height="110" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="62" y="132" text-anchor="middle" font-size="14" fill="#1a1a2e">Tensión</text>
+        <text x="62" y="155" text-anchor="middle" font-size="12" fill="#1a1a2e">V= o V~</text>
+        <text x="62" y="177" text-anchor="middle" font-size="12" fill="#667085">en paralelo</text>
+        <text x="62" y="197" text-anchor="middle" font-size="12" fill="#667085">con tensión</text>
+        <rect x="125" y="110" width="105" height="110" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="177" y="132" text-anchor="middle" font-size="14" fill="#1a1a2e">Continuidad</text>
+        <text x="177" y="155" text-anchor="middle" font-size="12" fill="#1a1a2e">modo pitido</text>
+        <text x="177" y="177" text-anchor="middle" font-size="12" fill="#667085">en paralelo</text>
+        <text x="177" y="197" text-anchor="middle" font-size="12" fill="#667085">sin tensión</text>
+        <rect x="240" y="110" width="105" height="110" rx="10" fill="#fdf3d6" stroke="#d4a017" stroke-width="2"/>
+        <text x="292" y="132" text-anchor="middle" font-size="14" fill="#1a1a2e">Resistencia</text>
+        <text x="292" y="155" text-anchor="middle" font-size="12" fill="#1a1a2e">Ω</text>
+        <text x="292" y="177" text-anchor="middle" font-size="12" fill="#667085">en paralelo</text>
+        <text x="292" y="197" text-anchor="middle" font-size="12" fill="#667085">sin tensión</text>
+        <rect x="355" y="110" width="105" height="110" rx="10" fill="#f7e3e0" stroke="#b03a2e" stroke-width="2"/>
+        <text x="408" y="132" text-anchor="middle" font-size="14" fill="#1a1a2e">Corriente</text>
+        <text x="408" y="155" text-anchor="middle" font-size="12" fill="#1a1a2e">A</text>
+        <text x="408" y="177" text-anchor="middle" font-size="12" fill="#667085">en serie</text>
+        <text x="408" y="197" text-anchor="middle" font-size="12" fill="#667085">con tensión</text>
+      </svg>
+      <figcaption>Ruta para elegir el modo del polímetro. Fíjate en que solo la tensión y la corriente se miden con el circuito alimentado; la resistencia y la continuidad exigen cortar la tensión.</figcaption>
+    </figure>
+
+    <h4>Qué se mide en una fuente ATX</h4>
+    <p>La <strong>fuente de alimentación ATX</strong> es la caja que transforma los 230 V de la red en las tensiones continuas que usa el equipo; cada una de esas salidas se llama <strong>raíl</strong>. Se comprueban en el conector de 24 pines, con el equipo apagado pero la fuente enchufada a la red:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Pines</th><th>Señal</th><th>Color habitual</th><th>Valor nominal</th></tr></thead>
+        <tbody>
+          <tr><td>1, 2, 12, 13</td><td>+3,3 V</td><td>Naranja</td><td>3,3 V</td></tr>
+          <tr><td>4, 6, 21, 22, 23</td><td>+5 V</td><td>Rojo</td><td>5 V</td></tr>
+          <tr><td>10, 11</td><td>+12 V</td><td>Amarillo</td><td>12 V</td></tr>
+          <tr><td>9</td><td>+5VSB (espera)</td><td>Morado</td><td>5 V siempre presente</td></tr>
+          <tr><td>16</td><td>PS_ON (encendido)</td><td>Verde</td><td>Se lleva a 0 V para arrancar</td></tr>
+          <tr><td>3, 5, 7, 15, 17, 18, 19, 24</td><td>COM (masa)</td><td>Negro</td><td>0 V de referencia</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box-complementario">
+      <div class="box-label">NOTA</div>
+      <p>No todas las señales se miden con el polímetro. Las temperaturas y las velocidades de ventiladores se consultan con <strong>HWiNFO64 8.20</strong>; la salud del disco, con <strong>CrystalDiskInfo 9.5</strong>; y <strong>CPU-Z 2.15</strong> identifica CPU, placa y memoria, pero no mide temperaturas ni velocidades de ventiladores. Son medidas lógicas, no eléctricas.</p>
+    </div>
+
+    <h4>Qué mirar al comprar un polímetro para el taller</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Característica</th><th>Qué significa</th><th>Qué elegir</th></tr></thead>
+        <tbody>
+          <tr><td>Categoría de seguridad (CAT)</td><td>Nivel de protección frente a picos de tensión</td><td>CAT II mínimo para taller; CAT III si se mide en la instalación</td></tr>
+          <tr><td>Resolución y precisión</td><td>Cuántos decimales da y cuánto puede desviarse</td><td>Precisión de ±0,5 % en continua es suficiente para raíles ATX</td></tr>
+          <tr><td>Autorrango</td><td>El aparato elige la escala solo</td><td>Muy recomendable en docencia y en trabajo rápido</td></tr>
+          <tr><td>Funciones extra</td><td>Continuidad con pitido, prueba de diodos, retención de dato</td><td>Imprescindible el pitido de continuidad; útil la retención</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p>TecnoParts SL recibe un equipo que no arranca. Antes de cambiar la fuente, el técnico comprueba las señales de alimentación con un polímetro digital del taller.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li>Identificar la señal: es <strong>tensión continua</strong> de varios valores (3,3 V, 5 V, 12 V), por tanto el aparato es el polímetro en modo <code>V=</code>.</li>
+        <li>Colocar el cable negro en <code>COM</code> y el rojo en <code>VΩmA</code>. Seleccionar <code>V=</code> en escala de 20 V (o autorrango).</li>
+        <li>Con la fuente enchufada a la red y el equipo apagado, medir la tensión de espera: punta negra en un pin COM (por ejemplo el 24) y punta roja en el pin 9 (+5VSB). Lectura esperada: <strong>≈5,0 V</strong>. Si marca 0 V, la fuente no recibe red o está averiada.</li>
+        <li>Si hay 5VSB, puentear el pin 16 (PS_ON, verde) con un pin COM con una pinza: la fuente arranca. Ahora medir el pin 10 (+12 V): debe dar <strong>≈12 V</strong>, y el pin 4 (+5 V): <strong>≈5 V</strong>.</li>
+        <li>Valorar tolerancias: una fuente ATX admite ±5 % en los raíles principales, es decir, 12 V entre 11,4 y 12,6 V. Una lectura de 10,8 V indica raíl degradado.</li>
+        <li>Conclusión: si 5VSB es correcta y 12 V está fuera de tolerancia, la avería es de la fuente y se sustituye. Nunca se abre la fuente: dentro hay tensión peligrosa incluso desenchufada.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-a · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>Taller de TecnoParts SL. Indica para cada caso <strong>qué señal se mide, en qué modo se pone el polímetro, en qué borna va el cable rojo y si el circuito debe estar con o sin tensión</strong>:</p>
+      <p>a) Tensión del raíl de 12 V del conector de 24 pines.<br>
+      b) Saber si el cable de un ventilador de 12 V está roto por dentro.<br>
+      c) Comprobar el valor de una resistencia de 100 Ω de una placa averiada.<br>
+      d) Medir el consumo de un ventilador de 12 V que, según la etiqueta, gasta 0,15 A.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>a) Tensión continua.</strong> Modo <code>V=</code> (DCV), escala 20 V o autorrango, cable rojo en <code>VΩmA</code> y negro en <code>COM</code>. Se mide <strong>en paralelo</strong> (rojo en el pin 10, negro en un COM) y con el circuito <strong>con tensión</strong>. Resultado esperado ≈12 V.</p>
+        <p><strong>b) Continuidad.</strong> Modo continuidad (símbolo de pitido) o <code>Ω</code>, rojo en <code>VΩmA</code>. Se mide con el cable <strong>desconectado de cualquier tensión</strong>. Si al tocar los dos extremos del cable suena el pitido, el conductor está entero; si no suena, está roto.</p>
+        <p><strong>c) Resistencia.</strong> Modo <code>Ω</code>, escala 200 Ω (o autorrango), rojo en <code>VΩmA</code>. La resistencia debe estar <strong>desconectada o sin tensión</strong>; si se mide con el circuito alimentado la lectura es falsa y puede dañar el polímetro. Esperado ≈100 Ω.</p>
+        <p><strong>d) Corriente continua.</strong> Modo <code>A=</code>, escala 200 mA (150 mA = 0,15 A), cable rojo en <code>VΩmA</code> (o en <code>10A</code> si se usa esa escala). Se coloca <strong>en serie</strong>: se abre el circuito y el polímetro pasa a formar parte de él. Circuito <strong>con tensión</strong>. Si se conecta en paralelo, se produce un cortocircuito.</p>
+      </details>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-a · Medio</h5>
+      <span class="nivel-tag nivel-medio">MEDIO</span>
+      <p>Clínica Dental Sonrisa Sana. El PC de recepción no responde al pulsar el botón de encendido, aunque la luz de la fuente parpadea al enchufarlo. El técnico sospecha del pulsador del chasis. Describe qué señal hay que comprobar en cada paso, con qué aparato y modo, y qué lectura confirmaría que el pulsador está averiado. Incluye qué precaución hay que tomar antes de medir.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <p><strong>Tarjeta de diagnóstico POST:</strong> es un pequeño dispositivo que se conecta a un puerto de la placa (normalmente PCI/PCIe o USB) y muestra códigos o indicadores del POST para localizar fallos cuando no hay imagen. En este bloque el taller no dispone de ella.</p>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-a · Avanzado</h5>
+      <span class="nivel-tag nivel-avanzado">AVANZADO</span>
+      <p>Gestoría Álvarez e Hijos SL. Se monta en el taller un equipo con placa base, procesador y memoria, pero al encender no da imagen y no se oye nada. El taller no dispone de tarjeta de diagnóstico POST. Diseña una secuencia de comprobaciones indicando, en cada una, <strong>qué tipo de señal se busca, qué aparato se usa y qué resultado llevaría a la conclusión de fuente averiada, placa averiada o montaje incorrecto</strong>. Justifica el orden elegido y descarta al menos una causa que no se pueda comprobar con el material disponible.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-a</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Distingo tensión, corriente, resistencia y continuidad, y su unidad</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé qué borna del polímetro usar (COM, VΩmA, 10A) en cada medida</label></li>
+        <li><label><input type="checkbox" class="check-item"> Coloco el polímetro en paralelo para tensión y en serie para corriente</label></li>
+        <li><label><input type="checkbox" class="check-item"> Mido resistencia y continuidad siempre sin tensión en el circuito</label></li>
+        <li><label><input type="checkbox" class="check-item"> Identifico los pines y tensiones del conector ATX de 24 pines</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé cuándo la herramienta adecuada es el zumbador o el software y no el polímetro</label></li>
+      </ul>
+    </div>
+
+    <div class="box-critico">
+      <div class="box-label">⚠ TRAMPA DE EXAMEN</div>
+      <p>El error más frecuente es medir <strong>resistencia o continuidad con el circuito alimentado</strong>: la lectura sale falsa y el polímetro puede quemarse. La segunda trampa es conectar el polímetro <strong>en paralelo para medir corriente</strong>; eso es un cortocircuito y salta el fusible interno. Regla para no fallar: si el selector está en <code>Ω</code> o en pitido, el equipo debe estar apagado y desenchufado; si está en <code>A</code>, el polímetro va intercalado en el circuito, nunca encima de dos puntos con tensión entre ellos.</p>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceB">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num critico">b</div>
+      <div class="bloque-info">
+        <h3>Selección de la magnitud, elección del rango y conexión del aparato de medida</h3>
+        <p>CE-b · CRÍTICO · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>En CE-a vimos qué magnitudes eléctricas existen (tensión, corriente y resistencia) y cómo se elige una escala en un polímetro digital. Ahora damos el paso siguiente, que es el que se evalúa aquí: <strong>elegir la función correcta del selector, escoger el rango de medida y conectar las puntas tal y como exige cada magnitud</strong>. Un polímetro mal conectado no solo da una lectura falsa: puede fundir su fusible interno o dañar el circuito que estás midiendo.</p>
+
+    <div class="clave">La magnitud decide la función y las bornas; el circuito decide cómo se conecta el aparato: paralelo para tensión, serie para corriente y sin tensión para resistencia.</div>
+
+    <p>Recuerda que las <strong>bornas</strong> son los orificios del polímetro donde se enchufan las puntas de prueba (ver CE-a). La punta negra va casi siempre en <code>COM</code>; lo que cambia es dónde va la roja.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Magnitud</th><th>Función del selector</th><th>Bornas</th><th>Conexión</th><th>Estado del circuito</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Tensión continua (CC)</td><td><code>V=</code> / DCV</td><td>COM + VΩ</td><td>Paralelo</td><td>Encendido</td></tr>
+          <tr><td>Tensión alterna (CA)</td><td><code>V~</code> / ACV</td><td>COM + VΩ</td><td>Paralelo</td><td>Enchufado a red</td></tr>
+          <tr><td>Corriente continua</td><td><code>A=</code> / DCA</td><td>COM + mA o 10A</td><td>Serie (abrir)</td><td>Encendido</td></tr>
+          <tr><td>Corriente alterna</td><td><code>A~</code> / ACA</td><td>COM + mA o 10A</td><td>Serie (abrir)</td><td>Enchufado a red</td></tr>
+          <tr><td>Resistencia</td><td><code>Ω</code></td><td>COM + VΩ</td><td>Sobre el componente</td><td>Sin tensión</td></tr>
+          <tr><td>Continuidad</td><td>Zumbido / diodo</td><td>COM + VΩ</td><td>Sobre el componente</td><td>Sin tensión</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>El rango de medida: qué escala poner</h4>
+    <p>El <strong>rango</strong> es el valor máximo que el aparato puede leer en la escala seleccionada. Un polímetro con <strong>autorrango</strong> lo cambia solo y solo tienes que esperar un segundo a que se estabilice la lectura. En los de <strong>escala manual</strong> eliges tú (200 mV, 2 V, 20 V, 200 V, 600 V…).</p>
+    <ul>
+      <li><strong>No conoces el valor:</strong> empieza por la escala más alta del tipo de magnitud y baja después. Así nunca sales de rango.</li>
+      <li><strong>Aparece <code>OL</code></strong> (o un 1 parpadeando): <em>over limit</em>, el valor supera la escala. Sube de escala; no significa «cero».</li>
+      <li><strong>El valor sale con muy pocos dígitos</strong> (por ejemplo 0,01 en la escala de 600 V): baja de escala para ganar resolución y leer 5,02 V en lugar de 5,0 V.</li>
+    </ul>
+
+    <div class="box-importante">
+      <div class="box-label">IMPORTANTE</div>
+      <p>No hace falta adivinar la tensión de una fuente ATX: sus raíles son +3,3 V, +5 V, +12 V y +5 VSB (vistos en CE-a). Con ese dato ya sabes que la escala de 20 V es la adecuada para medirlos y que la de 2 V se quedaría corta.</p>
+    </div>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 660 270" role="img" aria-label="Árbol de decisión para elegir función, bornas y conexión del polímetro según la magnitud">
+        <defs>
+          <marker id="flecha-b-ceb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="230" y="12" width="200" height="52" rx="12" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="330" y="44" text-anchor="middle" font-size="15" fill="#1a1a2e">¿Qué magnitud mido?</text>
+        <line x1="300" y1="64" x2="125" y2="112" stroke="#667085" stroke-width="2" marker-end="url(#flecha-b-ceb)"/>
+        <line x1="330" y1="64" x2="330" y2="112" stroke="#667085" stroke-width="2" marker-end="url(#flecha-b-ceb)"/>
+        <line x1="360" y1="64" x2="535" y2="112" stroke="#667085" stroke-width="2" marker-end="url(#flecha-b-ceb)"/>
+        <rect x="15" y="115" width="200" height="140" rx="12" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="115" y="142" text-anchor="middle" font-size="15" fill="#1a1a2e">Tensión (V)</text>
+        <text x="115" y="166" text-anchor="middle" font-size="13" fill="#667085">Selector V=/DCV</text>
+        <text x="115" y="188" text-anchor="middle" font-size="13" fill="#667085">Bornas COM + VΩ</text>
+        <text x="115" y="210" text-anchor="middle" font-size="13" fill="#1a1a2e">En paralelo</text>
+        <text x="115" y="232" text-anchor="middle" font-size="13" fill="#1a1a2e">Equipo encendido</text>
+        <rect x="230" y="115" width="200" height="140" rx="12" fill="#f7f9fc" stroke="#d4a017" stroke-width="2"/>
+        <text x="330" y="142" text-anchor="middle" font-size="15" fill="#1a1a2e">Corriente (A)</text>
+        <text x="330" y="166" text-anchor="middle" font-size="13" fill="#667085">Selector A=/DCA</text>
+        <text x="330" y="188" text-anchor="middle" font-size="13" fill="#667085">Bornas COM + 10A</text>
+        <text x="330" y="210" text-anchor="middle" font-size="13" fill="#1a1a2e">En serie</text>
+        <text x="330" y="232" text-anchor="middle" font-size="13" fill="#1a1a2e">Circuito abierto</text>
+        <rect x="445" y="115" width="200" height="140" rx="12" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="545" y="142" text-anchor="middle" font-size="15" fill="#1a1a2e">Resistencia (Ω)</text>
+        <text x="545" y="166" text-anchor="middle" font-size="13" fill="#667085">Selector Ω o 🔔</text>
+        <text x="545" y="188" text-anchor="middle" font-size="13" fill="#667085">Bornas COM + VΩ</text>
+        <text x="545" y="210" text-anchor="middle" font-size="13" fill="#1a1a2e">Componente aislado</text>
+        <text x="545" y="232" text-anchor="middle" font-size="13" fill="#1a1a2e">SIN tensión</text>
+      </svg>
+      <figcaption>Árbol de decisión del CE-b: la magnitud elegida fija selector, bornas y tipo de conexión. Observa que solo la tensión se mide con el circuito en marcha y en paralelo; la corriente obliga a abrir el circuito.</figcaption>
+    </figure>
+
+    <h4>Cómo se conecta cada magnitud en el taller</h4>
+    <div class="cards">
+      <div class="card">
+        <h4><span class="ico">⚡</span> Tensión: en paralelo</h4>
+        <ul>
+          <li>Punta roja al punto caliente, es decir, al conductor positivo o activo frente a masa: en CC, al +12 V o +5 V (en cables ATX habituales, amarillo = +12 V y rojo = +5 V; comprueba el pinout); en CA, a la fase. La punta negra va a masa (cable negro, referencia 0 V).</li>
+          <li>No se abre nada: solo se tocan dos puntos con el equipo funcionando.</li>
+          <li>En CC, un valor negativo solo indica puntas invertidas; no rompe nada.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">🔌</span> Corriente: en serie</h4>
+        <ul>
+          <li>Hay que <strong>abrir</strong> el circuito y meter el polímetro «en medio», como si fuera un cable más.</li>
+          <li>Borna <code>10A</code> si esperas más de 200 mA; borna <code>mA</code> si la corriente es pequeña (más resolución, pero lleva fusible).</li>
+          <li>En paralelo, el polímetro se convierte en un cortocircuito.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">🔍</span> Resistencia y continuidad</h4>
+        <ul>
+          <li>Fuente desenchufada y condensadores descargados. Un condensador es un componente que almacena carga y puede conservar tensión aunque la fuente esté desconectada; antes de medir, apaga, desenchufa, espera y descárgalo de forma segura con una resistencia de descarga (por ejemplo, 1 kΩ 5 W) entre sus terminales, con una sola mano y sin tocar partes metálicas ni hacer un cortocircuito con un destornillador. En equipos de red o con condensadores grandes, sigue el procedimiento del fabricante y verifica con el polímetro que no hay tensión antes de medir resistencia.</li>
+          <li>Lo ideal es medir el componente fuera del circuito; si se mide en placa, otros componentes en paralelo alteran el valor.</li>
+          <li>El modo continuidad pita cuando hay paso eléctrico (menos de unos pocos ohmios).</li>
+        </ul>
+      </div>
+    </div>
+
+    <p><strong>Aclaración de términos del taller.</strong> SATA (Serial ATA) es la interfaz de datos y el tipo de conector de alimentación usado en discos y unidades ópticas modernas. El conector de alimentación SATA tiene 15 contactos y, según el dispositivo, proporciona +3,3 V, +5 V y +12 V además de masa; un disco de 3,5 pulgadas suele usar +5 V para la electrónica y +12 V para el motor. No debe confundirse con el conector de datos SATA de 7 pines. En los cables ATX habituales, amarillo suele ser +12 V, rojo +5 V, naranja +3,3 V y negro masa, pero conviene verificar el pinout o la etiqueta de la fuente antes de medir, porque el color no es una garantía universal.</p>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p>En el taller del centro hay que verificar una fuente ATX de 500 W de un equipo de prácticas antes de montarla. El parte de trabajo pide tres medidas: tensión del raíl de +5 V en un conector de alimentación SATA, continuidad de un cable negro de masa y corriente que consume un ventilador de 12 V / 0,25 A.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li><strong>Tensión +5 V.</strong> Magnitud: tensión continua. Selector en <code>V=</code> (o autorrango). Punta negra en <code>COM</code>, roja en <code>VΩ</code>. Conexión <em>en paralelo</em>: roja a un contacto/hilo de +5 V del conector de alimentación SATA (habitualmente rojo; verifica el pinout) y negra a un hilo negro de masa. La fuente debe estar encendida; si está fuera del equipo y no hay placa que la arranque, se puentea <code>PS_ON</code> a masa: <code>PS_ON</code> es el pin 16 del conector ATX de 24 pines (habitualmente cable verde) y es activo a nivel bajo, por lo que la fuente arranca cuando se une con un cable negro de masa. Hazlo con la fuente desenchufada, usa un puente aislado y no lo hagas con la fuente conectada a la placa. Lectura esperada: entre 4,75 V y 5,25 V (tolerancia ±5 %).</li>
+        <li><strong>Continuidad del cable negro.</strong> Se apaga y se desenchufa la fuente. Selector en modo continuidad (🔔), puntas en <code>COM</code> y <code>VΩ</code>. Una punta en cada extremo del cable: si pita, el cable conduce; si no pita, está roto.</li>
+        <li><strong>Corriente del ventilador.</strong> Magnitud: corriente continua. Selector en <code>A=</code>, punta negra en <code>COM</code> y roja en <code>10A</code> (0,25 A supera el rango de 200 mA de la borna <code>mA</code>). Conexión <em>en serie</em>: se desconecta el hilo rojo del ventilador del +12 V y se intercala el polímetro entre ese hilo y el conector. Se enciende y se lee: unos 0,20–0,25 A. Al terminar, se restaura el cableado original y se devuelve la punta roja a <code>VΩ</code>.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-b · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>Tecnoparts SL os pide comprobar tres elementos de un equipo de sobremesa. Completa para cada caso: función del selector, bornas, tipo de conexión (serie/paralelo/sobre el componente), estado del circuito (encendido o sin tensión) y escala inicial.</p>
+      <p>a) Tensión del raíl de +3,3 V en el conector de 24 pines.<br>
+      b) Resistencia del bobinado de un ventilador de 12 V desmontado.<br>
+      c) Corriente que consume un disco de 3,5 pulgadas por el raíl de +12 V, usando un adaptador/arnés de medida SATA que permita intercalar el polímetro solo en esa línea y dejar conectadas la masa y la línea de +5 V (no se pide la corriente total del disco; se estima en torno a 0,5 A por +12 V).</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>a) Tensión +3,3 V:</strong> selector <code>V=</code> (DCV), bornas <code>COM</code> + <code>VΩ</code>, conexión en paralelo, equipo encendido. Escala inicial: la de 20 V en un polímetro manual (el valor 3,3 V entra sin salir de rango); en autorrango, basta con esperar a que estabilice.</p>
+        <p><strong>b) Resistencia del ventilador:</strong> selector <code>Ω</code>, bornas <code>COM</code> + <code>VΩ</code>, puntas sobre los dos hilos del ventilador ya desmontado, sin tensión. Escala inicial: 200 Ω o 2 kΩ; si sale <code>OL</code>, se sube de escala.</p>
+        <p><strong>c) Corriente del disco por +12 V:</strong> selector <code>A=</code>, bornas <code>COM</code> + <code>10A</code> (0,5 A supera los 200 mA de la borna <code>mA</code> y hay picos de arranque; se empieza por 10 A), conexión en <strong>serie solo con el conductor de +12 V</strong> mediante el adaptador de medida SATA, con el equipo encendido y el disco conectado. La masa y el +5 V deben quedar conectados según el adaptador. Escala inicial: 10 A. No se debe abrir sin más un único hilo rojo del conector SATA: hay varias líneas y el disco podría quedar parcialmente alimentado; además, esa lectura no sería la corriente total. La medida obtenida es solo la del raíl de +12 V; para el consumo total habría que medir también el +5 V por separado y sumar.</p>
+      </details>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-b · Medio</h5>
+      <span class="nivel-tag nivel-medio">MEDIO</span>
+      <p>En Tecnoparts SL, un compañero quiere medir la corriente del disco duro y coloca el polímetro <em>en paralelo</em> con los cables de alimentación, con el selector en <code>A=</code> y la punta roja en <code>10A</code>. El equipo se apaga de golpe y, desde ese momento, el polímetro marca 0,00 en todas las escalas de corriente.</p>
+      <p>Explica qué ha ocurrido dentro del aparato y en el circuito, por qué la conexión en paralelo de un amperímetro es un error grave, cómo debería haberse hecho la medida y qué comprobarías antes de volver a usar el polímetro. Añade qué habría pasado si el selector hubiera estado en <code>mA</code> en lugar de <code>10A</code>.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-b · Avanzado</h5>
+      <span class="nivel-tag nivel-avanzado">AVANZADO</span>
+      <p>Llega al taller un equipo que «no arranca». No hay tarjeta de diagnóstico POST ni soldador: solo el polímetro, el zumbador de placa y las herramientas del inventario. Diseña una secuencia razonada de medidas con el polímetro indicando, para cada una, la magnitud, el selector, las bornas, el tipo de conexión, la escala y el valor esperado.</p>
+      <p>Debes cubrir al menos: continuidad del cable de alimentación, tensión de +5 VSB en el conector de 24 pines, tensión de PS_ON y comprobación de continuidad de un fusible. Indica qué lectura confirmaría cada hipótesis de avería y en qué orden medirías para no poner en riesgo el aparato ni a ti mismo.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-b</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Identifico la magnitud antes de tocar el selector del polímetro</label></li>
+        <li><label><input type="checkbox" class="check-item"> Coloco la punta roja en la borna correcta: VΩ para tensión y resistencia, mA o 10A para corriente</label></li>
+        <li><label><input type="checkbox" class="check-item"> Mido tensión en paralelo y con el circuito en marcha</label></li>
+        <li><label><input type="checkbox" class="check-item"> Mido corriente en serie, abriendo el circuito</label></li>
+        <li><label><input type="checkbox" class="check-item"> Mido resistencia y continuidad sin tensión y con la fuente desenchufada</label></li>
+        <li><label><input type="checkbox" class="check-item"> Empiezo por la escala más alta si desconozco el valor y bajo si aparece OL</label></li>
+        <li><label><input type="checkbox" class="check-item"> Devuelvo la punta roja a VΩ y el selector a posición segura al terminar</label></li>
+      </ul>
+    </div>
+
+    <div class="box-critico">
+      <div class="box-label">⚠ TRAMPA DE EXAMEN</div>
+      <p>El error que más veces aparece: medir <strong>corriente con el polímetro en paralelo</strong>. El amperímetro tiene resistencia casi nula, así que colocado entre +12 V y masa se comporta como un cortocircuito: el equipo se apaga, salta la protección de la fuente y se funde el fusible interno del polímetro. Reconocerlo es fácil: el aparato deja de marcar corriente en todas las escalas. Y el error encadenado: después de medir corriente, <strong>dejar la punta roja en la borna 10A</strong> y medir tensión con ella; la lectura sale 0 V o disparatada y parece que la fuente está averiada. Regla: antes de cada medida, mira selector y bornas durante dos segundos.</p>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceC">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num">c</div>
+      <div class="bloque-info">
+        <h3>Relacionar la medida con los valores típicos: ¿esto es normal o está mal?</h3>
+        <p>CE-c · importante · se trabaja dentro de las prácticas de CE-a y CE-b</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">integrado</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>Un polímetro no diagnostica nada por sí solo: solo da un número. Que en el raíl de +12 V leamos <strong>12,10 V</strong> no significa nada hasta que comparamos ese número con lo que <em>debería</em> valer. Ese contraste entre lo medido y lo esperado es exactamente lo que pide este criterio.</p>
+
+    <div class="clave">Una medida sin referencia no es un diagnóstico: es un número suelto.</div>
+
+    <p>Para comparar necesitamos cuatro conceptos:</p>
+    <ul>
+      <li><strong>Valor nominal</strong>: el valor que declara el fabricante. En un raíl ATX, el nombre del raíl: +5 V, +12 V…</li>
+      <li><strong>Tolerancia</strong>: el margen de error admitido alrededor del nominal (en la fuente ATX, ±5 %, como vimos en CE-a).</li>
+      <li><strong>Rango admisible</strong>: el intervalo que resulta de aplicar la tolerancia. Un +5 V con ±5 % admite de 4,75 V a 5,25 V.</li>
+      <li><strong>Valor típico</strong>: el que se observa de forma habitual en equipos que funcionan bien; sirve para detectar comportamientos raros, aunque estén dentro del rango.</li>
+    </ul>
+
+    <p>Los valores nominales y las tolerancias salen de la <strong>hoja de especificaciones</strong> (el documento técnico del fabricante, en inglés <em>datasheet</em>) o de la norma del componente. No se inventan.</p>
+
+    <p>Antes de seguir, fijamos algunos términos que aparecerán en la tabla y en los ejemplos:</p>
+    <ul>
+      <li><strong>BIOS</strong>: firmware que inicializa el hardware y guarda los ajustes básicos de arranque del equipo.</li>
+      <li><strong>CMOS</strong>: memoria de baja potencia que conserva la configuración de la BIOS cuando el equipo está apagado.</li>
+      <li><strong>CR2032</strong>: modelo de pila de litio de botón de 3 V que alimenta la memoria CMOS en la placa base.</li>
+      <li><strong>SSD</strong>: unidad de estado sólido, dispositivo de almacenamiento sin partes móviles que usa memoria flash.</li>
+      <li><strong>CPU</strong>: unidad central de procesamiento, el chip que ejecuta instrucciones y realiza cálculos.</li>
+      <li><strong>Vatio (W)</strong>: unidad de potencia; una fuente de 450 W puede suministrar, como máximo, 450 vatios.</li>
+    </ul>
+
+    <p>Cuando una medida queda fuera del rango, conviene cuantificar cuánto se aleja del nominal. La desviación porcentual se calcula así: <strong>desviación (%) = (medida − nominal) / nominal × 100</strong>. Si el resultado es negativo, la medida está por debajo del nominal; si es positivo, está por encima.</p>
+
+    <h4>Valores de referencia en una fuente ATX</h4>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Punto de medida</th><th>Nominal</th><th>Tolerancia</th><th>Rango admisible</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Raíl +3,3 V (naranja)</td><td>3,30 V</td><td>±5 %</td><td>3,14 – 3,47 V</td></tr>
+          <tr><td>Raíl +5 V (rojo)</td><td>5,00 V</td><td>±5 %</td><td>4,75 – 5,25 V</td></tr>
+          <tr><td>Raíl +12 V (amarillo)</td><td>12,00 V</td><td>±5 %</td><td>11,40 – 12,60 V</td></tr>
+          <tr><td>+5 VSB en reposo (morado)</td><td>5,00 V</td><td>±5 %</td><td>4,75 – 5,25 V</td></tr>
+          <tr><td>PS_ON en reposo (verde, pin 16)</td><td>≈ 5 V</td><td>—</td><td>4,5 – 5,5 V</td></tr>
+          <tr><td>Pila CMOS CR2032</td><td>3,00 V</td><td>—</td><td>2,60 – 3,30 V</td></tr>
+          <tr><td>Fusible (prueba de continuidad)</td><td>0 Ω</td><td>—</td><td>&lt; 1 Ω y pitido</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box-importante">
+      <div class="box-label">IMPORTANTE</div>
+      <p>La comparación solo es válida si la medida se tomó en las mismas condiciones que el valor de referencia. Una fuente ATX medida <strong>en vacío</strong> (sin carga, sin placa ni discos conectados) puede dar valores más altos de lo normal y parecer correcta aunque esté degradada. Las medidas de los raíles +3,3 V, +5 V y +12 V se comparan con el equipo <strong>en carga</strong>, encendido y con los componentes conectados. Las filas <strong>+5 VSB en reposo</strong> y <strong>PS_ON en reposo</strong> se miden con el equipo apagado pero enchufado a la red (en standby). La pila CMOS se mide con el equipo desconectado, y el fusible se comprueba sin tensión y con el polímetro en continuidad.</p>
+    </div>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 560 220" role="img" aria-label="Flujo de comparación de una medida con su valor nominal y tolerancia">
+        <defs>
+          <marker id="flecha-c-cec" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="15" y="75" width="145" height="70" rx="12" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="88" y="105" text-anchor="middle" font-size="15" fill="#1a1a2e">1. Medir</text>
+        <text x="88" y="125" text-anchor="middle" font-size="13" fill="#667085">polímetro en V=</text>
+
+        <line x1="160" y1="110" x2="188" y2="110" stroke="#667085" stroke-width="2" marker-end="url(#flecha-c-cec)"/>
+
+        <rect x="195" y="75" width="150" height="70" rx="12" fill="#f7f9fc" stroke="#667085" stroke-width="2"/>
+        <text x="270" y="105" text-anchor="middle" font-size="15" fill="#1a1a2e">2. Comparar</text>
+        <text x="270" y="125" text-anchor="middle" font-size="13" fill="#667085">con su tolerancia</text>
+
+        <polyline points="345,100 370,100 370,55 386,55" fill="none" stroke="#667085" stroke-width="2" marker-end="url(#flecha-c-cec)"/>
+        <polyline points="345,120 370,120 370,165 386,165" fill="none" stroke="#667085" stroke-width="2" marker-end="url(#flecha-c-cec)"/>
+
+        <rect x="390" y="25" width="155" height="60" rx="12" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="468" y="50" text-anchor="middle" font-size="14" fill="#1a1a2e">Dentro del rango</text>
+        <text x="468" y="70" text-anchor="middle" font-size="13" fill="#667085">pieza correcta</text>
+
+        <rect x="390" y="135" width="155" height="60" rx="12" fill="#f7f9fc" stroke="#b03a2e" stroke-width="2"/>
+        <text x="468" y="160" text-anchor="middle" font-size="14" fill="#1a1a2e">Fuera del rango</text>
+        <text x="468" y="180" text-anchor="middle" font-size="13" fill="#667085">revisar condiciones</text>
+      </svg>
+      <figcaption>Secuencia de validación de una medida. Fíjate en que antes de condenar un componente hay que descartar que la medida se tomara mal (escala equivocada, masa suelta o medida en vacío).</figcaption>
+    </figure>
+
+    <h4>Otras magnitudes y sus valores típicos en el taller</h4>
+    <div class="cards">
+      <div class="card">
+        <h4><span class="ico">💾</span> Consumos</h4>
+        <ul>
+          <li>Disco 3,5": 0,4 – 0,7 A en +12 V (picos de arranque mayores).</li>
+          <li>SSD 2,5": 0,3 – 1,0 A en +5 V.</li>
+          <li>Ventilador 120 mm: 0,10 – 0,30 A en +12 V.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">🌡️</span> Temperaturas</h4>
+        <ul>
+          <li>CPU en reposo: 30 – 45 °C.</li>
+          <li>CPU a plena carga: 70 – 90 °C.</li>
+          <li>Disco duro: 30 – 45 °C.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">🌀</span> Giro del ventilador</h4>
+        <ul>
+          <li>Entre 600 y 2.000 RPM (revoluciones por minuto, vueltas que da el motor cada minuto).</li>
+          <li>0 RPM puede ser normal en fuentes y ventiladores con modo semipasivo o 0 dB, que detienen el ventilador hasta alcanzar cierta temperatura o carga; solo es anomalía si el modelo debe girar en esas condiciones o si, estando a plena carga, el ventilador no arranca.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p>Para medir corriente hay que poner el polímetro en serie, como vimos en CE-b (con el adaptador de medida SATA), nunca en paralelo.</p>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p>En el aula de informática medimos una fuente ATX de 450 W montada en un equipo del aula (con Windows 11), no en el taller. Para que la medida sea en carga, encendemos el equipo con placa, disco y demás componentes conectados y ejecutamos una prueba de estrés que mantiene la CPU ocupada; anotamos las tensiones cuando la lectura es estable. Resultados: +12 V = 10,92 V; +5 V = 4,98 V; +3,3 V = 3,31 V; +5 VSB (equipo apagado, cable enchufado) = 5,02 V; PS_ON en reposo = 4,90 V.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li>Calculamos los rangos admisibles aplicando ±5 %: +12 V → 11,40–12,60 V; +5 V → 4,75–5,25 V; +3,3 V → 3,14–3,47 V; +5 VSB → 4,75–5,25 V.</li>
+        <li>Comparamos: +5 V (4,98) dentro; +3,3 V (3,31) dentro; +5 VSB (5,02) dentro; PS_ON en reposo (4,90) dentro. El +12 V da 10,92 V, por debajo del mínimo de 11,40 V: desviación de −9 %.</li>
+        <li>Antes de condenar la fuente, repetimos la medida para descartar error: punta negra bien fijada a masa del conector, escala V= de 20 V, y medimos también en un conector de alimentación SATA. El resultado se repite.</li>
+        <li>Conclusión: el raíl de +12 V está degradado; el resto de raíles son correctos. La fuente debe sustituirse, porque un +12 V bajo provoca reinicios aleatorios y fallos en los discos.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-c · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>Taller MicroTec SL recibe un equipo de la empresa NovaGestión con la queja de "se reinicia solo". El técnico anota estas medidas con el equipo encendido y en carga:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Punto</th><th>Medida</th></tr></thead>
+          <tbody>
+            <tr><td>+3,3 V</td><td>3,05 V</td></tr>
+            <tr><td>+5 V</td><td>5,12 V</td></tr>
+            <tr><td>+12 V</td><td>12,05 V</td></tr>
+            <tr><td>+5 VSB (equipo apagado)</td><td>3,90 V</td></tr>
+            <tr><td>Pila CMOS CR2032</td><td>2,95 V</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Indica el rango admisible de cada punto, si está dentro o fuera, y el diagnóstico final con la actuación que propones.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>Rangos:</strong> +3,3 V → 3,14–3,47 V; +5 V → 4,75–5,25 V; +12 V → 11,40–12,60 V; +5 VSB → 4,75–5,25 V; pila CR2032 → 2,60–3,30 V.</p>
+        <p><strong>Comparación:</strong> +5 V (5,12) correcto; +12 V (12,05) correcto; pila (2,95) dentro, aunque cerca del límite inferior, se cambia solo si aparecen pérdidas de hora o de configuración de la BIOS; +3,3 V (3,05) fuera por debajo (−7,6 %); +5 VSB (3,90) fuera por debajo (−22 %).</p>
+        <p><strong>Diagnóstico:</strong> dos raíles fuera de tolerancia. La tensión de espera de 3,90 V indica que la fuente no mantiene el +5 VSB, y ese raíl es el que alimenta los circuitos de arranque: explica los reinicios. La fuente está degradada y debe sustituirse; no se repara a este nivel.</p>
+        <p><strong>Actuación:</strong> sustituir la fuente ATX por otra de iguales o mejores características, volver a medir con carga y comprobar que el equipo arranca y se mantiene estable.</p>
+      </details>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-c</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Distingo valor nominal, tolerancia, rango admisible y valor típico.</label></li>
+        <li><label><input type="checkbox" class="check-item"> Calculo el rango ±5 % de +3,3 V, +5 V y +12 V sin calculadora.</label></li>
+        <li><label><input type="checkbox" class="check-item"> Compruebo las condiciones de medida (con carga, escala, masa) antes de dar una medida por mala.</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé qué valores típicos de consumo, temperatura y RPM son normales en el taller.</label></li>
+        <li><label><input type="checkbox" class="check-item"> Justifico por escrito la conclusión: medida, rango, desviación y actuación.</label></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceD">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num critico">d</div>
+      <div class="bloque-info">
+        <h3>Bloques internos de una fuente de alimentación ATX</h3>
+        <p>CE-d · CRÍTICO · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+    <p>Una <strong>fuente de alimentación</strong> (FA) es el componente que convierte los 230 V de corriente alterna (CA) de la red eléctrica en las tensiones continuas (CC) que usa el PC: +3,3 V, +5 V, +12 V, −12 V y +5 VSB. En CE-a y CE-b medimos esas tensiones; en CE-c las comparamos con los valores típicos. Ahora toca entender <strong>de qué bloque sale cada tensión</strong> y qué función cumple cada etapa.</p>
+
+    <div class="box-importante">
+      <div class="box-label">IMPORTANTE</div>
+      <p>No abras una FA para “ver los bloques”. Dentro hay condensadores que retienen carga peligrosa incluso desenchufada. Se identifica por fuera, por la etiqueta, los conectores y el diagrama de bloques.</p>
+    </div>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 1000 260" role="img" aria-label="Cadena de bloques de una fuente de alimentación ATX">
+        <defs>
+          <marker id="flecha-d-ced" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+
+        <rect x="15" y="40" width="105" height="80" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="67" y="70" text-anchor="middle" font-size="13" fill="#1a1a2e">Entrada AC</text>
+        <text x="67" y="90" text-anchor="middle" font-size="13" fill="#667085">230 V CA</text>
+
+        <line x1="120" y1="80" x2="133" y2="80" stroke="#667085" stroke-width="2" marker-end="url(#flecha-d-ced)"/>
+
+        <rect x="135" y="40" width="105" height="80" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="187" y="70" text-anchor="middle" font-size="13" fill="#1a1a2e">Fusible y</text>
+        <text x="187" y="90" text-anchor="middle" font-size="13" fill="#667085">filtro EMI</text>
+
+        <line x1="240" y1="80" x2="253" y2="80" stroke="#667085" stroke-width="2" marker-end="url(#flecha-d-ced)"/>
+
+        <rect x="255" y="40" width="105" height="80" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="307" y="70" text-anchor="middle" font-size="13" fill="#1a1a2e">Rectificador</text>
+        <text x="307" y="90" text-anchor="middle" font-size="13" fill="#667085">+ PFC</text>
+
+        <line x1="360" y1="80" x2="373" y2="80" stroke="#667085" stroke-width="2" marker-end="url(#flecha-d-ced)"/>
+
+        <rect x="375" y="40" width="105" height="80" rx="10" fill="#f7f9fc" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="427" y="70" text-anchor="middle" font-size="13" fill="#1a1a2e">Conmutador</text>
+        <text x="427" y="90" text-anchor="middle" font-size="13" fill="#667085">MOSFET/PWM</text>
+
+        <line x1="480" y1="80" x2="493" y2="80" stroke="#667085" stroke-width="2" marker-end="url(#flecha-d-ced)"/>
+
+        <rect x="495" y="40" width="105" height="80" rx="10" fill="#f7f9fc" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="547" y="70" text-anchor="middle" font-size="13" fill="#1a1a2e">Transformador</text>
+        <text x="547" y="90" text-anchor="middle" font-size="13" fill="#667085">alta frec.</text>
+
+        <line x1="600" y1="80" x2="613" y2="80" stroke="#667085" stroke-width="2" marker-end="url(#flecha-d-ced)"/>
+
+        <rect x="615" y="40" width="105" height="80" rx="10" fill="#f7f9fc" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="667" y="70" text-anchor="middle" font-size="13" fill="#1a1a2e">Rectif.</text>
+        <text x="667" y="90" text-anchor="middle" font-size="13" fill="#667085">y filtro</text>
+
+        <line x1="720" y1="80" x2="733" y2="80" stroke="#667085" stroke-width="2" marker-end="url(#flecha-d-ced)"/>
+
+        <rect x="735" y="40" width="105" height="80" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="787" y="70" text-anchor="middle" font-size="13" fill="#1a1a2e">Regulación</text>
+        <text x="787" y="90" text-anchor="middle" font-size="13" fill="#667085">protecciones</text>
+
+        <line x1="840" y1="80" x2="853" y2="80" stroke="#667085" stroke-width="2" marker-end="url(#flecha-d-ced)"/>
+
+        <rect x="855" y="40" width="105" height="80" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="907" y="70" text-anchor="middle" font-size="13" fill="#1a1a2e">Salidas ATX</text>
+        <text x="907" y="90" text-anchor="middle" font-size="13" fill="#667085">+3,3 +5 +12</text>
+
+        <polyline points="787,120 787,180 427,180 427,120" fill="none" stroke="#667085" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#flecha-d-ced)"/>
+        <text x="607" y="203" text-anchor="middle" font-size="13" fill="#667085">realimentación:</text>
+        <text x="607" y="221" text-anchor="middle" font-size="13" fill="#667085">optoacoplador / PWM</text>
+
+        <text x="500" y="248" text-anchor="middle" font-size="13" fill="#1a1a2e">La rama +5VSB suele ser independiente y queda activa en standby; PS_ON activa el resto.</text>
+      </svg>
+      <figcaption>Cadena de etapas de una FA ATX. Fíjate en el orden: primero se filtra y rectifica la red, luego se conmuta a alta frecuencia, se transforma, se vuelve a rectificar y, al final, se regula y protege.</figcaption>
+    </figure>
+
+    <p><strong>Términos del diagrama.</strong> Un <strong>MOSFET</strong> es un transistor de efecto de campo metal-óxido-semiconductor que se usa como interruptor electrónico: deja pasar o corta la corriente miles de veces por segundo. La <strong>PWM</strong> (modulación por ancho de pulso) es la señal que ordena al MOSFET cuánto tiempo debe estar encendido en cada ciclo; variando ese tiempo se controla la energía transferida. La <strong>PFC</strong> (Power Factor Correction, corrección del factor de potencia) es un circuito que hace que la FA consuma corriente de forma más parecida a una carga resistiva ideal, mejorando el <strong>factor de potencia</strong>, es decir, la relación entre la potencia activa realmente consumida (W) y la potencia aparente tomada de la red (VA). Un <strong>optoacoplador</strong> es un componente formado por un LED y un fototransistor que transmite la señal de realimentación mediante luz, manteniendo el aislamiento eléctrico entre la zona de red/alta tensión y la zona de control/salida.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Bloque</th><th>Qué hace</th><th>Qué debes recordar</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Entrada AC y fusible</strong></td><td>Recibe 230 V CA por un conector IEC 60320 C14, la toma de red típica de la FA donde se enchufa el cable con conector C13. El fusible se funde si pasa demasiada corriente.</td><td>El fusible protege de cortocircuitos, no de sobretensión.</td></tr>
+          <tr><td><strong>Filtro EMI</strong></td><td>Bobinas y condensadores que frenan interferencias electromagnéticas (EMI) de la red y de la propia FA.</td><td>EMI = ruido eléctrico que puede afectar al equipo.</td></tr>
+          <tr><td><strong>Rectificador + PFC</strong></td><td>Los diodos convierten CA en CC pulsante. La PFC (Power Factor Correction, corrección del factor de potencia) reduce desfase y distorsión para acercar el factor de potencia a 1.</td><td>PFC no es una protección: mejora el consumo eléctrico.</td></tr>
+          <tr><td><strong>Conmutador</strong></td><td>Un transistor MOSFET abre y cierra miles de veces por segundo. La señal PWM (modulación por ancho de pulso) controla el tiempo de encendido en cada ciclo.</td><td>Es la etapa que “trocea” la tensión continua.</td></tr>
+          <tr><td><strong>Transformador</strong></td><td>Dos bobinas acopladas reducen la tensión y aíslan eléctricamente la salida de la red.</td><td>Trabaja a alta frecuencia para ser pequeño y eficiente.</td></tr>
+          <tr><td><strong>Rectificación y filtro secundario</strong></td><td>Diodos y condensadores/bobinas convierten la señal del transformador en CC estable.</td><td>De aquí salen los raíles principales.</td></tr>
+          <tr><td><strong>Regulación y protecciones</strong></td><td>Compara la salida con una referencia y corrige mediante realimentación. Incluye OVP, OCP, OTP y SCP.</td><td>OVP: sobretensión; OCP: sobrecorriente; OTP: sobretemperatura; SCP: cortocircuito.</td></tr>
+          <tr><td><strong>Salidas y ventilador</strong></td><td>Cables y conectores: 24 pines (placa base), EPS de CPU (4/8 pines; alimenta la CPU y su regulación en la placa), PCIe (6/8 pines o 12VHPWR en fuentes modernas; alimenta la tarjeta gráfica), SATA (discos y unidades) y Molex (4 pines; periféricos y accesorios). El ventilador refrigera.</td><td>+5VSB está activo en standby; PS_ON en bajo ordena encender.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="clave">La FA no “transforma la corriente” sin más: primero rectifica, luego conmuta a alta frecuencia, después transforma y, al final, rectifica, filtra y regula.</div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Qué mirar al elegir una FA</th><th>Qué significa</th><th>Qué elegir según el uso</th></tr></thead>
+        <tbody>
+          <tr><td>Potencia y raíles</td><td>Vatios totales y amperios por raíl (+12 V, +5 V, +3,3 V).</td><td>Prioriza amperios reales en +12 V para CPU y GPU.</td></tr>
+          <tr><td>Certificación y protecciones</td><td>Eficiencia y protecciones OVP, OCP, OTP y SCP.</td><td>Para equipos de trabajo, exige protecciones y eficiencia alta.</td></tr>
+          <tr><td>Conectores y formato</td><td>ATX 3.1, 24 pines, EPS, PCIe, SATA.</td><td>Comprueba que cubre la placa y la gráfica antes de comprar.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p>TecnoParts SL recibe un PC de mostrador con una FA ATX de 500 W. La etiqueta indica +12 V 40 A, +5 V 20 A, +3,3 V 20 A y +5 VSB 2,5 A. El equipo no arranca. Con el polímetro mides +5 VSB = 5,03 V y PS_ON = 4,98 V.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li>Hay +5 VSB: funcionan entrada AC, fusible, filtro EMI, rectificador/PFC y la etapa de standby (conmutador, transformador, rectificación, filtro y regulación de standby).</li>
+        <li>PS_ON está alto: la FA sigue en espera; la etapa principal no ha recibido la orden de encender.</li>
+        <li>Al puentear PS_ON a masa, se activa la regulación principal y esta ordena al conmutador principal. Entonces deben funcionar transformador, rectificación/filtro secundario y salidas +12 V, +5 V y +3,3 V.</li>
+        <li>Si tras puentear PS_ON sigue sin haber +12 V, el fallo está en la etapa principal, en la regulación/protecciones o en el cableado de salida. No se abre la FA: se comprueba por fuera y se sustituye si procede.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-d · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>En el taller tienes una FA ATX de 450 W. Enchufada y con el PC apagado, mides +5 VSB = 5,02 V y PS_ON = 5,0 V. Al puentear PS_ON a masa, +12 V = 0 V y el ventilador no gira. ¿Qué bloques están funcionando y cuál no? Ordena las etapas desde los 230 V CA hasta +12 V CC.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>Funcionan:</strong> entrada AC, fusible, filtro EMI, rectificador/PFC y etapa de standby, porque +5 VSB está presente y PS_ON tiene el nivel correcto. <strong>No funciona con seguridad:</strong> la etapa principal, es decir, conmutador principal, transformador, rectificación/filtro secundario, regulación/protecciones o cableado de salida.</p>
+        <p><strong>Orden de etapas:</strong> entrada AC → fusible y filtro EMI → rectificador + PFC → conmutador → transformador → rectificación y filtro secundario → regulación y protecciones → salidas ATX.</p>
+      </details>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-d · Medio</h5>
+      <span class="nivel-tag nivel-medio">MEDIO</span>
+      <p>PC de oficina con FA de 650 W. Mides +5 VSB = 5,0 V, PS_ON = 0,1 V, +12 V = 10,8 V, +5 V = 4,7 V y +3,3 V = 3,1 V. La etiqueta indica tolerancia ±5 %. ¿Qué bloques sospechas? Justifica la respuesta y ordena las comprobaciones que harías sin abrir la FA.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-d · Avanzado</h5>
+      <span class="nivel-tag nivel-avanzado">AVANZADO</span>
+      <p>FA de 700 W ATX 3.1 en un PC de gaming. En reposo: +12 V = 12,1 V, +5 V = 5,05 V y +5 VSB = 5,0 V. Al ejecutar FurMark, +12 V cae a 11,2 V, +5 VSB sigue en 5,0 V y el ventilador gira, pero el equipo se reinicia. FurMark es una herramienta de estrés para GPU: se ejecuta en Windows y somete la tarjeta gráfica a carga máxima para comprobar estabilidad, consumo y caídas de tensión. ¿Qué bloques sospechas y qué pruebas harías con polímetro y HWiNFO64 sin abrir la FA?</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-d</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Identifico las etapas de la FA en el diagrama de bloques.</label></li>
+        <li><label><input type="checkbox" class="check-item"> Explico qué hacen el filtro EMI, el rectificador/PFC, el conmutador y el transformador.</label></li>
+        <li><label><input type="checkbox" class="check-item"> Distingo +5 VSB de +5 V principal y sé qué significa PS_ON.</label></li>
+        <li><label><input type="checkbox" class="check-item"> Relaciono cada raíl de salida con la etapa que lo produce.</label></li>
+        <li><label><input type="checkbox" class="check-item"> Reconozco las protecciones OVP, OCP, OTP y SCP.</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé que no debo abrir una FA por los condensadores cargados.</label></li>
+        <li><label><input type="checkbox" class="check-item"> Uso las medidas de CE-b y CE-c para ubicar el bloque sospechoso.</label></li>
+      </ul>
+    </div>
+
+    <div class="box-critico">
+      <div class="box-label">⚠ TRAMPA DE EXAMEN</div>
+      <p>Error frecuente: creer que si el ventilador no gira la FA está muerta. La etapa de standby puede seguir viva y dar +5 VSB aunque la etapa principal no arranque. Otro error es abrir la FA para “ver los bloques” y tocar condensadores cargados. Y no confundas PFC con una protección: la PFC corrige el factor de potencia; OVP, OCP, OTP y SCP son las protecciones.</p>
+    </div>
+  </div>
+</div>
+<div class="bloque" id="ceE">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num">e</div>
+      <div class="bloque-info">
+        <h3>Tensiones que entrega una fuente de alimentación típica</h3>
+        <p>CE-e · importante · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>Una fuente de alimentación ATX no entrega «una tensión»: entrega <strong>varias tensiones continuas a la vez</strong>, cada una por su propio raíl. En CE-d vimos que un <strong>raíl</strong> es cada salida independiente de la fuente, y en CE-b aprendimos a localizar cada una en el conector de 24 pines. Ahora toca enumerarlas con su valor nominal, su color tradicional y el componente que alimentan: sin esa lista, una medida del polímetro no significa nada, porque no hay contra qué compararla.</p>
+
+    <div class="clave">Una fuente ATX típica entrega +3,3 V, +5 V, +12 V, −12 V y +5 VSB. Todas las demás señales del conector no son alimentación.</div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Raíl</th><th>Color tradicional</th><th>Nominal y rango admisible</th><th>Qué alimenta</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>+3,3 V</strong></td><td>Naranja</td><td>3,3 V · 3,135 – 3,465 V (±5 %)</td><td>Módulos de RAM DDR (Double Data Rate), chipset, SSD en formato M.2 (tarjeta compacta), parte de las líneas PCIe</td></tr>
+          <tr><td><strong>+5 V</strong></td><td>Rojo</td><td>5 V · 4,75 – 5,25 V (±5 %)</td><td>Puertos USB, electrónica de discos SATA, SSD de 2,5"</td></tr>
+          <tr><td><strong>+12 V</strong></td><td>Amarillo</td><td>12 V · 11,40 – 12,60 V (±5 %)</td><td>CPU (a través del VRM, módulo regulador de tensión de la placa), GPU o tarjeta gráfica, motores de HDD (discos duros mecánicos), ventiladores</td></tr>
+          <tr><td><strong>−12 V</strong></td><td>Azul</td><td>−12 V · −13,20 – −10,80 V (±10 %)</td><td>Puerto serie RS-232 (interfaz serie clásica); hoy es residual, casi sin uso</td></tr>
+          <tr><td><strong>+5 VSB</strong></td><td>Violeta</td><td>5 V · 4,75 – 5,25 V (±5 %)</td><td>Standby permanente: PS_ON, arranque remoto, USB con el equipo apagado</td></tr>
+          <tr><td><strong>GND</strong></td><td>Negro</td><td>0 V (referencia)</td><td>Masa: es contra ella contra la que se mide todo lo anterior</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>El raíl <strong>−5 V</strong> (blanco) existió en las fuentes AT y en las ATX más antiguas para el bus ISA (antiguo bus de expansión de los años 80 y 90), pero se eliminó del estándar hace más de veinte años: si aparece en una tabla de internet, está desfasada. Ojo también con dos cables que <em>no</em> son raíles de alimentación: <strong>PS_ON</strong> (verde) y <strong>PWR_OK</strong> (gris; del inglés Power Good). PS_ON es una señal de control que permite a la placa encender la fuente: lleva 5 V en reposo y baja a 0 V al arrancar. PWR_OK no es un raíl, sino una señal de estabilidad: la fuente la pone a nivel alto cuando todas las tensiones ya están dentro de tolerancia y son estables; si no aparece, el equipo no debe arrancar o debe reiniciarse. Se miden, pero no alimentan nada.</p>
+
+    <div class="box-complementario">
+      <div class="box-label">NOTA</div>
+      <p>En fuentes modernas todos los cables suelen ser negros. El color es una convención histórica: lo que manda es el <strong>pinout</strong> del conector, que ya localizamos en CE-b. Los conectores EPS (CPU) y PCIe llevan únicamente +12 V; el conector de 24 pines es el que reparte el resto.</p>
+    </div>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 480 240" role="img" aria-label="Reparto de las tensiones de una fuente ATX entre los componentes del equipo">
+        <defs>
+          <marker id="flecha-e-cee" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="20" y="85" width="150" height="70" rx="12" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="95" y="115" text-anchor="middle" font-size="15" fill="#1a1a2e">Fuente ATX</text>
+        <text x="95" y="135" text-anchor="middle" font-size="13" fill="#667085">salidas de CC</text>
+        <line x1="170" y1="120" x2="213" y2="120" stroke="#667085" stroke-width="2"/>
+        <line x1="213" y1="32" x2="213" y2="197" stroke="#667085" stroke-width="2"/>
+        <line x1="213" y1="32" x2="272" y2="32" stroke="#667085" stroke-width="2" marker-end="url(#flecha-e-cee)"/>
+        <line x1="213" y1="87" x2="272" y2="87" stroke="#667085" stroke-width="2" marker-end="url(#flecha-e-cee)"/>
+        <line x1="213" y1="142" x2="272" y2="142" stroke="#667085" stroke-width="2" marker-end="url(#flecha-e-cee)"/>
+        <line x1="213" y1="197" x2="272" y2="197" stroke="#667085" stroke-width="2" marker-end="url(#flecha-e-cee)"/>
+        <rect x="280" y="10" width="180" height="44" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="370" y="29" text-anchor="middle" font-size="14" fill="#1a1a2e">+12 V (amarillo)</text>
+        <text x="370" y="45" text-anchor="middle" font-size="12" fill="#667085">CPU, GPU, motores</text>
+        <rect x="280" y="65" width="180" height="44" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="370" y="84" text-anchor="middle" font-size="14" fill="#1a1a2e">+3,3 V (naranja)</text>
+        <text x="370" y="100" text-anchor="middle" font-size="12" fill="#667085">RAM, chipset, M.2</text>
+        <rect x="280" y="120" width="180" height="44" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="370" y="139" text-anchor="middle" font-size="14" fill="#1a1a2e">+5 V (rojo)</text>
+        <text x="370" y="155" text-anchor="middle" font-size="12" fill="#667085">USB, SATA, SSD 2,5"</text>
+        <rect x="280" y="175" width="180" height="44" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="370" y="194" text-anchor="middle" font-size="14" fill="#1a1a2e">+5 VSB (violeta)</text>
+        <text x="370" y="210" text-anchor="middle" font-size="12" fill="#667085">standby y arranque</text>
+        <text x="240" y="234" text-anchor="middle" font-size="12" fill="#b03a2e">−12 V (azul): solo puerto serie y usos residuales</text>
+      </svg>
+      <figcaption>Cada raíl de la fuente alimenta un grupo distinto de componentes. Fíjate en que +5 VSB sigue activa aunque el equipo esté apagado, y en que −12 V ya casi no tiene consumidores.</figcaption>
+    </figure>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p><strong>TecnoParts SL</strong>, aula 2, puesto 3. Fuente ATX de 500 W montada en el equipo. Se quiere comprobar que entrega las cinco tensiones antes de dar el equipo por bueno.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li>Se arranca el equipo normalmente: no hace falta puentear nada, porque el propio botón ya activa PS_ON.</li>
+        <li>Polímetro en <code>V=</code> (tensión continua), autorrango. Punta roja al contacto del raíl, punta negra a un cable negro (masa). El desglose de esta conexión ya se hizo en CE-b.</li>
+        <li>Se mide en un conector SATA libre con el arnés adaptador del taller: ahí hay +12 V, +5 V y masa.</li>
+        <li>Para +3,3 V y +5 VSB se mide en el conector de 24 pines, identificando el pin por su pinout (no por el color, porque los cables son negros).</li>
+        <li>Para −12 V se mide también en el conector de 24 pines, localizando el pin de −12 V en el pinout (en fuentes antiguas solía ser el cable azul).</li>
+        <li>Se calcula la desviación de cada medida: (medida − nominal) / nominal × 100, en valor absoluto.</li>
+      </ol>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Raíl</th><th>Nominal</th><th>Medida</th><th>Desviación</th><th>Tolerancia</th><th>¿Dentro?</th></tr></thead>
+          <tbody>
+            <tr><td>+12 V</td><td>12,00 V</td><td>12,11 V</td><td>+0,92 %</td><td>±5 %</td><td>Sí</td></tr>
+            <tr><td>+5 V</td><td>5,00 V</td><td>4,93 V</td><td>−1,40 %</td><td>±5 %</td><td>Sí</td></tr>
+            <tr><td>+3,3 V</td><td>3,30 V</td><td>3,34 V</td><td>+1,21 %</td><td>±5 %</td><td>Sí</td></tr>
+            <tr><td>+5 VSB</td><td>5,00 V</td><td>5,02 V</td><td>+0,40 %</td><td>±5 %</td><td>Sí</td></tr>
+            <tr><td>−12 V</td><td>−12,00 V</td><td>−11,87 V</td><td>+1,08 %</td><td>±10 %</td><td>Sí</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Conclusión: las cinco salidas están dentro de su tolerancia aplicable (las de ±5 % y la de −12 V con ±10 %), así que la fuente es apta. Las medidas se anotan en la ficha de mantenimiento del puesto, porque repetirlas dentro de seis meses permitirá ver si algún raíl se está degradando (como ya vimos en CE-c).</p>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-e · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>En el taller de <strong>TecnoParts SL</strong> tenéis una fuente ATX rescatada de un equipo antiguo. Antes de reciclarla, el jefe de taller pide verificar si sirve. Medís las salidas y obtenéis:</p>
+      <ul>
+        <li>+12 V: 11,31 V</li>
+        <li>+5 V: 5,12 V</li>
+        <li>+3,3 V: 3,29 V</li>
+        <li>+5 VSB: 4,71 V</li>
+        <li>−12 V: −12,40 V</li>
+      </ul>
+      <p>Indica qué raíles están fuera de tolerancia, calcula la desviación, explica qué fallo provocarían en un PC real y decide si la fuente se monta o se desecha.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p>Se compara cada medida con su rango de tolerancia ( ±5 % en +3,3 V, +5 V, +12 V y +5 VSB; ±10 % en −12 V):</p>
+        <ol>
+          <li><strong>+12 V</strong>: rango 11,40 – 12,60 V. 11,31 V queda por debajo. Desviación = (11,31 − 12,00) / 12,00 × 100 = <strong>−5,75 %</strong>. <em>Fuera de tolerancia.</em></li>
+          <li><strong>+5 V</strong>: rango 4,75 – 5,25 V. 5,12 V. Desviación = (5,12 − 5,00) / 5,00 × 100 = <strong>+2,40 %</strong>. Dentro.</li>
+          <li><strong>+3,3 V</strong>: rango 3,135 – 3,465 V. 3,29 V. Desviación = (3,29 − 3,30) / 3,30 × 100 = <strong>−0,30 %</strong>. Dentro.</li>
+          <li><strong>+5 VSB</strong>: rango 4,75 – 5,25 V. 4,71 V queda por debajo. Desviación = (4,71 − 5,00) / 5,00 × 100 = <strong>−5,80 %</strong>. <em>Fuera de tolerancia.</em></li>
+          <li><strong>−12 V</strong>: rango −13,20 – −10,80 V. −12,40 V. Desviación = (−12,40 − (−12,00)) / 12,00 × 100 = <strong>3,33 %</strong> en valor absoluto. Dentro.</li>
+        </ol>
+        <p><strong>Consecuencias:</strong> un +12 V bajo hace que CPU y GPU reciban menos tensión de la prevista; el VRM compensa hasta cierto punto, pero bajo carga aparecen apagados repentinos y reinicios. Un +5 VSB bajo afecta al circuito de standby: el equipo puede no arrancar con el botón o no responder al encendido remoto.</p>
+        <p><strong>Decisión:</strong> dos raíles fuera de rango, uno de ellos el más exigente del equipo. La fuente se descarta para uso en producción y se envía al punto limpio como residuo de aparato eléctrico y electrónico (RAEE). No se repara: abrir una fuente conlleva riesgo eléctrico y el taller no dispone de medios para ello.</p>
+      </details>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-e</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Enumero las cinco tensiones de una fuente ATX típica con su valor nominal</label></li>
+        <li><label><input type="checkbox" class="check-item"> Relaciono cada raíl con los componentes que alimenta</label></li>
+        <li><label><input type="checkbox" class="check-item"> Conozco el color tradicional de cada raíl y sé que el pinout manda sobre el color</label></li>
+        <li><label><input type="checkbox" class="check-item"> Distingo PS_ON y PWR_OK de los raíles de alimentación</label></li>
+        <li><label><input type="checkbox" class="check-item"> Calculo la desviación de una medida y decido si está dentro de la tolerancia correspondiente (±5 % en +3,3 V, +5 V, +12 V y +5 VSB; ±10 % en −12 V)</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé que −5 V ya no existe en el estándar ATX actual</label></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceF">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num critico">f</div>
+      <div class="bloque-info">
+        <h3>Medición de tensiones en fuentes de alimentación ATX reales</h3>
+        <p>CE-f · CRÍTICO · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>Medir las tensiones de una fuente de alimentación (F.A.) es lo que separa un «me parece que la fuente está mal» de un «la fuente está mal». En <strong>CE-e</strong> enumeramos qué tensiones debe entregar una ATX típica y en <strong>CE-c</strong> aprendimos a comparar una medida con su valor nominal y su tolerancia. Aquí unimos ambas cosas y las convertimos en un procedimiento que se repite igual en cualquier equipo del taller.</p>
+
+    <div class="box-importante">
+      <div class="box-label">IMPORTANTE · SEGURIDAD</div>
+      <p>La F.A. <strong>no se abre nunca</strong>. Dentro hay condensadores cargados a más de 300 V que siguen con carga minutos después de desenchufar, y no tenemos formación ni equipo de protección individual (EPI) para eso. Se mide <strong>solo en los conectores de salida</strong> (24 pines, SATA, Molex, PCIe, EPS), con la fuente cerrada. Y el puente en <code>PS_ON</code> se hace con un cable aislado o un clip, jamás con los dedos.</p>
+    </div>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 880 190" role="img" aria-label="Secuencia de cinco pasos para medir las tensiones de una fuente de alimentación ATX">
+        <defs>
+          <marker id="flecha-f-cef" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="15" y="55" width="150" height="80" rx="12" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="90" y="88" text-anchor="middle" font-size="14" fill="#1a1a2e">Equipo apagado</text>
+        <text x="90" y="108" text-anchor="middle" font-size="13" fill="#667085">y desenchufado</text>
+
+        <line x1="167" y1="95" x2="188" y2="95" stroke="#667085" stroke-width="2" marker-end="url(#flecha-f-cef)"/>
+
+        <rect x="190" y="55" width="150" height="80" rx="12" fill="#f7f9fc" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="265" y="88" text-anchor="middle" font-size="14" fill="#1a1a2e">Puentear PS_ON</text>
+        <text x="265" y="108" text-anchor="middle" font-size="13" fill="#667085">con GND (negro)</text>
+
+        <line x1="342" y1="95" x2="363" y2="95" stroke="#667085" stroke-width="2" marker-end="url(#flecha-f-cef)"/>
+
+        <rect x="365" y="55" width="150" height="80" rx="12" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="440" y="88" text-anchor="middle" font-size="14" fill="#1a1a2e">Polímetro en V=</text>
+        <text x="440" y="108" text-anchor="middle" font-size="13" fill="#667085">CC (DCV)</text>
+
+        <line x1="517" y1="95" x2="538" y2="95" stroke="#667085" stroke-width="2" marker-end="url(#flecha-f-cef)"/>
+
+        <rect x="540" y="55" width="150" height="80" rx="12" fill="#f7f9fc" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="615" y="88" text-anchor="middle" font-size="14" fill="#1a1a2e">Punta negra a GND</text>
+        <text x="615" y="108" text-anchor="middle" font-size="13" fill="#667085">roja al raíl</text>
+
+        <line x1="692" y1="95" x2="713" y2="95" stroke="#667085" stroke-width="2" marker-end="url(#flecha-f-cef)"/>
+
+        <rect x="715" y="55" width="150" height="80" rx="12" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="790" y="88" text-anchor="middle" font-size="14" fill="#1a1a2e">Leer y comparar</text>
+        <text x="790" y="108" text-anchor="middle" font-size="13" fill="#667085">con el margen</text>
+      </svg>
+      <figcaption>Secuencia fija de medida. El alumno debe fijarse en que la punta negra <strong>nunca</strong> se mueve: siempre queda anclada a un cable negro (GND) y solo se desplaza la roja de raíl en raíl.</figcaption>
+    </figure>
+
+    <h4>Qué se mide y qué se considera correcto</h4>
+    <p>Los cinco raíles que se comprueban siempre son los de la tabla. La punta negra va a cualquier cable negro (GND, masa, 0 V) y la roja al color del raíl, en paralelo, como vimos en <strong>CE-b</strong>. El polímetro se coloca en <code>V=</code> (tensión continua), nunca en amperios ni en ohmios.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Raíl</th><th>Color del cable</th><th>Nominal</th><th>Margen</th><th>Rango aceptable</th></tr></thead>
+        <tbody>
+          <tr><td>+3,3 V</td><td>Naranja</td><td>3,3 V</td><td>±5 %</td><td>3,14 – 3,47 V</td></tr>
+          <tr><td>+5 V</td><td>Rojo</td><td>5 V</td><td>±5 %</td><td>4,75 – 5,25 V</td></tr>
+          <tr><td>+12 V</td><td>Amarillo</td><td>12 V</td><td>±5 %</td><td>11,40 – 12,60 V</td></tr>
+          <tr><td>−12 V</td><td>Azul</td><td>−12 V</td><td>±10 %</td><td>−10,80 – −13,20 V</td></tr>
+          <tr><td>+5 VSB</td><td>Morado</td><td>5 V</td><td>±5 %</td><td>4,75 – 5,25 V</td></tr>
+          <tr><td>GND</td><td>Negro</td><td>0 V</td><td>—</td><td>Referencia de todas las medidas</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Los dos escenarios de medida</h4>
+    <div class="cards">
+      <div class="card">
+        <h4><span class="ico">🔌</span> Fuente suelta (en vacío)</h4>
+        <ul>
+          <li>La fuente está fuera del chasis, sobre la mesa, solo con el cable de red.</li>
+          <li>Se puentea <code>PS_ON</code> (verde) con un negro para que arranque sin placa.</li>
+          <li>Algunos modelos no regulan bien sin carga: si no arranca o mide valores absurdos, se conecta un disco de 3,5" como carga mínima.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">🖥️</span> Fuente dentro del equipo (en carga)</h4>
+        <ul>
+          <li>Es la medida real: la fuente alimenta placa, disco y ventiladores.</li>
+          <li>Se mide en un conector libre (SATA o Molex) o con arnés adaptador, como vimos en CE-b.</li>
+          <li>Es la única forma de detectar caídas de tensión al exigir potencia al equipo.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="clave">Una medida en vacío correcta no demuestra nada: la fuente falla cuando se le pide corriente.</div>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p>Taller del instituto. Equipo de prácticas con fuente Nox Urano VX 650 W. Pulsamos el botón de encendido y no ocurre nada: ni ventiladores, ni LED. Diagnóstico guiado por medidas.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li><strong>+5 VSB con el equipo apagado pero enchufado.</strong> Punta negra a un cable negro del conector de 24 pines, punta roja al morado. Lectura: <strong>5,01 V</strong>. Dentro de rango ⇒ el cable de red, el fusible y la etapa de standby están bien.</li>
+        <li><strong>PS_ON respecto a GND.</strong> Con el equipo enchufado y en reposo, pin verde: <strong>5,02 V</strong>. Es el nivel alto normal: la fuente sigue en reposo porque la placa todavía no le ha pedido arrancar. Al pulsar el botón de encendido, volvemos a medir y PS_ON sigue en <strong>5,02 V</strong>; no baja a 0 V. Eso indica que la placa (o el botón/cableado del panel) no está solicitando el arranque, así que el síntoma «no ocurre nada» no se puede atribuir todavía a la fuente.</li>
+        <li><strong>Arranque forzado para probar la fuente de forma aislada.</strong> Puenteamos PS_ON con GND con un clip aislado y enchufamos. El ventilador de la fuente gira ⇒ la etapa principal conmuta y la fuente es capaz de arrancar.</li>
+        <li><strong>Medida de raíles con carga.</strong> Con un arnés adaptador en un SATA libre: +12 V = <strong>10,94 V</strong>, +5 V = <strong>4,98 V</strong>, +3,3 V = <strong>3,31 V</strong>.</li>
+        <li><strong>Cálculo de desviación del +12 V:</strong> (10,94 − 12) ÷ 12 × 100 = <strong>−8,8 %</strong>. Fuera del ±5 % (mínimo 11,40 V). Los otros dos raíles están dentro. La fuente tiene el raíl de +12 V degradado y no es apta; debe sustituirse, no se repara.</li>
+        <li><strong>Cierre del diagnóstico.</strong> La medida anterior justifica cambiar la fuente por el +12 V fuera de rango, pero no explica por sí sola el «no ocurre nada»: con PS_ON alto al pulsar el botón, la placa/botón de encendido no está pidiendo arranque. Antes de dar el caso por cerrado hay que comprobar el botón de encendido, el cableado del panel y la señal PS_ON en la placa; si el equipo sigue sin arrancar tras cambiar la fuente, el fallo estará en la placa o en el circuito de encendido.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-f · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>En el taller de Tecnoparts SL tienes una fuente ATX de 500 W sobre la mesa, con PS_ON puenteado a GND y el polímetro en <code>V=</code>. Obtienes: +3,3 V = 3,29 V · +5 V = 5,08 V · +12 V = 12,21 V · −12 V = −11,72 V · +5 VSB = 4,62 V. Indica qué raíles están dentro de rango, calcula la desviación de los que no lo estén y dictamina si la fuente es apta.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>1. Comparar cada medida con su rango aceptable de la tabla:</strong></p>
+        <ul>
+          <li>+3,3 V = 3,29 V → entre 3,14 y 3,47 V ⇒ <strong>correcto</strong>. Desviación: (3,29 − 3,3) ÷ 3,3 × 100 = −0,3 %.</li>
+          <li>+5 V = 5,08 V → entre 4,75 y 5,25 V ⇒ <strong>correcto</strong>. Desviación: +1,6 %.</li>
+          <li>+12 V = 12,21 V → entre 11,40 y 12,60 V ⇒ <strong>correcto</strong>. Desviación: +1,75 %.</li>
+          <li>−12 V = −11,72 V → margen ±10 %, es decir de −10,80 a −13,20 V ⇒ <strong>correcto</strong>. Desviación: −2,3 %.</li>
+          <li>+5 VSB = 4,62 V → por debajo de 4,75 V ⇒ <strong>fuera de rango</strong>. Desviación: (4,62 − 5) ÷ 5 × 100 = <strong>−7,6 %</strong>.</li>
+        </ul>
+        <p><strong>2. Dictamen:</strong> la fuente <strong>no es apta</strong>. El raíl de standby está degradado; aunque el equipo pueda arrancar, la tensión de espera alimenta el circuito de arranque y el reloj del sistema, y una desviación del 7,6 % provoca arranques intermitentes e inestabilidad. Se sustituye la fuente.</p>
+      </details>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-f · Medio</h5>
+      <span class="nivel-tag nivel-medio">MEDIO</span>
+      <p>Equipo de la sala 2 de Tecnoparts SL: arranca bien y trabaja sin problemas en ofimática, pero se reinicia solo al ejecutar FurMark durante unos minutos. Mides dentro del equipo, en reposo: +12 V = 12,05 V y +5 V = 5,02 V. Repites la medida con el equipo bajo carga: +12 V = 11,15 V y +5 V = 4,68 V. Explica qué está ocurriendo, identifica todos los raíles que quedan fuera de rango, justifica cuál es el principal si procede y qué dos comprobaciones harías antes de cambiar la fuente.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-f · Avanzado</h5>
+      <span class="nivel-tag nivel-avanzado">AVANZADO</span>
+      <p>Equipo de recepción de Tecnoparts SL: al pulsar el botón no gira ningún ventilador, no hay señal de vídeo y el LED de la placa no se enciende. Mides +5 VSB en el conector de 24 pines y obtienes <strong>0,00 V</strong>. Detalla la secuencia completa de comprobaciones que harías —incluyendo las que no requieren polímetro— y justifica en qué punto concluirías que la fuente está muerta y no es otra cosa.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-f</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Coloco el polímetro en V= (tensión continua) y la punta negra fija en un cable negro (GND)</label></li>
+        <li><label><input type="checkbox" class="check-item"> Identifico el color de cada raíl: naranja +3,3 V, rojo +5 V, amarillo +12 V, azul −12 V, morado +5 VSB</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé puentear PS_ON con GND para arrancar una fuente fuera del equipo, con cable aislado</label></li>
+        <li><label><input type="checkbox" class="check-item"> Calculo la desviación porcentual y la comparo con el ±5 % (o ±10 % en −12 V)</label></li>
+        <li><label><input type="checkbox" class="check-item"> Distingo una medida en vacío de una medida en carga y sé por qué la segunda es la válida</label></li>
+        <li><label><input type="checkbox" class="check-item"> No abro nunca la fuente y mido solo en los conectores de salida</label></li>
+      </ul>
+    </div>
+
+    <div class="box-critico">
+      <div class="box-label">⚠ TRAMPA DE EXAMEN</div>
+      <p>El error más repetido es <strong>dar por buena una fuente medida en vacío</strong>. Una F.A. con el raíl de +12 V a 12,10 V sin carga puede caer a 11,10 V en cuanto la GPU demanda corriente: la medida en vacío no detecta el fallo. El segundo error es <strong>medir con el selector en A= u Ω</strong>: no se debe usar A= u Ω para medir tensión, porque la medida no es válida y el polímetro puede dañarse. Y el tercero: <strong>confundir +5 V con +5 VSB</strong>. El +5 VSB está presente con el equipo apagado y es la primera medida que hay que hacer siempre, porque si falta, el problema está en la entrada de la fuente y no en la placa.</p>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceG">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num">g</div>
+      <div class="bloque-info">
+        <h3>Bloques de un sistema de alimentación ininterrumpida (SAI)</h3>
+        <p>CE-g · importante · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>Un <strong>SAI</strong> —Sistema de Alimentación Ininterrumpida; en inglés <em>UPS</em>, <em>Uninterruptible Power Supply</em>— es el equipo que se coloca entre la red eléctrica y los aparatos que no pueden quedarse sin corriente. No solo sirve para los cortes largos: filtra también <strong>microcortes</strong> (cortes de milisegundos), <strong>sobretensiones</strong> (subidas por encima de los 230 V) y <strong>caídas de tensión</strong>, que la red de 230 V CA (como vimos en CE-a) entrega mucho más a menudo de lo que parece.</p>
+
+    <div class="box-complementario">
+      <div class="box-label">NOTA</div>
+      <p>En el taller no hay ningún SAI, así que lo estudiaremos sobre el esquema de bloques y con casos de cliente. El SAI <strong>no sustituye a la fuente de alimentación</strong> del equipo: se coloca antes de ella, en el cable de red. La fuente ATX (CE-d) sigue haciendo su trabajo: convertir 230 V CA en +3,3 V, +5 V y +12 V CC.</p>
+    </div>
+
+    <h4>Recorrido de la energía dentro del SAI</h4>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 760 360" role="img" aria-label="Diagrama de bloques de un SAI de doble conversión: red, filtro EMI, rectificador, bus de CC, baterías en paralelo, inversor, conmutador y salidas">
+        <defs>
+          <marker id="flecha-g-ceg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+
+        <rect x="20" y="30" width="140" height="56" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="90" y="54" text-anchor="middle" font-size="14" fill="#1a1a2e">Red 230 V</text>
+        <text x="90" y="72" text-anchor="middle" font-size="13" fill="#667085">CA · 50 Hz</text>
+
+        <rect x="220" y="30" width="180" height="56" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="310" y="54" text-anchor="middle" font-size="14" fill="#1a1a2e">Filtro EMI</text>
+        <text x="310" y="72" text-anchor="middle" font-size="13" fill="#667085">y protecciones</text>
+
+        <rect x="220" y="150" width="180" height="56" rx="10" fill="#f7f9fc" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="310" y="174" text-anchor="middle" font-size="14" fill="#1a1a2e">Rectificador</text>
+        <text x="310" y="192" text-anchor="middle" font-size="13" fill="#667085">y cargador</text>
+
+        <rect x="540" y="60" width="170" height="56" rx="10" fill="#fff8e1" stroke="#d4a017" stroke-width="2"/>
+        <text x="625" y="84" text-anchor="middle" font-size="14" fill="#1a1a2e">Baterías</text>
+        <text x="625" y="102" text-anchor="middle" font-size="12" fill="#667085">VRLA 12 V · rama en paralelo</text>
+
+        <rect x="540" y="250" width="170" height="56" rx="10" fill="#f7f9fc" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="625" y="274" text-anchor="middle" font-size="14" fill="#1a1a2e">Inversor</text>
+        <text x="625" y="292" text-anchor="middle" font-size="13" fill="#667085">CC → CA</text>
+
+        <rect x="250" y="250" width="180" height="56" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="340" y="274" text-anchor="middle" font-size="14" fill="#1a1a2e">Conmutador</text>
+        <text x="340" y="292" text-anchor="middle" font-size="13" fill="#667085">y bypass</text>
+
+        <rect x="20" y="250" width="160" height="56" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="100" y="274" text-anchor="middle" font-size="14" fill="#1a1a2e">Salidas</text>
+        <text x="100" y="292" text-anchor="middle" font-size="13" fill="#667085">C13 / Schuko</text>
+
+        <line x1="460" y1="80" x2="460" y2="300" stroke="#667085" stroke-width="4"/>
+        <text x="470" y="200" font-size="13" fill="#1a1a2e">Bus de CC</text>
+
+        <line x1="160" y1="58" x2="214" y2="58" stroke="#667085" stroke-width="2" marker-end="url(#flecha-g-ceg)"/>
+        <line x1="310" y1="86" x2="310" y2="144" stroke="#667085" stroke-width="2" marker-end="url(#flecha-g-ceg)"/>
+        <line x1="400" y1="178" x2="454" y2="178" stroke="#667085" stroke-width="2" marker-end="url(#flecha-g-ceg)"/>
+        <line x1="460" y1="88" x2="534" y2="88" stroke="#667085" stroke-width="2" marker-start="url(#flecha-g-ceg)" marker-end="url(#flecha-g-ceg)"/>
+        <line x1="460" y1="278" x2="534" y2="278" stroke="#667085" stroke-width="2" marker-end="url(#flecha-g-ceg)"/>
+        <line x1="540" y1="278" x2="436" y2="278" stroke="#667085" stroke-width="2" marker-end="url(#flecha-g-ceg)"/>
+        <line x1="250" y1="278" x2="186" y2="278" stroke="#667085" stroke-width="2" marker-end="url(#flecha-g-ceg)"/>
+      </svg>
+      <figcaption>Ruta de la energía en un SAI de doble conversión: el rectificador alimenta el bus de CC y, a través de él, al inversor. Las baterías forman una rama en paralelo sobre ese bus y solo se descargan cuando falta la red; el inversor nunca deja de trabajar. Las salidas pueden ser C13 (conector IEC habitual de equipos) o Schuko (enchufe doméstico europeo con toma de tierra).</figcaption>
+    </figure>
+
+    <h4>Los bloques, uno a uno</h4>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Bloque</th><th>Función</th><th>Si falla…</th></tr></thead>
+        <tbody>
+          <tr><td>Entrada y protecciones<br><small>fusible, varistor</small></td><td>Cortan la corriente ante picos o cortocircuitos en la red.</td><td>El SAI no arranca o se protege solo.</td></tr>
+          <tr><td>Filtro EMI</td><td>Elimina ruido eléctrico y armónicos que llegan por la red.</td><td>Ruido en la señal de salida; el equipo informático puede reiniciarse.</td></tr>
+          <tr><td>Rectificador / cargador</td><td>Convierte CA en CC (como el rectificador de la fuente ATX, CE-d) para alimentar el bus de CC y cargar las baterías.</td><td>Las baterías no se cargan y el bus de CC pierde respaldo: autonomía cero ante un corte.</td></tr>
+          <tr><td>Baterías</td><td>Almacenan energía en forma química y forman una rama en paralelo sobre el bus de CC. Suelen ser <strong>VRLA</strong> (plomo-ácido selladas, sin mantenimiento), de 12 V cada una; internamente se agrupan en serie o paralelo para dar la tensión del bus.</td><td>El SAI pita y se apaga al instante cuando se va la luz.</td></tr>
+          <tr><td><strong>Inversor</strong></td><td>Convierte la CC del bus (venga del rectificador o de las baterías) en 230 V CA otra vez, con onda lo más senoidal posible.</td><td>Salida deformada: las fuentes con PFC activo (corrección del factor de potencia electrónica) pueden rechazarla.</td></tr>
+          <tr><td>Conmutador / bypass</td><td>Decide si la salida toma corriente de la red o del inversor, y permite saltar la electrónica del SAI si este se avería.</td><td>No hay transferencia: el corte llega al equipo.</td></tr>
+          <tr><td>AVR<br><small>solo en line-interactive</small></td><td>Regulador automático de tensión: sube o baja la tensión de red sin gastar batería.</td><td>La salida oscila por encima o por debajo de 230 V.</td></tr>
+          <tr><td>Controlador y panel</td><td>Microcontrolador que coordina todo; LEDs o pantalla LCD; puerto USB o RS-232 para el software de apagado.</td><td>Sin telemetría ni apagado automático del servidor.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="clave">La batería no alimenta al equipo directamente: entrega energía al bus de CC y el inversor la convierte en 230 V CA. Sin inversor sano, una batería cargada no sirve de nada.</div>
+
+    <h4>Tres formas de construir el mismo SAI</h4>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Tipo</th><th>Cómo trabaja</th><th>Uso típico</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Offline</strong> (standby)</td><td>La salida va directa de la red; el inversor solo arranca al detectar el corte. Tiempo de conmutación de 5-10 ms.</td><td>PC doméstico, ofimática.</td></tr>
+          <tr><td><strong>Line-interactive</strong></td><td>Añade AVR: corrige subidas y bajadas sin usar batería. Conmutación de 2-4 ms.</td><td>Comercio, pequeña oficina, pyme.</td></tr>
+          <tr><td><strong>Online</strong> (doble conversión)</td><td>Rectificador e inversor trabajan siempre; conmutación de 0 ms. Onda senoidal pura garantizada.</td><td>Servidores, equipos médicos, cajas registradoras.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Qué mirar al elegir un SAI</h4>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Característica</th><th>Qué significa</th><th>Qué elegir</th></tr></thead>
+        <tbody>
+          <tr><td>Potencia en VA y en W</td><td>Los VA son potencia aparente; los W, la real que puede entregar (como vimos con el factor de potencia en CE-d).</td><td>Suma los W de todos los equipos y deja un 30 % de margen.</td></tr>
+          <tr><td>Tipo de onda</td><td>Senoidal pura o senoidal modificada (escalonada).</td><td>Senoidal pura para fuentes con PFC activo (corrección del factor de potencia electrónica, más sensible a la onda modificada; el PFC pasivo usa bobinas y tolera mejor la modificada) y servidores.</td></tr>
+          <tr><td>Autonomía</td><td>Minutos que aguanta con las baterías a plena carga.</td><td>10-15 min basta para guardar y apagar con orden.</td></tr>
+          <tr><td>Tiempo de conmutación</td><td>Milisegundos que tarda en pasar a batería. Debe ser menor que el <em>hold-up time</em> de la fuente: el tiempo que la fuente ATX mantiene la salida tras perderse la red (unos 16 ms).</td><td>Menor que ese <em>hold-up time</em> (unos 16 ms), o 0 ms si es online.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p><strong>Gestoría López S.L.</strong> tiene 3 PC con monitor, un servidor de ficheros y un switch de red (conmutador de red: concentrador que conecta varios equipos por cable). Han medido el consumo total con un medidor de enchufe: <strong>250 W</strong>. Quieren un mínimo de 15 minutos de autonomía. El proveedor ofrece un SAI line-interactive de <strong>1500 VA / 900 W</strong> con 2 baterías VRLA de 12 V y 9 Ah conectadas en serie.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li><strong>Comprobar potencia:</strong> 250 W reales frente a 900 W que declara el SAI → margen de 3,6 veces. Sobra capacidad, pero es sano: los arranques de los equipos generan picos.</li>
+        <li><strong>Calcular la energía de las baterías:</strong> en serie se suman las tensiones y se mantiene la capacidad → 24 V × 9 Ah = <strong>216 Wh</strong>.</li>
+        <li><strong>Descontar pérdidas del inversor:</strong> se aprovecha un 85 % → 216 × 0,85 = <strong>184 Wh</strong> útiles.</li>
+        <li><strong>Autonomía:</strong> 184 Wh ÷ 250 W = 0,73 h ≈ <strong>44 minutos</strong> teóricos; en la práctica, unos 30-35 min reales. Cumple de sobra los 15 min pedidos.</li>
+        <li><strong>Comprobar la conmutación:</strong> 2-4 ms, muy por debajo de los ~16 ms que la fuente ATX aguanta sin red. El servidor no se reinicia.</li>
+        <li><strong>Qué NO conectar:</strong> la impresora láser (sus picos de calefacción pueden superar la potencia del SAI) ni regletas con aparatos de motor. Se conectan a una regleta protegida normal.</li>
+        <li><strong>Configuración final:</strong> cable USB del SAI al servidor e instalar el software del fabricante para que apague los equipos solo cuando queden 5 minutos de batería.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-g · Identificación de bloques y elección de SAI</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p><strong>Estudio Gráfico Pixels S.L.</strong> tiene 4 puestos de diseño con monitor, un NAS (Network Attached Storage: caja de almacenamiento conectada a la red donde se guardan los proyectos de los clientes) y un router. El consumo medido es de <strong>400 W</strong>. El SAI instalado tiene estas características: entrada 230 V CA, filtro EMI, rectificador-cargador, 2 baterías VRLA de 12 V y 7 Ah en serie, inversor de onda senoidal pura con 3 ms de conmutación, conmutador con bypass y puerto USB. Los cortes de luz duran de media 10 minutos.</p>
+      <p>a) Identifica qué bloque se encarga de que el NAS no se apague y qué bloque se encarga de que las baterías estén siempre llenas. b) Calcula la autonomía aproximada del SAI (rendimiento del inversor, 85 %). c) El SAI no incorpora AVR. Si la red baja de 230 V a 200 V sin cortarse y el umbral de transferencia del SAI está en 180 V, ¿qué tensión recibe aproximadamente el NAS, qué bloques intervienen y se descargan las baterías?</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>a) Reparto de funciones:</strong> el que mantiene encendido el NAS es el <strong>inversor</strong>, que toma la CC del bus de CC (alimentado por las baterías cuando falta la red) y la convierte en 230 V CA. El que mantiene las baterías cargadas es el <strong>rectificador-cargador</strong>, que convierte la CA de la red en CC de carga.</p>
+        <p><strong>b) Autonomía:</strong> las dos baterías forman una rama de 24 V (12 V + 12 V en serie) y 7 Ah → 24 V × 7 Ah = 168 Wh. Energía útil: 168 × 0,85 = 142,8 Wh. Tiempo = 142,8 Wh ÷ 400 W = 0,357 h ≈ 21 minutos teóricos, unos 15-18 min reales. Cubre los cortes de 10 minutos, pero con poco margen: conviene avisar al cliente de que la autonomía baja a medida que las baterías envejecen.</p>
+        <p><strong>c) Bajada a 200 V sin AVR:</strong> este SAI no es online (tiene conmutación de 3 ms, no de 0 ms) y no incorpora AVR, así que no puede corregir la bajada. Como 200 V sigue por encima del umbral de transferencia de 180 V, el conmutador no pasa al inversor: la salida sigue tomando la red a través del filtro EMI y del conmutador/bypass. El NAS recibe una tensión próxima a 200 V, no 230 V. El rectificador-cargador sigue alimentando el bus de CC y cargando las baterías; las baterías no se descargan y el inversor no entra en servicio. El controlador vigila la tensión y solo transferiría al inversor si se cruzara el umbral. No interviene ningún AVR porque no existe en este equipo.</p>
+      </details>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-g</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Sé definir qué es un SAI y en qué se diferencia de una fuente de alimentación.</label></li>
+        <li><label><input type="checkbox" class="check-item"> Identifico los ocho bloques del SAI y la función de cada uno.</label></li>
+        <li><label><input type="checkbox" class="check-item"> Distingo offline, line-interactive y online por su tiempo de conmutación y su uso.</label></li>
+        <li><label><input type="checkbox" class="check-item"> Calculo la autonomía a partir de la tensión y la capacidad de las baterías.</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé justificar qué aparatos no deben conectarse a un SAI.</label></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceH">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num">h</div>
+      <div class="bloque-info">
+        <h3>Medida de señales en los puntos significativos de un SAI</h3>
+        <p>CE-h · importante · 2 sesiones</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">2 sesiones</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>En CE-g desmontamos el SAI por dentro: filtro EMI, rectificador-cargador, bus de CC con baterías VRLA, inversor, conmutador de <em>bypass</em> y controlador. Ahora damos el paso profesional: <strong>comprobar con el polímetro si esas etapas están haciendo su trabajo</strong>. El SAI no se diagnostica "a ojo" ni por lo que diga el LED del panel; se diagnostica midiendo en los puntos donde la señal cambia de naturaleza.</p>
+
+    <p>En nuestro taller no hay ningún SAI, así que practicaremos el <strong>protocolo de medida y la interpretación de lecturas</strong> sobre datos reales que aporta el profesor; el manejo del polímetro ya lo dominas desde CE-a a CE-f y aquí solo cambia <em>dónde</em> pones las puntas y <em>qué</em> significa lo que lees.</p>
+
+    <div class="box-complementario">
+      <div class="box-label">NOTA</div>
+      <p>Un polímetro mide el <strong>valor eficaz (RMS)</strong>: el valor de continua que produciría el mismo calentamiento que esa alterna. Los polímetros económicos suponen que la onda es senoidal; con una salida de <strong>senoidal modificada</strong> (escalonada, vista en CE-g) la lectura puede quedarse un 10-20 % corta. Un <strong>osciloscopio</strong> (instrumento que dibuja la forma de onda) lo detectaría al instante; el polímetro, no.</p>
+    </div>
+
+    <p>Estos son los cuatro puntos donde se mide de verdad:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Punto</th><th>Qué se mide</th><th>Función del polímetro</th><th>Valor esperado</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1. Entrada de red</strong> (Schuko o C14)</td><td>Tensión de alimentación</td><td><code>V~</code> (ACV) + Hz</td><td>230 V~ ±10 % (207-253 V), 50 Hz</td></tr>
+          <tr><td><strong>2. Bus de CC</strong> (batería)</td><td>Tensión de flotación del banco</td><td><code>V=</code> (DCV)</td><td>13,6-13,8 V por bloque de 12 V en flotación; 12,6 V en reposo</td></tr>
+          <tr><td><strong>3. Salida a la carga</strong> (C13 o Schuko)</td><td>Tensión entregada al equipo</td><td><code>V~</code> (ACV) + Hz</td><td>230 V~ ±5 %, 50 Hz, también con la red cortada</td></tr>
+          <tr><td><strong>4. Puerto USB / RS-232</strong></td><td>Estado y telemetría</td><td>No se mide</td><td>Se lee con el software del fabricante (visto en CE-g)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>La <strong>tensión de flotación</strong> es la tensión continua que el rectificador-cargador mantiene en la batería para conservarla llena sin sobrecargarla; es el dato que delata una batería agotada antes de que falle. El banco se monta con bloques de 12 V en serie: 2 bloques = bus de 24 V, 4 bloques = bus de 48 V. Por eso la lectura del punto 2 se divide siempre entre el número de bloques antes de compararla.</p>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 960 380" role="img" aria-label="Esquema de bloques de un SAI con los cuatro puntos de medida numerados: entrada de red, bus de CC, salida a la carga y puerto USB/RS-232">
+        <defs>
+          <marker id="flecha-h-ceh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+
+        <rect x="20" y="70" width="150" height="70" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="95" y="110" text-anchor="middle" font-size="13" fill="#1a1a2e">Red eléctrica</text>
+        <text x="95" y="128" text-anchor="middle" font-size="12" fill="#667085">230 V~ · 50 Hz</text>
+        <circle cx="40" cy="90" r="13" fill="#b03a2e"/>
+        <text x="40" y="95" text-anchor="middle" font-size="14" fill="#f7f9fc">1</text>
+
+        <line x1="170" y1="105" x2="198" y2="105" stroke="#667085" stroke-width="2" marker-end="url(#flecha-h-ceh)"/>
+
+        <rect x="210" y="70" width="160" height="70" rx="10" fill="#f7f9fc" stroke="#667085" stroke-width="2"/>
+        <text x="290" y="110" text-anchor="middle" font-size="13" fill="#1a1a2e">Rectificador</text>
+        <text x="290" y="128" text-anchor="middle" font-size="12" fill="#667085">y cargador</text>
+
+        <line x1="370" y1="105" x2="398" y2="105" stroke="#667085" stroke-width="2" marker-end="url(#flecha-h-ceh)"/>
+
+        <rect x="410" y="70" width="150" height="70" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="485" y="110" text-anchor="middle" font-size="13" fill="#1a1a2e">Bus de CC</text>
+        <text x="485" y="128" text-anchor="middle" font-size="12" fill="#667085">baterías 24 V</text>
+        <circle cx="430" cy="90" r="13" fill="#b03a2e"/>
+        <text x="430" y="95" text-anchor="middle" font-size="14" fill="#f7f9fc">2</text>
+
+        <line x1="560" y1="105" x2="588" y2="105" stroke="#667085" stroke-width="2" marker-end="url(#flecha-h-ceh)"/>
+
+        <rect x="600" y="70" width="140" height="70" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="670" y="110" text-anchor="middle" font-size="13" fill="#1a1a2e">Inversor</text>
+        <text x="670" y="128" text-anchor="middle" font-size="12" fill="#667085">230 V~ · 50 Hz</text>
+
+        <line x1="740" y1="105" x2="768" y2="105" stroke="#667085" stroke-width="2" marker-end="url(#flecha-h-ceh)"/>
+
+        <rect x="780" y="70" width="150" height="70" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="855" y="110" text-anchor="middle" font-size="13" fill="#1a1a2e">Salida a la carga</text>
+        <text x="855" y="128" text-anchor="middle" font-size="12" fill="#667085">C13 / Schuko</text>
+        <circle cx="800" cy="90" r="13" fill="#b03a2e"/>
+        <text x="800" y="95" text-anchor="middle" font-size="14" fill="#f7f9fc">3</text>
+
+        <rect x="410" y="190" width="150" height="40" rx="8" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="485" y="215" text-anchor="middle" font-size="12" fill="#1a1a2e">Bloques VRLA 12 V</text>
+        <line x1="485" y1="140" x2="485" y2="188" stroke="#667085" stroke-width="2" marker-end="url(#flecha-h-ceh)"/>
+
+        <rect x="600" y="190" width="180" height="60" rx="10" fill="#f7f9fc" stroke="#667085" stroke-width="2"/>
+        <text x="690" y="216" text-anchor="middle" font-size="12" fill="#1a1a2e">Conmutador bypass</text>
+        <text x="690" y="234" text-anchor="middle" font-size="12" fill="#667085">y controlador (relé)</text>
+
+        <path d="M 95 140 L 95 270 L 580 270 L 580 220 L 598 220" fill="none" stroke="#667085" stroke-width="2" marker-end="url(#flecha-h-ceh)"/>
+        <path d="M 780 220 L 855 220 L 855 142" fill="none" stroke="#667085" stroke-width="2" marker-end="url(#flecha-h-ceh)"/>
+
+        <rect x="410" y="300" width="170" height="50" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="495" y="322" text-anchor="middle" font-size="12" fill="#1a1a2e">Puerto USB / RS-232</text>
+        <text x="495" y="340" text-anchor="middle" font-size="11" fill="#667085">telemetría</text>
+        <circle cx="430" cy="320" r="13" fill="#b03a2e"/>
+        <text x="430" y="325" text-anchor="middle" font-size="14" fill="#f7f9fc">4</text>
+
+        <path d="M 620 250 L 620 300 L 582 300" fill="none" stroke="#667085" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#flecha-h-ceh)"/>
+      </svg>
+      <figcaption>Puntos de medida: 1 = entrada de red; 2 = bus de CC (baterías); 3 = salida a la carga (C13/Schuko); 4 = puerto USB/RS-232. El conmutador de bypass, mandado por el controlador, permite alimentar la carga desde la red si el inversor no está disponible. La medida del punto 3 (salida, alterna) debe seguir dando 230 V~ aunque en el punto 1 (entrada) haya 0 V; el punto 2 es continua y se mide en V=.</figcaption>
+    </figure>
+
+    <div class="box-importante">
+      <div class="box-label">IMPORTANTE</div>
+      <p>En la salida del SAI hay <strong>230 V~ aunque hayas desenchufado el aparato de la red</strong>: el inversor sigue alimentando. Antes de tocar cualquier borne, polímetro en <code>V~</code>, puntas en buen estado y categoría de seguridad <strong>CAT II</strong> como mínimo (visto en CE-a). No abras las baterías VRLA ni puentees sus bornes: pueden entregar cientos de amperios en un cortocircuito.</p>
+    </div>
+
+    <p>Lo que el polímetro <strong>no</strong> puede medir aquí: el estado interno del relé de conmutación. El relé de conmutación es el componente electromecánico del conmutador de bypass, mandado por el controlador, que conecta la salida del SAI al inversor o a la red de bypass; no se puede comprobar su estado interno con las puntas sin desmontar y con tensión, y su funcionamiento se valida con una prueba funcional de corte y restablecimiento. Tampoco se mide con polímetro la corriente de carga de la batería, que exigiría una <strong>pinza amperimétrica</strong> (instrumento que abraza el conductor y mide su campo magnético sin cortar el circuito). El puerto USB transmite una señal digital serie: se interpreta con el software del fabricante, no con puntas.</p>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p>Talleres Ribera SL tiene un SAI <em>line-interactive</em> de 700 VA / 420 W alimentando un switch de red y un NAS. Tras 3 años en servicio, el técnico revisa las etapas con un polímetro en autorrango.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li><strong>Preparación</strong> — SAI enchufado 8 h (batería cargada), carga conectada, polímetro en <code>V~</code> y CAT II.</li>
+        <li><strong>Punto 1, entrada</strong> — 231 V~ / 50,0 Hz. Dentro de 230 V ±10 %: la red llega correctamente.</li>
+        <li><strong>Punto 3, salida</strong> — 229 V~ / 50,0 Hz. Dentro de ±5 %: el inversor entrega lo que debe.</li>
+        <li><strong>Punto 2, bus de CC</strong> — el banco tiene 2 bloques de 12 V en serie (24 V nominales) y marca 27,4 V. Divido: 27,4 / 2 = <strong>13,7 V por bloque</strong> → tensión de flotación correcta.</li>
+        <li><strong>Prueba de conmutación</strong> — desenchufo el SAI de la red: el punto 1 pasa a 0 V y el punto 3 sigue en 228 V~. El conmutador y el inversor funcionan. A los 6 minutos la batería marca 24,1 V (12,05 V por bloque), valor normal en descarga.</li>
+        <li><strong>Comparación</strong> — otro SAI de la misma sala, con 5 años, mide en reposo 22,0 V (11,0 V por bloque), por debajo de los 12,6 V esperados. La sulfatación es la cristalización de sulfato de plomo en las placas de una batería de plomo-ácido; aparece por envejecimiento o por dejar la batería tiempo descargada, aumenta su resistencia interna y hace que la tensión en reposo caiga y que no acepte bien la carga. Esa lectura hace sospechar sulfatación o agotamiento, pero no es un diagnóstico definitivo: hay que confirmarlo con una prueba de capacidad o de carga antes de sustituir la batería.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-h · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>Clínica Dental Sonrisa SL tiene un SAI <em>online</em> de doble conversión de 1500 VA en el rack del gabinete. Su banco de baterías son 4 bloques VRLA de 12 V en serie. El técnico anota estas medidas:</p>
+      <ul>
+        <li>Entrada: 236 V~ / 50,0 Hz</li>
+        <li>Bus de CC: 54,8 V=</li>
+        <li>Salida con red presente: 230 V~ / 50,0 Hz</li>
+        <li>Salida tras cortar la red: 230 V~ / 50,0 Hz (sin microcorte apreciable)</li>
+        <li>Bus de CC a los 10 minutos de autonomía: 48,9 V=</li>
+      </ul>
+      <p>a) Indica si cada medida está dentro de rango y qué etapa confirma. b) Si la salida midiera 214 V~ con la red presente, ¿qué conclusión sacarías?</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>a)</strong> Entrada 236 V~ está dentro de 207-253 V (230 ±10 %): confirma que la red llega al punto 1 con tensión correcta. Una lectura de tensión no verifica el filtro EMI; para valorar el filtro haría falta una comprobación específica (inspección, continuidad/aislamiento o instrumental adecuado), no basta con leer 236 V~.<br>
+        Bus de CC: 54,8 / 4 bloques = <strong>13,7 V por bloque</strong> → flotación correcta; el rectificador-cargador mantiene el banco cargado.<br>
+        Salida con red presente: 230 V~ / 50 Hz → el inversor entrega tensión dentro de ±5 %.<br>
+        Tras cortar la red la salida se mantiene en 230 V~ sin microcorte: al ser <em>online</em> de doble conversión, la carga se alimenta siempre desde el inversor y el cambio a baterías no se aprecia en la salida.<br>
+        Bus a los 10 min: 48,9 / 4 = <strong>12,2 V por bloque</strong> → descarga normal, dentro del tramo esperado.</p>
+        <p><strong>b)</strong> 214 V~ sobre 230 V nominales es un −7 %, fuera del ±5 %. Con la red presente, el inversor <em>online</em> debe mantener la salida en 230 V ±5 %; si no lo hace, puede deberse a una sobrecarga (equipos conectados por encima de la potencia nominal) o a una avería del inversor. Repetiría la medida en vacío para descartar la sobrecarga y, si el valor sigue fuera de rango, derivaría el SAI al servicio técnico.</p>
+      </details>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-h</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Sé localizar los cuatro puntos de medida de un SAI sobre su esquema de bloques</label></li>
+        <li><label><input type="checkbox" class="check-item"> Elijo la función correcta del polímetro (V~, V=, Hz) en cada punto sin dudar</label></li>
+        <li><label><input type="checkbox" class="check-item"> Divido la tensión del bus entre el número de bloques antes de compararla con la flotación</label></li>
+        <li><label><input type="checkbox" class="check-item"> Explico por qué la salida debe dar 230 V~ aunque la entrada esté a 0 V</label></li>
+        <li><label><input type="checkbox" class="check-item"> Aplico las precauciones de CAT II y no abro las baterías VRLA</label></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceI">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num critico">i</div>
+      <div class="bloque-info">
+        <h3>Circuitos de C.A. y C.C.: magnitudes fundamentales y medidas básicas</h3>
+        <p>CE-i · CRÍTICO · 2 sesiones</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">2 sesiones</span>
+  </div>
+  <div class="bloque-body">
+
+    <h4>1. Qué es un circuito eléctrico</h4>
+    <p>Un <strong>circuito eléctrico</strong> es el camino cerrado por el que circula la corriente eléctrica, es decir, el desplazamiento ordenado de electrones (recuerda lo que vimos en CE-a). Si el camino se corta en algún punto, no circula nada: tenemos un <strong>circuito abierto</strong>, y por eso la prueba de continuidad solo zumba cuando existe un camino cerrado de punta a punta.</p>
+    <p>Para que el circuito funcione hacen falta cuatro piezas. El material que deja pasar la corriente se llama <strong>conductor</strong> (el cobre de los cables) y el que la bloquea, <strong>aislante</strong> (el plástico que recubre el cable).</p>
+    <p>Ojo con el sentido: cuando decimos que la corriente va del polo + al polo − estamos usando el <strong>sentido convencional</strong>. En realidad, los electrones se desplazan del polo − al polo +. En los esquemas y en las medidas se trabaja normalmente con el sentido convencional.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Elemento</th><th>Función</th><th>Ejemplo en nuestro taller</th></tr></thead>
+        <tbody>
+          <tr><td>Generador</td><td>Aporta la energía al circuito</td><td>Fuente de alimentación ATX o el enchufe de red</td></tr>
+          <tr><td>Conductores</td><td>Transportan la corriente entre elementos</td><td>Cables amarillo (+12 V) y negro (masa) de un conector Molex</td></tr>
+          <tr><td>Carga o receptor</td><td>Transforma la energía eléctrica en trabajo: giro, luz, calor</td><td>Ventilador, LED del panel, disco duro</td></tr>
+          <tr><td>Control y protección</td><td>Abre o cierra el circuito y evita daños</td><td>Interruptor de encendido, fusible de la fuente</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>2. Corriente continua (C.C.) frente a corriente alterna (C.A.)</h4>
+    <p>La diferencia esencial es cómo varía la tensión con el tiempo y si cambia o no de sentido.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Característica</th><th>Corriente continua (C.C. / DC)</th><th>Corriente alterna (C.A. / AC)</th></tr></thead>
+        <tbody>
+          <tr><td>Sentido de la corriente</td><td>Siempre el mismo: sentido convencional del polo + al polo − (los electrones circulan del − al +)</td><td>Cambia de sentido continuamente</td></tr>
+          <tr><td>Forma de la tensión</td><td>Valor constante en el tiempo</td><td>Onda <strong>senoidal</strong>: sube y baja suavemente, con forma de seno</td></tr>
+          <tr><td>Frecuencia</td><td>0 Hz (no hay ciclos)</td><td>50 Hz en la red española (50 ciclos por segundo, CE-a)</td></tr>
+          <tr><td>Dónde aparece en un PC</td><td>A la salida de la fuente y en el resto del equipo: +3,3 V, +5 V, +12 V (CE-e)</td><td>En la entrada de la fuente, dentro de la caja: 230 V antes del filtro EMI, rectificador y PFC (CE-d)</td></tr>
+          <tr><td>Cómo se mide</td><td>Escala <code>V=</code> (DCV)</td><td>Escala <code>V~</code> (ACV)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="clave">Dentro de la caja del PC conviven corriente alterna y corriente continua: la C.A. de 230 V entra en la fuente y atraviesa el filtro EMI, el rectificador y el PFC (primario); a la salida de la fuente y en el resto del equipo hay C.C. (+3,3 V, +5 V, +12 V). La alterna no se queda solo en el cable de red.</div>
+
+    <h4>3. Las cuatro magnitudes fundamentales</h4>
+    <p>Estas magnitudes ya las has medido en CE-a y CE-b; aquí las ordenamos y añadimos la que se calcula.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Magnitud</th><th>Unidad</th><th>Qué representa</th><th>Cómo se obtiene</th></tr></thead>
+        <tbody>
+          <tr><td>Tensión (V)</td><td>voltio (V)</td><td>La «fuerza» que empuja a los electrones</td><td>Polímetro en <strong>paralelo</strong> con el componente</td></tr>
+          <tr><td>Intensidad (I)</td><td>amperio (A)</td><td>Cantidad de electrones que pasan por segundo</td><td>Polímetro en <strong>serie</strong>, abriendo el circuito</td></tr>
+          <tr><td>Resistencia (R)</td><td>ohmio (Ω)</td><td>La oposición que ofrece el componente al paso de corriente</td><td>Polímetro en paralelo, <strong>sin tensión</strong></td></tr>
+          <tr><td>Potencia (P)</td><td>vatio (W)</td><td>Energía consumida o entregada cada segundo (CE-c)</td><td>No se mide con el polímetro: se <strong>calcula</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>La <strong>ley de Ohm</strong> relaciona las tres primeras: la tensión es igual a la intensidad multiplicada por la resistencia.</p>
+    <ul>
+      <li><code>V = I × R</code> — se usa cuando conocemos la corriente y la resistencia.</li>
+      <li><code>I = V / R</code> — se usa para saber cuánta corriente pedirá una carga óhmica conectada a una tensión conocida.</li>
+      <li><code>R = V / I</code> — se usa para calcular la resistencia de un componente óhmico, o la resistencia aparente de una carga, midiendo tensión e intensidad; en motores y cargas electrónicas no equivale a la lectura del óhmetro sin tensión.</li>
+      <li><code>P = V × I</code> — la potencia es tensión por intensidad.</li>
+    </ul>
+
+    <h4>4. Circuitos en serie, en paralelo y mixtos</h4>
+    <p>Un <strong>circuito en serie</strong> tiene una sola rama (un solo camino): por todos los elementos pasa la misma corriente y la tensión se reparte entre ellos. Un <strong>circuito en paralelo</strong> tiene varias ramas unidas en los mismos puntos (nodos): todos los elementos soportan la misma tensión y la corriente se reparte. El <strong>mixto</strong> combina los dos.</p>
+    <p>Para calcular la <strong>resistencia equivalente</strong>: en serie se suman las resistencias, <code>R<sub>s</sub> = R<sub>1</sub> + R<sub>2</sub> + ...</code>; en paralelo se cumple <code>1/R<sub>p</sub> = 1/R<sub>1</sub> + 1/R<sub>2</sub> + ...</code>. Para dos resistencias en paralelo: <code>R<sub>p</sub> = (R<sub>1</sub> × R<sub>2</sub>) / (R<sub>1</sub> + R<sub>2</sub>)</code>. En paralelo, la resistencia equivalente siempre es menor que la menor de las resistencias conectadas.</p>
+    <p>Un <strong>divisor de tensión</strong> es un montaje de dos o más resistencias en serie alimentado por una tensión total; la tensión de entrada se reparte entre ellas de forma proporcional a su resistencia. Para dos resistencias: <code>V<sub>1</sub> = V<sub>total</sub> × R<sub>1</sub> / (R<sub>1</sub> + R<sub>2</sub>)</code> y <code>V<sub>2</sub> = V<sub>total</sub> × R<sub>2</sub> / (R<sub>1</sub> + R<sub>2</sub>)</code>.</p>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 640 250" role="img" aria-label="Comparación entre un circuito en serie y uno en paralelo">
+        <defs>
+          <marker id="flecha-i-cei" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <text x="160" y="25" text-anchor="middle" font-size="15" fill="#1e3a5f">Circuito en serie</text>
+        <rect x="30" y="90" width="70" height="50" rx="6" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="65" y="112" text-anchor="middle" font-size="13" fill="#1a1a2e">Fuente</text>
+        <text x="65" y="128" text-anchor="middle" font-size="13" fill="#667085">12 V</text>
+        <line x1="100" y1="115" x2="140" y2="115" stroke="#2d6a9f" stroke-width="2"/>
+        <rect x="140" y="95" width="60" height="40" rx="6" fill="#f7f9fc" stroke="#667085" stroke-width="2"/>
+        <text x="170" y="120" text-anchor="middle" font-size="14" fill="#1a1a2e">R1</text>
+        <line x1="200" y1="115" x2="230" y2="115" stroke="#2d6a9f" stroke-width="2"/>
+        <rect x="230" y="95" width="60" height="40" rx="6" fill="#f7f9fc" stroke="#667085" stroke-width="2"/>
+        <text x="260" y="120" text-anchor="middle" font-size="14" fill="#1a1a2e">R2</text>
+        <polyline points="290,115 310,115 310,190 65,190 65,140" fill="none" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="160" y="225" text-anchor="middle" font-size="13" fill="#667085">Misma I, la V se reparte</text>
+
+        <line x1="325" y1="30" x2="325" y2="230" stroke="#e8f2fb" stroke-width="2"/>
+
+        <text x="480" y="25" text-anchor="middle" font-size="15" fill="#1e3a5f">Circuito en paralelo</text>
+        <rect x="350" y="90" width="70" height="50" rx="6" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="385" y="112" text-anchor="middle" font-size="13" fill="#1a1a2e">Fuente</text>
+        <text x="385" y="128" text-anchor="middle" font-size="13" fill="#667085">12 V</text>
+        <line x1="420" y1="115" x2="460" y2="115" stroke="#2d6a9f" stroke-width="2"/>
+        <line x1="460" y1="55" x2="460" y2="175" stroke="#2d6a9f" stroke-width="2"/>
+        <line x1="460" y1="55" x2="490" y2="55" stroke="#2d6a9f" stroke-width="2"/>
+        <rect x="490" y="40" width="70" height="30" rx="6" fill="#f7f9fc" stroke="#667085" stroke-width="2"/>
+        <text x="525" y="61" text-anchor="middle" font-size="14" fill="#1a1a2e">R3</text>
+        <line x1="460" y1="175" x2="490" y2="175" stroke="#2d6a9f" stroke-width="2"/>
+        <rect x="490" y="160" width="70" height="30" rx="6" fill="#f7f9fc" stroke="#667085" stroke-width="2"/>
+        <text x="525" y="181" text-anchor="middle" font-size="14" fill="#1a1a2e">R4</text>
+        <polyline points="560,55 560,175 560,215 385,215 385,140" fill="none" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="480" y="240" text-anchor="middle" font-size="13" fill="#667085">Misma V, la I se reparte</text>
+      </svg>
+      <figcaption>Comparación de los dos circuitos básicos: fíjate en que la fuente es la misma (12 V), pero en serie solo hay un camino y en paralelo hay dos ramas que se unen en los mismos nodos.</figcaption>
+    </figure>
+
+    <div class="box-complementario">
+      <div class="box-label">NOTA</div>
+      <p>Los raíles de una fuente ATX (+3,3 V, +5 V, +12 V) son ramas en paralelo que comparten la masa (CE-e). En cambio, el LED del panel frontal lleva una resistencia en serie para que no se queme: la tensión se reparte entre los dos.</p>
+    </div>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p>En el taller de Tecnoparts SL probamos una fuente Nox Urano VX 650 W con un ventilador de 12 V conectado al raíl amarillo. Medimos 12,05 V con el polímetro y, con el arnés de medida, obtenemos 0,15 A. ¿Qué potencia consume y qué resistencia aparente presenta en funcionamiento?</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li>Identificamos el tipo de corriente: estamos dentro del PC, en el raíl de +12 V, así que es <strong>continua</strong>. Selector en <code>V=</code> para la tensión y en <code>A=</code> para la intensidad (CE-b).</li>
+        <li>La tensión se mide en <strong>paralelo</strong>: punta roja al cable amarillo (+12 V), punta negra al negro (masa). Resultado: 12,05 V. Está dentro de la tolerancia ±5 % (CE-c).</li>
+        <li>La intensidad se mide en <strong>serie</strong>, abriendo el circuito con el arnés adaptador. Resultado: 0,15 A.</li>
+        <li>Calculamos la potencia: <code>P = V × I = 12,05 × 0,15 = 1,81 W</code>.</li>
+        <li>Con la ley de Ohm calculamos la <strong>resistencia aparente en ese punto de funcionamiento</strong>: <code>R<sub>aparente</sub> = V / I = 12,05 / 0,15 = 80,3 Ω</code>.</li>
+        <li>Interpretación correcta: un ventilador no es una resistencia pura. Es un motor brushless con electrónica de conmutación y fuerza contraelectromotriz, por lo que su comportamiento no es óhmico. Los 80,3 Ω son la resistencia aparente en marcha, no el valor que debe aparecer al medir el ventilador con un óhmetro sin tensión.</li>
+        <li>Por tanto, no se concluye que el bobinado esté sano comparando <code>V/I</code> con la lectura del polímetro en <code>Ω</code>. Esa lectura puede ser distinta, alta o incluso <code>OL</code> según el circuito interno del ventilador, y no valida el bobinado. Para diagnosticar se comprueba la alimentación, se prueba con un ventilador conocido en el mismo conector y se revisan la señal de control y el propio ventilador; si no gira o su consumo no coincide con el previsto, se consulta la ficha técnica o se sustituye por uno equivalente.</li>
+        <li>Conclusión: el ventilador consume aproximadamente <strong>1,81 W</strong> y en funcionamiento presenta una resistencia aparente de unos <strong>80,3 Ω</strong>; esto no es una medida de resistencia óhmica ni una prueba del bobinado.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-i · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>En el aula de Tecnoparts SL, un compañero debe medir cuatro puntos y anotar si la corriente es C.A. o C.C., qué escala del polímetro usar y si el polímetro va en serie o en paralelo:</p>
+      <ul>
+        <li>A) Cable de red Schuko antes de entrar en la fuente.</li>
+        <li>B) Conector Molex entre el cable amarillo y el negro.</li>
+        <li>C) Corriente que atraviesa un ventilador conectado al raíl de +12 V.</li>
+        <li>D) Continuidad del fusible de una fuente desenchufada.</li>
+      </ul>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>A)</strong> C.A. de 230 V y 50 Hz. Escala <code>V~</code> (ACV), rango por encima de 230 V, en paralelo entre fase y neutro, con categoría de seguridad adecuada (CAT II como mínimo, CE-a).<br>
+        <strong>B)</strong> C.C. Escala <code>V=</code>, en paralelo: punta roja al amarillo (+12 V), negra al negro (masa).<br>
+        <strong>C)</strong> C.C., pero aquí medimos intensidad: escala <code>A=</code> y el polímetro en <strong>serie</strong>, abriendo el circuito con el arnés adaptador.<br>
+        <strong>D)</strong> No hay corriente: se mide resistencia/continuidad en <code>Ω</code> o con el modo zumbido, en paralelo sobre el fusible y siempre <strong>sin tensión</strong>. Si zumba, el fusible conduce y está bien.</p>
+      </details>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-i · Medio</h5>
+      <span class="nivel-tag nivel-medio">MEDIO</span>
+      <p>En el banco de pruebas de Tecnoparts SL montamos un divisor de tensión con dos resistencias en serie: R1 = 100 Ω y R2 = 220 Ω, alimentadas por el raíl de +12 V de una fuente ATX. Calcula la resistencia total, la intensidad que circula por el circuito y la tensión que cae en cada resistencia. Después responde: si conectáramos esas mismas dos resistencias en paralelo, ¿la resistencia total sería mayor o menor que 100 Ω? Justifícalo sin hacer el cálculo completo.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-i · Avanzado</h5>
+      <span class="nivel-tag nivel-avanzado">AVANZADO</span>
+      <p>Un equipo del taller arranca, pero el ventilador del disipador de la CPU no gira y el equipo se apaga solo a los pocos minutos. El técnico comprueba lo siguiente, con el equipo encendido y el polímetro en <code>V=</code>: entre los pines del conector del ventilador hay 12,1 V. Después apaga, desenchufa y mide resistencia entre los dos hilos del ventilador: el polímetro marca <code>OL</code>. Otro ventilador igual, probado en el mismo conector, gira correctamente.</p>
+      <p>Indica qué tipo de corriente circula por ese conector, si el fallo es un circuito abierto o un cortocircuito, qué componente está averiado, cómo lo justificas con las medidas y qué harías para dejarlo operativo.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-i</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Identifico los cuatro elementos de un circuito eléctrico y los localizo en un PC</label></li>
+        <li><label><input type="checkbox" class="check-item"> Distingo C.A. de C.C. por su forma de onda, su sentido y su frecuencia</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé qué escala del polímetro usar para cada tipo de corriente (V= / V~)</label></li>
+        <li><label><input type="checkbox" class="check-item"> Relaciono tensión, intensidad, resistencia y potencia con su unidad</label></li>
+        <li><label><input type="checkbox" class="check-item"> Aplico la ley de Ohm y la fórmula de potencia sin calculadora complicada</label></li>
+        <li><label><input type="checkbox" class="check-item"> Diferencio circuito serie, paralelo y mixto por su corriente y su tensión</label></li>
+        <li><label><input type="checkbox" class="check-item"> Explico la diferencia entre circuito abierto y cortocircuito</label></li>
+      </ul>
+    </div>
+
+    <div class="box-critico">
+      <div class="box-label">⚠ TRAMPA DE EXAMEN</div>
+      <p>El error más repetido es <strong>medir intensidad con el polímetro en paralelo</strong>. El amperímetro es prácticamente un cortocircuito: si lo pones entre +12 V y masa, cierras un camino de resistencia casi nula, salta el fusible del polímetro o se daña la fuente. La intensidad se mide <strong>siempre en serie</strong>, abriendo el circuito. La segunda trampa es de concepto: un componente con <code>OL</code> en resistencia está en <strong>circuito abierto</strong> (no conduce), no en cortocircuito; el cortocircuito daría 0 Ω y haría saltar la protección de la fuente. Antes de responder, pregúntate: ¿hay camino cerrado? ¿Por dónde circula la corriente?</p>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceJ">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num">j</div>
+      <div class="bloque-info">
+        <h3>Aparatos de medida: qué es cada uno y para qué sirve</h3>
+        <p>CE-j · complementario · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>Un <strong>aparato de medida</strong> es un instrumento que traduce una magnitud física (tensión, corriente, resistencia, tiempo, temperatura…) a un valor que podemos leer. En este RA ya has usado varios, pero conviene tenerlos todos juntos en la cabeza: cada avería se ataca con el aparato adecuado, y elegir mal es perder el tiempo o, peor, estropear el equipo.</p>
+
+    <div class="clave">No existe «el aparato de medida»: existe el aparato adecuado para cada magnitud y cada punto de medida.</div>
+
+    <p>Antes de la tabla, tres palabras que se confunden siempre y que te van a preguntar: la <strong>exactitud</strong> es lo cerca que está la lectura del valor real; la <strong>precisión</strong> es lo repetible que es esa lectura (que tres medidas seguidas den casi lo mismo); y el <strong>error de medida</strong> es la diferencia entre lo leído y lo real. Un aparato se mantiene fiable mediante la <strong>calibración</strong>: comparar su lectura con un <strong>patrón</strong> de referencia conocido y ajustarlo si se desvía.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Aparato</th><th>Qué mide</th><th>Cuándo se usa</th><th>¿En el taller?</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Polímetro digital</strong> (multímetro)</td>
+            <td>Tensión (V), corriente (A), resistencia (Ω), continuidad, caída de diodos</td>
+            <td>Comprobaciones puntuales: raíles de la F.A., pila CMOS, continuidad de un fusible, PS_ON</td>
+            <td>Sí</td>
+          </tr>
+          <tr>
+            <td><strong>Osciloscopio</strong></td>
+            <td>Representa la tensión en una pantalla a lo largo del tiempo: la <em>forma de onda</em></td>
+            <td>Señales que cambian rápido: <strong>rizado</strong> de una fuente (variación alterna no deseada superpuesta a la tensión continua), PWM de un ventilador, señal de un SAI</td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td><strong>Pinza amperimétrica</strong></td>
+            <td>Corriente midiendo el campo magnético del conductor, sin abrir el circuito</td>
+            <td>Consumo de un equipo completo o de un cable sin cortar nada</td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td><strong>Vatímetro</strong> o medidor de enchufe</td>
+            <td>Potencia (W) y energía consumida (kWh) de un aparato enchufado a 230 V</td>
+            <td>Saber cuánto consume un equipo encendido o en reposo</td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td><strong>Zumbador de placa</strong></td>
+            <td>Los pitidos del POST (como vimos en CE-a), no una magnitud eléctrica</td>
+            <td>Diagnóstico de arranque sin imagen en pantalla</td>
+            <td>Sí</td>
+          </tr>
+          <tr>
+            <td><strong>Software de diagnóstico</strong></td>
+            <td>Tensiones, temperaturas, RPM, sectores defectuosos, errores de memoria</td>
+            <td>HWiNFO64, CPU-Z, CrystalDiskInfo o Core Temp con el sistema operativo arrancado; MemTest86 arrancando desde USB, fuera del sistema operativo</td>
+            <td>Sí (aula; MemTest86 requiere USB de arranque)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>En la fila del software, HWiNFO64 y Core Temp son programas de monitorización que leen sensores de la placa (tensiones, temperaturas y RPM); se ejecutan con el sistema operativo arrancado y se consultan en pantalla. CPU-Z identifica componentes y CrystalDiskInfo lee el estado SMART del disco. MemTest86 no se ejecuta dentro del sistema operativo: se graba en un USB de arranque, se inicia el equipo desde ese USB y se prueba la RAM fuera del sistema; si aparecen errores, la memoria o su configuración no son fiables.</p>
+
+    <p>Fíjate en la diferencia de fondo: los cuatro primeros son <strong>instrumentos de medida eléctrica</strong> y se conectan al circuito (con las precauciones de los CE-a a CE-i: escala, categoría de seguridad CAT, punta negra a masa). El zumbador y el software <strong>no miden con puntas</strong>: informan de un estado. Por eso el software nunca sustituye a una medida real (una lectura de +12 V en HWiNFO64 puede ser errónea si el sensor o la BIOS están mal), y el polímetro nunca dice <em>por qué</em> falla algo: solo da el dato que tú interpretas.</p>
+
+    <div class="ejemplo-resuelto">
+      <h5>Ejemplo resuelto</h5>
+      <p><strong>Caso:</strong> un equipo se apaga solo cuando se le exige. Quieres comprobar dos cosas: si el raíl de +12 V de la fuente está dentro de tolerancia y si la CPU se calienta en exceso bajo carga. ¿Cómo eliges aparato, magnitud y precaución?</p>
+      <p><strong>Paso 1. +12 V:</strong> elegimos el polímetro digital porque es un instrumento eléctrico disponible en el taller y la magnitud es tensión continua. Se pone en <code>V=</code>, punta negra a masa y punta roja al cable amarillo de un conector de alimentación. Precaución: medir en paralelo, con el equipo encendido, sin tocar dos raíles a la vez y comprobar que el valor queda dentro de ±5 % (11,4 V–12,6 V).</p>
+      <p><strong>Paso 2. Temperatura de CPU:</strong> elegimos software de monitorización del aula, como HWiNFO64 o Core Temp, porque la magnitud es temperatura y el polímetro no la mide. Se arranca el sistema operativo, se abre el programa y se lee el sensor de CPU; para provocar carga de CPU se usa Prime95, OCCT o Cinebench, no un test de GPU. Precaución: no dejar la prueba sin vigilancia, vigilar que la temperatura no suba de forma descontrolada y desconfiar de lecturas imposibles (‑1 °C, 0 °C) o que no cambian.</p>
+      <p><strong>Paso 3. Interpretación:</strong> si +12 V está fuera de tolerancia, la fuente es sospechosa; si la CPU supera el límite con carga y el disipador está bien montado, hay que revisar refrigeración o configuración. Cada duda se ataca con el aparato adecuado: polímetro para tensión, software para temperatura.</p>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-j · BÁSICO</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>Indica qué aparato o herramienta usarías, qué magnitud leerías y una precaución básica en cada caso:</p>
+      <ol>
+        <li>Comprobar si un fusible de la fuente está abierto.</li>
+        <li>Leer la temperatura de la CPU con el equipo funcionando.</li>
+        <li>Verificar la continuidad de un cable de alimentación.</li>
+        <li>Conocer la potencia aproximada que consume un monitor enchufado a 230 V.</li>
+      </ol>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>1. Fusible:</strong> polímetro en modo continuidad u ohmios. Magnitud: continuidad/resistencia. Precaución: equipo apagado y desenchufado; si el fusible está dentro de la fuente, descargar antes y no medir con tensión.</p>
+        <p><strong>2. Temperatura de CPU:</strong> software de monitorización, por ejemplo HWiNFO64 o Core Temp. Magnitud: temperatura en °C. Precaución: ejecutarlo con el sistema arrancado, no fiarse de una lectura absurda y contrastar si el sensor parece averiado.</p>
+        <p><strong>3. Continuidad de un cable:</strong> polímetro en continuidad u ohmios. Magnitud: continuidad/resistencia. Precaución: medir con el cable desconectado y sin tensión.</p>
+        <p><strong>4. Potencia del monitor:</strong> vatímetro o medidor de enchufe. Magnitud: potencia en W (y energía en kWh si se deja un tiempo). Precaución: usarlo en 230 V con cables y enchufes en buen estado; no abrir el aparato ni usar el polímetro en paralelo para medir corriente.</p>
+      </details>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-j · Caso práctico</h5>
+      <span class="nivel-tag nivel-medio">MEDIO</span>
+      <p>En <strong>MicroStock Solutions SL</strong> llega al taller un equipo de sobremesa con la queja «se apaga solo». Tu compañera te pide cuatro comprobaciones. Indica para cada una <strong>qué aparato o herramienta usarías</strong> (de los disponibles en el taller o en el aula de informática), <strong>qué magnitud o dato</strong> leerías y <strong>una precaución</strong>:</p>
+      <ol>
+        <li>Saber si el raíl de +12 V de la fuente ATX está dentro de tolerancia.</li>
+        <li>Saber cuánta corriente consume el disco SATA sin cortar el cable, indicando la alternativa si no hay pinza amperimétrica en el taller.</li>
+        <li>Saber si el ventilador del disipador gira y cambia de velocidad al modificar el perfil de la BIOS.</li>
+        <li>Saber si la CPU supera los 90 °C al someterla a carga con Prime95, OCCT o Cinebench.</li>
+      </ol>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="resumen">
+  <div class="bloque-header" style="border-left-color:#1a6b3a;">
+    <div class="bloque-titulo">
+      <div class="bloque-num" style="background:#1a6b3a;">★</div>
+      <div class="bloque-info">
+        <h3>Puntos clave — RA3</h3>
+        <p>Repasa esto antes del examen</p>
+      </div>
+    </div>
+  </div>
+  <div class="bloque-body">
+    <ol>
+      <li style="margin-bottom:8px;"><strong>CE-a.</strong> Identifica el tipo de señal (tensión, corriente, resistencia, CC/CA) y elige el aparato: polímetro digital en V= para continua, V~ para alterna, Ω para resistencia y continuidad para comprobar fusibles y PS_ON; usa HWiNFO64, CrystalDiskInfo o CPU-Z para medida lógica y aviso POST.</li>
+      <li style="margin-bottom:8px;"><strong>CE-b.</strong> Selecciona magnitud, rango y conexión: selector en V=, V~, A=, A~, Ω o continuidad; coloca puntas en paralelo para tensión y en serie para corriente; usa borna 10A o mA según intensidad; respeta autorrango/OL, pinout ATX y PS_ON pin 16.</li>
+      <li style="margin-bottom:8px;"><strong>CE-c.</strong> Relaciona la medida con valores típicos: compara con valor nominal y tolerancia ±5% de +3,3 V, +5 V, +12 V, −12 V y +5 VSB; consulta datasheet, BIOS/CMOS, pila CR2032 y comportamiento de PS_ON en reposo.</li>
+      <li style="margin-bottom:8px;"><strong>CE-d.</strong> Identifica los bloques de la fuente ATX: entrada AC 230 V, fusible, filtro EMI, rectificador, PFC, conmutador MOSFET/PWM, transformador de alta frecuencia, rectificación/filtro secundario, regulación, protecciones (OVP, OCP, OTP, SCP), standby y salidas ATX.</li>
+      <li style="margin-bottom:8px;"><strong>CE-e.</strong> Enumera las tensiones de una FA típica: +3,3 V, +5 V, +12 V, −12 V y +5 VSB, con GND/masa; indica color tradicional y tolerancia ±5% (o ±10% donde corresponda), y su uso en DDR, chipset, M.2, PCIe, SATA, CPU/VRM, GPU, HDD y ventiladores.</li>
+      <li style="margin-bottom:8px;"><strong>CE-f.</strong> Mide tensiones en una FA típica: con polímetro en V=/DCV y punta negra a masa, puentea PS_ON (pin verde) a GND para arrancar, mide raíles +3,3 V, +5 V, +12 V, −12 V y +5 VSB en vacío y en carga; comprueba desviación ±5% y diagnostica raíl degradado.</li>
+      <li style="margin-bottom:8px;"><strong>CE-g.</strong> Identifica los bloques del SAI: entrada, filtro EMI, protecciones (fusible, varistor), rectificador-cargador, bus de CC, baterías VRLA, inversor, conmutador/bypass, AVR, controlador y panel LEDs/LCD; distingue offline, line-interactive y online de doble conversión.</li>
+      <li style="margin-bottom:8px;"><strong>CE-h.</strong> Mide señales en el SAI: usa osciloscopio para valor eficaz (RMS), V~, Hz y forma de onda; con polímetro V= mide tensión de flotación y bloques de 12 V en serie (bus 24/48 V); realiza prueba funcional de corte y restablecimiento y prueba de conmutación.</li>
+      <li style="margin-bottom:8px;"><strong>CE-i.</strong> Reconoce circuitos eléctricos: diferencia C.A. (senoidal, V~) y C.C. (DC, V=); aplica ley de Ohm (V=I×R) y P=V×I; resuelve circuitos en serie, paralelo y mixto, calculando resistencia equivalente, divisor de tensión y comportamiento óhmico.</li>
+      <li style="margin-bottom:8px;"><strong>CE-j.</strong> Conoce los aparatos de medida: polímetro digital, osciloscopio, pinza amperimétrica, vatímetro y medidor de enchufe; entiende exactitud, precisión, error de medida, calibración y patrón; usa software de diagnóstico como HWiNFO64, CPU-Z, CrystalDiskInfo, Core Temp, MemTest86 (SMART) y pruebas con Prime95, OCCT y Cinebench.</li>
+    </ol>
+  </div>
+</div>
+</div>
+
+<footer>Montaje y mantenimiento de equipos · Grado Medio · RA3: Mide parámetros eléctricos, identificando el tipo de señal y relacionándola con sus unidades características.</footer>
+
+<button class="btn-top" id="btnTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="progreso-badge" id="progresoBadge">Progreso: 0%</div>
+
+<script>
+
+  window.addEventListener('scroll', function() {
+    document.getElementById('btnTop').classList.toggle('visible', window.scrollY > 300);
+  });
+  function updateProgress() {
+    var all = document.querySelectorAll('.check-item');
+    var checked = document.querySelectorAll('.check-item:checked');
+    var pct = all.length > 0 ? Math.round((checked.length / all.length) * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progresoBadge').textContent = 'Progreso: ' + pct + '%';
+    try { localStorage.setItem('progreso_ra3_montaje_y_mantenimie', pct); } catch(e) {}
+  }
+  document.querySelectorAll('.check-item').forEach(function(cb, i) {
+    try { if (localStorage.getItem('cb_ra3_montaje_y_mantenimie_' + i) === 'true') cb.checked = true; } catch(e) {}
+    cb.addEventListener('change', function() {
+      try { localStorage.setItem('cb_ra3_montaje_y_mantenimie_' + i, cb.checked); } catch(e) {}
+      updateProgress();
+    });
+  });
+  document.querySelectorAll('.respuesta[contenteditable="true"]').forEach(function(div, i) {
+    try { var s = localStorage.getItem('resp_ra3_montaje_y_mantenimie_' + i); if (s) div.innerHTML = s; } catch(e) {}
+    div.addEventListener('input', function() {
+      try { localStorage.setItem('resp_ra3_montaje_y_mantenimie_' + i, div.innerHTML); } catch(e) {}
+    });
+  });
+  updateProgress();
+
+</script>
+</body>
+</html>

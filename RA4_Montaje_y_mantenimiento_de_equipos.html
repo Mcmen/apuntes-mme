@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RA4 — Montaje y mantenimiento de equipos: Mantiene equipos informáticos interpretando las recomendaciones de los fabricantes y relacionando las disfunciones con sus causas.</title>
+  <style>
+    html { scroll-behavior: smooth; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #eef1f5; color: #1a1a2e; line-height: 1.7; font-size: 15px; }
+    :root {
+      --azul: #1e3a5f; --azul-medio: #2d6a9f; --azul-claro: #dceeff;
+      --win: #2d6a9f; --win-light: #e6f0f9;
+      --linux: #b8542a; --linux-light: #fbeee6;
+      --critico: #b03a2e; --critico-light: #fdf0ee;
+      --importante: #8a6400; --importante-light: #fff9e6;
+      --complementario: #2d6a9f; --complementario-light: #e8f2fb;
+      --exito: #1a6b3a; --exito-light: #e2f0e6;
+      --gris: #667085; --borde: #dde3ec;
+      --sombra: 0 2px 8px rgba(30,58,95,0.07);
+    }
+
+    /* ── Cabecera ───────────────────────────────────────────── */
+    .nav-sor { position: sticky; top: 0; z-index: 100; background: var(--azul); padding: 0 24px; height: 52px; display: flex; align-items: center; }
+    .nav-brand { color: white; font-weight: 600; font-size: 15px; letter-spacing: 0.3px; max-width: 1080px; width: 100%; margin: 0 auto; }
+    .nav-brand span { color: #8fc7a0; font-weight: 700; }
+    .hero { background: linear-gradient(135deg, var(--azul) 0%, var(--azul-medio) 100%); color: white; padding: 40px 24px 34px; text-align: left; }
+    .hero > * { max-width: 1080px; margin-left: auto; margin-right: auto; }
+    .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 4px 14px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px; }
+    .hero h1 { font-size: 25px; font-weight: 700; line-height: 1.35; margin-bottom: 8px; }
+    .hero-sub { font-size: 14px; opacity: 0.8; font-style: italic; margin-bottom: 20px; }
+    .hero-meta { display: flex; gap: 8px; flex-wrap: wrap; font-size: 12px; }
+    .hero-meta span { background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); padding: 4px 13px; border-radius: 20px; font-weight: 600; }
+
+    /* ── Columna medida ─────────────────────────────────────── */
+    .container { max-width: 1080px; margin: 0 auto; padding: 32px 24px 64px; }
+
+    /* ── Ficha del RA ───────────────────────────────────────── */
+    .ra-info { background: white; border-radius: 10px; padding: 22px 26px; margin-bottom: 24px; box-shadow: var(--sombra); }
+    .ra-info h2 { font-size: 18px; color: var(--azul); border-left: 4px solid var(--azul-medio); padding-left: 14px; margin-bottom: 18px; line-height: 1.4; }
+    .peso-grid { display: flex; flex-wrap: wrap; gap: 12px; margin: 14px 0; }
+    .peso-card { flex: 1; min-width: 120px; background: #f7f9fc; border: 1px solid var(--borde); border-radius: 8px; padding: 12px 14px; text-align: center; }
+    .peso-card .numero { font-size: 24px; font-weight: 700; color: var(--azul-medio); line-height: 1.2; }
+    .peso-card .label { font-size: 11px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.6px; }
+    .ce-criticos { background: var(--critico-light); border-left: 4px solid var(--critico); border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 16px 0; font-size: 13px; }
+    .ce-criticos strong { color: var(--critico); }
+    .progress-bar { background: var(--borde); height: 8px; border-radius: 8px; overflow: hidden; margin: 14px 0 2px; }
+    .progress-fill { background: var(--exito); width: 0%; height: 100%; transition: width 0.3s; }
+
+    /* ── Índice ─────────────────────────────────────────────── */
+    .ce-index { background: white; border-radius: 10px; padding: 18px 26px; margin-bottom: 32px; box-shadow: var(--sombra); }
+    .ce-index-titulo { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gris); margin-bottom: 12px; }
+    .ce-index-links { display: flex; flex-wrap: wrap; gap: 6px; }
+    .ce-idx-item { display: flex; align-items: baseline; gap: 8px; padding: 5px 11px; border-radius: 6px; text-decoration: none; font-size: 12.5px; color: #2c3444; border: 1px solid var(--borde); background: #f7f9fc; transition: 0.15s; }
+    .ce-idx-item:hover { background: var(--azul-claro); border-color: var(--azul-medio); }
+    .ce-idx-critico { border-left: 3px solid var(--critico); }
+    .ce-idx-importante { border-left: 3px solid #d4a017; }
+    .ce-idx-complementario { border-left: 3px solid var(--azul-medio); }
+    .ce-idx-letra { font-weight: 800; font-size: 13px; color: var(--azul); }
+    .ce-idx-desc { color: #4a5568; }
+
+    /* ── Bloques: cabecera y cuerpo como dos tarjetas ───────── */
+    .bloque { background: transparent; border: none; box-shadow: none; margin-bottom: 40px; }
+    .bloque-header { background: white; border-left: 5px solid var(--azul-medio); border-radius: 0 8px 8px 0; padding: 15px 20px; margin-bottom: 16px; box-shadow: var(--sombra); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .bloque-titulo { display: flex; align-items: center; gap: 13px; }
+    .bloque-num { background: var(--azul-medio); color: white; font-weight: 700; border-radius: 6px; padding: 4px 11px; font-size: 14px; flex-shrink: 0; align-self: flex-start; margin-top: 3px; }
+    .bloque-num.critico { background: var(--critico); }
+    .bloque-info h3 { font-size: 18px; color: var(--azul); margin-bottom: 3px; line-height: 1.35; }
+    .bloque-info p { font-size: 12px; color: var(--gris); }
+    .bloque-sesiones { background: #f0f3f8; color: var(--gris); border: 1px solid var(--borde); padding: 4px 12px; border-radius: 20px; font-size: 11.5px; font-weight: 600; }
+    .bloque-body { background: white; border-radius: 10px; padding: 24px 28px; box-shadow: var(--sombra); }
+
+    /* ── Escala tipográfica dentro del cuerpo ───────────────── */
+    .bloque-body h3 { font-size: 16px; color: var(--azul); margin: 26px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--borde); }
+    .bloque-body h4 { font-size: 15px; color: var(--azul); margin: 22px 0 10px; }
+    .bloque-body > h3:first-child, .bloque-body > h4:first-child { margin-top: 0; }
+    .bloque-body p { margin-bottom: 11px; }
+    .bloque-body p:last-child { margin-bottom: 0; }
+    .win-col h4, .linux-col h4, .ejercicio h5, .ejemplo-resuelto h5 { margin-top: 0; }
+
+    /* ── Listas ─────────────────────────────────────────────── */
+    .bloque-body ul, .bloque-body ol, .box-critico ul, .box-critico ol, .box-importante ul, .box-importante ol, .box-complementario ul, .box-complementario ol, .win-col ul, .win-col ol, .linux-col ul, .linux-col ol { padding-left: 20px; margin: 10px 0; }
+    .bloque-body li { margin-bottom: 6px; }
+    .bloque-body li::marker { color: var(--azul-medio); }
+
+    /* ── Dos columnas Windows / Linux ───────────────────────── */
+    .dual-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+    .win-col { background: var(--win-light); border: 1px solid #cfe0ee; border-top: 3px solid var(--win); border-radius: 8px; padding: 16px 18px; min-width: 0; }
+    .win-col h4 { color: var(--win); font-size: 14px; margin-bottom: 10px; }
+    .linux-col { background: var(--linux-light); border: 1px solid #f0dcd0; border-top: 3px solid var(--linux); border-radius: 8px; padding: 16px 18px; min-width: 0; }
+    .linux-col h4 { color: var(--linux); font-size: 14px; margin-bottom: 10px; }
+
+    /* ── Cajas semánticas ───────────────────────────────────── */
+    .box-critico, .box-importante, .box-complementario { border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 18px 0; }
+    .box-critico { background: var(--critico-light); border-left: 4px solid var(--critico); }
+    .box-importante { background: var(--importante-light); border-left: 4px solid #d4a017; }
+    .box-complementario { background: var(--complementario-light); border-left: 4px solid var(--complementario); }
+    .box-label { font-weight: 700; font-size: 12px; text-transform: none; letter-spacing: 0.3px; margin-bottom: 5px; display: block; }
+    .box-critico .box-label { color: var(--critico); }
+    .box-importante .box-label { color: var(--importante); }
+    .box-complementario .box-label { color: var(--complementario); }
+
+    /* ── Código y tablas ────────────────────────────────────── */
+    pre { background: #1e293b; color: #e2e8f0; padding: 13px 16px; border-radius: 8px; overflow-x: auto; font-size: 13px; font-family: 'Consolas', 'Courier New', monospace; margin: 14px 0; line-height: 1.6; }
+    pre code { background: none; color: inherit; padding: 0; }
+    code { background: #eef2f7; padding: 1px 6px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 13px; color: #1e3a5f; }
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 18px 0; border-radius: 8px; border: 1px solid var(--borde); }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    thead tr { background: var(--azul); color: white; }
+    th { padding: 10px 14px; text-align: left; font-weight: 600; }
+    tbody tr:nth-child(even) { background: #f7f9fc; }
+    td { padding: 9px 14px; border-bottom: 1px solid var(--borde); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+
+    /* ── Ejercicios ─────────────────────────────────────────── */
+    .ejercicio { background: #fdfaf2; border: 1px solid #eadfc2; border-left: 4px solid #d4a017; border-radius: 0 8px 8px 0; padding: 16px 18px; margin: 20px 0; }
+    .ejercicio h5 { color: #7a5c00; margin-bottom: 4px; font-size: 14px; }
+    .nivel-tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-bottom: 8px; letter-spacing: 0.5px; }
+    .nivel-basico { background: var(--exito-light); color: var(--exito); }
+    .nivel-medio { background: #fdf3d6; color: #7a5c00; }
+    .nivel-avanzado { background: var(--critico-light); color: var(--critico); }
+    .respuesta { background: white; border: 1px solid var(--borde); border-radius: 6px; padding: 12px; min-height: 76px; margin-top: 12px; outline: none; }
+    .respuesta:focus { border-color: var(--azul-medio); box-shadow: 0 0 0 3px rgba(45,106,159,0.1); }
+    .respuesta:empty::before { content: attr(data-placeholder); color: #a0aec0; pointer-events: none; display: block; }
+    .solucion { margin-top: 12px; background: var(--exito-light); border-radius: 6px; padding: 2px 14px; }
+    .solucion summary { cursor: pointer; font-weight: 600; color: var(--exito); padding: 9px 0; list-style: revert; font-size: 13.5px; }
+    .solucion[open] summary { margin-bottom: 6px; }
+
+    /* ── Ejemplo resuelto, diagrama, checklist ──────────────── */
+    .ejemplo-resuelto { background: var(--exito-light); border-left: 4px solid var(--exito); border-radius: 0 8px 8px 0; padding: 16px 18px; margin: 20px 0; }
+    .ejemplo-resuelto h5 { color: var(--exito); margin-bottom: 8px; font-size: 14px; }
+    .diagrama { margin: 22px 0; background: #f7f9fc; border: 1px solid var(--borde); border-radius: 10px; padding: 20px 14px; text-align: center; overflow-x: auto; }
+    .diagrama svg { max-width: 100%; height: auto; display: block; margin: 0 auto; font-family: 'Segoe UI', system-ui, sans-serif; }
+    .diagrama figcaption { font-size: 12.5px; color: var(--gris); margin-top: 14px; font-style: italic; }
+    .checklist { background: #f7f9fc; border: 1px solid var(--borde); border-radius: 10px; padding: 18px 20px; margin-top: 22px; }
+    .checklist strong { color: var(--azul); font-size: 14px; }
+    .checklist ul { list-style: none; padding: 0; margin-top: 10px; }
+    .checklist li { padding: 5px 0; display: flex; align-items: flex-start; gap: 10px; cursor: pointer; border-bottom: 1px solid #eef1f5; }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li input[type="checkbox"] { width: 15px; height: 15px; flex-shrink: 0; cursor: pointer; margin-top: 5px; accent-color: var(--exito); }
+    .checklist li label { cursor: pointer; flex: 1; font-size: 14px; }
+
+    /* ── Varios ─────────────────────────────────────────────── */
+    hr.sep { border: none; border-top: 2px dashed var(--borde); margin: 24px 0; }
+    footer { text-align: center; padding: 28px 24px; color: var(--gris); font-size: 12px; border-top: 1px solid var(--borde); margin-top: 44px; background: white; }
+    .btn-top { position: fixed; bottom: 20px; right: 20px; background: var(--azul); color: white; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-size: 19px; opacity: 0; transition: 0.3s; z-index: 90; }
+    .btn-top.visible { opacity: 1; }
+    .progreso-badge { position: fixed; bottom: 20px; left: 20px; background: var(--azul); color: white; padding: 7px 15px; border-radius: 20px; font-size: 12.5px; font-weight: 600; z-index: 90; }
+
+    @media (max-width: 768px) {
+      body { font-size: 14px; }
+      .container { padding: 18px 14px 44px; }
+      .dual-columns { grid-template-columns: 1fr; gap: 12px; }
+      .hero { padding: 26px 18px 22px; }
+      .hero h1 { font-size: 19px; }
+      .bloque-body { padding: 16px 17px; }
+      .bloque-header { padding: 13px 15px; }
+      pre { font-size: 11.5px; }
+      th, td { padding: 7px 9px; font-size: 12px; }
+    }
+
+    /* ── Fotos reales ───────────────────────────────────────── */
+    .foto { margin: 22px 0; }
+    .foto-sm img { max-width: 620px; margin-left: auto; margin-right: auto; }
+    .foto img { width: 100%; border-radius: 10px; border: 1px solid var(--borde); display: block; }
+    .foto figcaption { font-size: 12.5px; color: var(--gris); margin-top: 10px; font-style: italic; text-align: center; }
+    .foto-pendiente { border: 2px dashed #c3cede; border-radius: 10px; background: #f7f9fc; padding: 26px 20px; text-align: center; color: var(--gris); }
+    .foto-pendiente .icono { font-size: 30px; display: block; margin-bottom: 8px; opacity: 0.6; }
+    .foto-pendiente .archivo { display: inline-block; font-family: 'Consolas', monospace; font-size: 12.5px; background: white; border: 1px solid var(--borde); border-radius: 4px; padding: 2px 8px; color: var(--azul); margin-top: 8px; }
+    .foto-pendiente .que { font-size: 13.5px; color: #4a5568; }
+
+    /* ── Rejilla de tarjetas de contenido ───────────────────── */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: 14px; margin: 20px 0; }
+    .card { background: #f7f9fc; border: 1px solid var(--borde); border-top: 3px solid var(--azul-medio); border-radius: 8px; padding: 15px 17px; }
+    .card h4 { font-size: 14px; color: var(--azul); margin: 0 0 9px; display: flex; align-items: center; gap: 8px; }
+    .card h4 .ico { font-size: 18px; }
+    .card ul { margin: 0; padding-left: 18px; font-size: 13.5px; }
+    .card li { margin-bottom: 5px; }
+
+    /* ── Etiquetas de peligrosidad ──────────────────────────── */
+    .pel { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 1px 8px; border-radius: 4px; letter-spacing: 0.4px; white-space: nowrap; }
+    .pel-baja    { background: #e2f0e6; color: #1a6b3a; }
+    .pel-media   { background: #fdf3d6; color: #7a5c00; }
+    .pel-alta    { background: #fbe6dd; color: #a0522d; }
+    .pel-critica { background: #f7dcd8; color: #8c2f22; }
+
+    /* ── Frase destacada, para romper el bloque de texto ────── */
+    .clave { font-size: 16px; line-height: 1.6; color: var(--azul); border-left: 4px solid #d4a017; padding: 4px 0 4px 16px; margin: 22px 0; font-weight: 600; }
+
+    /* ── Vídeo de apoyo: enlace, no incrustado ──────────────── */
+    .videos { display: flex; flex-direction: column; gap: 8px; margin: 18px 0; }
+    .video { display: flex; align-items: flex-start; gap: 12px; background: #fff; border: 1px solid var(--borde); border-left: 4px solid #a0302a; border-radius: 8px; padding: 12px 14px; text-decoration: none; color: inherit; box-shadow: var(--sombra); }
+    .video:hover { border-color: #a0302a; }
+    .video .play { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; background: #a0302a; color: #fff; font-size: 11px; line-height: 26px; text-align: center; }
+    .video .txt { min-width: 0; }
+    .video .titulo { display: block; font-weight: 600; font-size: 14.5px; color: var(--azul); }
+    .video .desc { display: block; font-size: 13px; color: var(--gris); margin-top: 2px; }
+  </style>
+</head>
+<body>
+
+<nav class="nav-sor">
+  <div class="nav-brand">Montaje y mantenimiento de equipos &nbsp;<span>RA4</span></div>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">Grado Medio Sistemas Microinformáticos y Redes</div>
+  <h1>RA4: Mantiene equipos informáticos interpretando las recomendaciones de los fabricantes y relacionando las disfunciones con sus causas.</h1>
+  <p class="hero-sub">Contenido técnico de nivel Grado Medio</p>
+  <div class="hero-meta">
+    <span>Peso: 12%</span>
+    <span>7 sesiones × 55 min</span>
+    <span>6 criterios de evaluación</span>
+    <span>3 CEs críticos</span>
+  </div>
+</div>
+<div class="container">
+<div class="ra-info">
+  <h2>RA4: Mantiene equipos informáticos interpretando las recomendaciones de los fabricantes y relacionando las disfunciones con sus causas.</h2>
+  <div class="peso-grid">
+    <div class="peso-card"><div class="numero">12%</div><div class="label">Peso evaluación</div></div>
+    <div class="peso-card"><div class="numero">7</div><div class="label">Sesiones</div></div>
+    <div class="peso-card"><div class="numero">6</div><div class="label">Criterios</div></div>
+    <div class="peso-card"><div class="numero">3</div><div class="label">Críticos</div></div>
+  </div>
+  <div class="ce-criticos"><strong>CEs críticos:</strong> CE-b, CE-c, CE-d</div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+</div>
+<div class="ce-index">
+  <div class="ce-index-titulo">Índice RA4 — 6 criterios</div>
+  <div class="ce-index-links">
+    <a href="#ceB" class="ce-idx-item ce-idx-critico"><span class="ce-idx-letra">b</span><span class="ce-idx-desc">Se han identificado y solventado las averías producidas por sobrecalentamiento d…</span></a>
+    <a href="#ceC" class="ce-idx-item ce-idx-critico"><span class="ce-idx-letra">c</span><span class="ce-idx-desc">Se han identificado y solventado averías típicas de un equipo microinformático (…</span></a>
+    <a href="#ceD" class="ce-idx-item ce-idx-critico"><span class="ce-idx-letra">d</span><span class="ce-idx-desc">Se han sustituido componentes deteriorados.</span></a>
+    <a href="#ceE" class="ce-idx-item ce-idx-importante"><span class="ce-idx-letra">e</span><span class="ce-idx-desc">Se ha verificado la compatibilidad de los componentes sustituidos.</span></a>
+    <a href="#ceF" class="ce-idx-item ce-idx-importante"><span class="ce-idx-letra">f</span><span class="ce-idx-desc">Se han realizado actualizaciones y ampliaciones de componentes.</span></a>
+    <a href="#ceG" class="ce-idx-item ce-idx-importante"><span class="ce-idx-letra">g</span><span class="ce-idx-desc">Se han elaborado informes de avería (reparación o ampliación).</span></a>
+  </div>
+</div>
+<div class="bloque" id="ceB">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num critico">b</div>
+      <div class="bloque-info">
+        <h3>Averías por sobrecalentamiento del microprocesador: diagnóstico y reparación</h3>
+        <p>CE-b · CRÍTICO · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>El <strong>microprocesador</strong> (la CPU, el chip que ejecuta las instrucciones) es el componente que más calor genera del equipo: al pasar corriente por sus millones de transistores, una parte de la energía eléctrica se convierte en calor inevitablemente. Ese calor tiene que salir del chip o el procesador se destruye. En este criterio aprendemos a detectar cuándo la refrigeración ha fallado y a repararlo con los medios del taller.</p>
+
+    <div class="clave">Un ventilador que gira no significa que el procesador esté bien refrigerado: el calor puede quedarse atrapado entre el chip y el disipador.</div>
+
+    <h4>1. Cómo se disipa el calor: la cadena térmica</h4>
+    <p>El calor recorre cuatro etapas antes de salir del equipo. Si se rompe un eslabón, la temperatura sube aunque el ventilador funcione.</p>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 650 160" role="img" aria-label="Cadena de disipación del calor desde el núcleo de la CPU hasta el aire del chasis">
+        <defs>
+          <marker id="flecha-b-ceb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="10" y="40" width="105" height="80" rx="10" fill="#f7e6e4" stroke="#b03a2e" stroke-width="2"/>
+        <text x="62" y="75" text-anchor="middle" font-size="14" fill="#1a1a2e">Núcleo CPU</text>
+        <text x="62" y="95" text-anchor="middle" font-size="12" fill="#667085">genera calor</text>
+
+        <line x1="117" y1="80" x2="138" y2="80" stroke="#667085" stroke-width="2" marker-end="url(#flecha-b-ceb)"/>
+        <rect x="140" y="40" width="105" height="80" rx="10" fill="#fdf4dc" stroke="#d4a017" stroke-width="2"/>
+        <text x="192" y="75" text-anchor="middle" font-size="14" fill="#1a1a2e">Pasta térmica</text>
+        <text x="192" y="95" text-anchor="middle" font-size="12" fill="#667085">rellena el aire</text>
+
+        <line x1="247" y1="80" x2="268" y2="80" stroke="#667085" stroke-width="2" marker-end="url(#flecha-b-ceb)"/>
+        <rect x="270" y="40" width="105" height="80" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="322" y="75" text-anchor="middle" font-size="14" fill="#1a1a2e">Disipador</text>
+        <text x="322" y="95" text-anchor="middle" font-size="12" fill="#667085">absorbe calor</text>
+
+        <line x1="377" y1="80" x2="398" y2="80" stroke="#667085" stroke-width="2" marker-end="url(#flecha-b-ceb)"/>
+        <rect x="400" y="40" width="105" height="80" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="452" y="75" text-anchor="middle" font-size="14" fill="#1a1a2e">Ventilador</text>
+        <text x="452" y="95" text-anchor="middle" font-size="12" fill="#667085">mueve el aire</text>
+
+        <line x1="507" y1="80" x2="528" y2="80" stroke="#667085" stroke-width="2" marker-end="url(#flecha-b-ceb)"/>
+        <rect x="530" y="40" width="105" height="80" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="582" y="75" text-anchor="middle" font-size="14" fill="#1a1a2e">Chasis</text>
+        <text x="582" y="95" text-anchor="middle" font-size="12" fill="#667085">extrae aire</text>
+      </svg>
+      <figcaption>Recorrido del calor desde el chip hasta el exterior. El alumno debe fijarse en la <strong>pasta térmica</strong>: es el eslabón que más falla y el que no se ve a simple vista.</figcaption>
+    </figure>
+
+    <h4>2. Qué significa cada temperatura</h4>
+    <p>El procesador tiene un límite llamado <strong>Tjmax</strong> (temperatura máxima de la unión, fijada por el fabricante): unos 100 °C en la mayoría de Intel y unos 95 °C en AMD. Al acercarse, el chip activa el <strong>throttling térmico</strong>: baja su frecuencia para calentarse menos y <em>parece</em> que el equipo va lento. Si aun así sube, se produce el <strong>apagado de protección</strong>: el equipo se apaga de golpe sin pantalla azul ni error.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Rango de temperatura</th><th>Estado</th><th>Qué hacer</th></tr></thead>
+        <tbody>
+          <tr><td>30 – 50 °C en reposo</td><td>Normal</td><td>Nada, es correcto</td></tr>
+          <tr><td>60 – 85 °C a plena carga</td><td>Normal en equipos de sobremesa</td><td>Nada, es el rango de trabajo</td></tr>
+          <tr><td>85 – 95 °C sostenidos</td><td>Sospechoso: posible polvo o pasta seca</td><td>Limpiar y revisar pasta térmica</td></tr>
+          <tr><td>Cerca de Tjmax o apagones</td><td>Avería confirmada</td><td>Parar el equipo y reparar refrigeración</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>3. Causas típicas y su solución</h4>
+    <div class="cards">
+      <div class="card">
+        <h4><span class="ico">🧴</span> Pasta térmica seca o mal aplicada</h4>
+        <ul><li>Se endurece con los años y deja de conducir</li><li>También pasa con exceso de pasta</li><li>Solución: limpiar y aplicar una capa fina</li></ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">🌀</span> Ventilador o aletas obstruidos</h4>
+        <ul><li>Polvo y pelusa frenan las aspas</li><li>El ventilador gira pero no mueve aire</li><li>Solución: aire comprimido y pincel</li></ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">🔩</span> Disipador mal anclado</h4>
+        <ul><li>Tornillos flojos o grapas mal puestas</li><li>No hay presión sobre el chip</li><li>Solución: revisar anclaje y apriete en cruz</li></ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">💨</span> Flujo de aire del chasis</h4>
+        <ul><li>Ventiladores de caja parados o al revés</li><li>El aire caliente recircula</li><li>Solución: comprobar entrada y salida</li></ul>
+      </div>
+    </div>
+
+    <h4>4. Medir antes de tocar: monitorización</h4>
+    <p>En el aula usamos <strong>HWiNFO64</strong> (portable, muestra todos los sensores del equipo) y <strong>Core Temp</strong> (temperatura por núcleo y el Tjmax del modelo concreto). Para reproducir la avería se somete la CPU a carga con programas de prueba de estrés. <strong>OCCT</strong> y <strong>Prime95</strong> son programas de prueba de estrés: generan carga sintética sobre la CPU para que se caliente de forma controlada, no son herramientas de diagnosis pasiva. En OCCT se elige el modo <em>CPU</em>, una duración corta (por ejemplo, 5–10 minutos) y se vigilan las temperaturas; en Prime95 se selecciona la prueba <em>Small FFTs</em> y se deja solo el tiempo necesario. Estas pruebas pueden provocar el apagado de protección si la refrigeración está mal, por lo que deben hacerse en el aula, con el equipo vigilado y sin datos sin guardar.</p>
+
+    <div class="dual-columns">
+      <div class="win-col"><h4>🪟 Windows</h4><p>HWiNFO64 en modo <em>Sensors</em> y Core Temp. CPU-Z sirve además para leer el <strong>TDP</strong> (potencia térmica que debe evacuar el disipador) y el voltaje del núcleo (Vcore).</p></div>
+      <div class="linux-col"><h4>🐧 Linux</h4><p>El comando <code>sensors</code> lee los sensores del chip a través del paquete lm-sensors y muestra cada temperatura etiquetada; <code>psensor</code> es la versión gráfica con histórico.</p></div>
+    </div>
+
+    <p>En Windows, sin instalar nada, podemos ver si la CPU está limitada por temperatura comparando su frecuencia máxima con la real. <strong>PowerShell</strong> es la consola de administración y automatización de Windows; en Windows 11 se abre desde Inicio escribiendo <em>PowerShell</em> y eligiendo <em>Windows PowerShell</em> (o desde <em>Terminal de Windows</em> > PowerShell). Para esta consulta no hace falta ejecutarla como administrador. En esa ventana se pega el comando:</p>
+    <pre><code>Get-CimInstance Win32_Processor | Select-Object Name, MaxClockSpeed, CurrentClockSpeed</code></pre>
+    <ul>
+      <li><code>Get-CimInstance</code>: comando (cmdlet) de PowerShell que consulta información del sistema mediante CIM (Common Information Model), el modelo estándar de gestión de Windows, heredero de WMI (Windows Management Instrumentation, la interfaz de gestión de Windows que expone información del sistema para consultas y automatización).</li>
+      <li><code>Win32_Processor</code>: clase que representa el microprocesador; de ella se leen sus propiedades.</li>
+      <li><code>|</code>: la barra vertical (<em>pipe</em>) envía la salida del primer comando a la entrada del segundo.</li>
+      <li><code>Select-Object</code>: cmdlet que muestra solo las propiedades indicadas, en lugar de la ficha completa del procesador.</li>
+      <li><code>Name, MaxClockSpeed, CurrentClockSpeed</code>: nombre del procesador, frecuencia máxima en MHz y frecuencia actual en MHz. Si la actual está muy por debajo de la máxima con el equipo trabajando, hay throttling térmico.</li>
+    </ul>
+
+    <h4>5. Reparación: limpieza y cambio de pasta térmica</h4>
+    <ol>
+      <li>Apagar, desenchufar la fuente y <strong>descargar la electricidad estática</strong> con la pulsera antiestática. La <strong>ESD</strong> (descarga electrostática) puede destruir el chip; si no dispones de pulsera, descarga la estática tocando una parte metálica de la caja conectada a tierra antes de manipular el interior.</li>
+      <li>Retirar el disipador siguiendo las instrucciones del fabricante (grapas o tornillos en cruz, nunca de uno en uno).</li>
+      <li>Limpiar la pasta vieja del chip y de la base del disipador con <strong>alcohol isopropílico</strong> y un paño que no deje pelusa. Debe quedar el metal brillante.</li>
+      <li>Soplar las aletas del disipador con aire comprimido, sujetando las aspas del ventilador para que no giren en vacío.</li>
+      <li>Aplicar pasta nueva en el centro del chip: una porción del tamaño de un grano de arroz. El exceso aísla en lugar de conducir.</li>
+      <li>Colocar el disipador con presión uniforme y apretar en diagonal. Conectar el ventilador a la placa (conector CPU_FAN).</li>
+      <li>Arrancar y verificar con HWiNFO64: la temperatura en reposo debe bajar respecto a la medición inicial.</li>
+    </ol>
+
+    <div class="box-importante"><div class="box-label">IMPORTANTE</div><p>Anota siempre la temperatura <strong>antes</strong> y <strong>después</strong> de la reparación. Sin medición previa no hay prueba de que la avería existiera, y sin medición posterior no hay prueba de que la has resuelto.</p></div>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p><strong>Caso:</strong> equipo de sobremesa del aula de informática, ya con Windows 11 instalado, placa con i5 de 10.ª generación y chasis ATX (factor de forma estándar de placas y cajas de sobremesa). El usuario (un aula de Ciclos Formativos) informa de que «se apaga solo a los pocos minutos de encenderlo, sobre todo con el navegador abierto».</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li><strong>Reproducir el fallo:</strong> se enciende el equipo y se abre HWiNFO64 en modo <em>Sensors</em>. En reposo marca 62 °C, ya demasiado alto. Con OCCT al 100 % sube a 98 °C en 90 segundos y el equipo se apaga. Diagnóstico: sobrecalentamiento confirmado, no es un problema eléctrico.</li>
+        <li><strong>Comprobar el ventilador:</strong> al abrir el chasis, el ventilador del disipador gira, pero las aletas están tapadas por una capa compacta de polvo. No basta: el aire no pasa.</li>
+        <li><strong>Revisar anclaje y pasta:</strong> el disipador tiene los cuatro tornillos flojos y la pasta está seca y agrietada. La cadena térmica está rota en dos puntos.</li>
+        <li><strong>Reparar:</strong> pulsera antiestática, desmontar disipador, limpiar con alcohol isopropílico, soplar aletas, aplicar pasta nueva del tamaño de un grano de arroz y apretar en cruz.</li>
+        <li><strong>Verificar:</strong> en reposo baja a 35 °C; con OCCT 10 minutos se estabiliza en 74 °C y no se apaga. Se anota en el parte de trabajo: «temperatura en reposo 62 → 35 °C; en carga 98 °C (apagón) → 74 °C estable».</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-b · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>En el aula de informática de <strong>Tecnoparts SL</strong> (equipo PC-07, con Windows 11 ya instalado y las herramientas de monitorización disponibles) llega un equipo que arranca, funciona tres minutos y se apaga sin mostrar ningún error. El ventilador del disipador gira y el chasis está cerrado. Indica qué mediciones harías, con qué herramienta del aula y en qué orden, y qué conclusión sacarías si la temperatura en carga llega a 97 °C. Las pruebas de software se hacen en el aula; los equipos del taller, sin sistema operativo, se reservan para desmontaje y montaje.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>1. Medir antes de abrir:</strong> comprobar que PC-07 está en el aula de informática, con Windows 11 y HWiNFO64, Core Temp y OCCT instalados (no ejecutar estas pruebas en los equipos del taller, que están sin sistema operativo). Arrancar PC-07 y abrir HWiNFO64 en modo <em>Sensors</em>, anotando la temperatura de CPU en reposo. Encender Core Temp para ver el Tjmax del modelo.</p>
+        <p><strong>2. Someter a carga:</strong> ejecutar OCCT en modo CPU durante 5 minutos, anotando la temperatura máxima. Si a los 97 °C se apaga, coincide con el síntoma del usuario: apagado de protección.</p>
+        <p><strong>3. Descartar causas sencillas:</strong> abrir el chasis, comprobar que el ventilador gira sin ruido y que las aletas del disipador no están tapadas por polvo; comprobar que los ventiladores de caja funcionan y que la entrada y salida de aire no están bloqueadas.</p>
+        <p><strong>4. Revisar la pasta y el anclaje:</strong> desmontar el disipador con la pulsera antiestática puesta y observar la pasta. Si está seca, agrietada o ausente, esa es la causa principal. Comprobar también que los tornillos estaban firmes.</p>
+        <p><strong>5. Reparar y verificar:</strong> limpiar con alcohol isopropílico, aplicar pasta nueva fina, montar y repetir la medición. La conclusión correcta: la temperatura en carga de 97 °C con apagón confirma sobrecalentamiento, y la reparación solo es válida si la temperatura baja y se mantiene estable en la segunda prueba de carga.</p>
+      </details>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-b · Medio</h5>
+      <span class="nivel-tag nivel-medio">MEDIO</span>
+      <p><strong>Gestoría Ribera SL</strong> tiene un equipo que ya no se apaga, pero «va lentísimo» desde hace un mes. Al ejecutar el comando de frecuencia, el procesador marca MaxClockSpeed 3600 MHz y CurrentClockSpeed 1200 MHz con el equipo trabajando al 100 %. La temperatura en carga es de 91 °C. El usuario insiste en que no ha instalado nada nuevo. Explica qué está ocurriendo, qué componente revisarías del taller uno por uno y qué harías para demostrar al cliente que el cambio de pasta térmica ha servido.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-b · Avanzado</h5>
+      <span class="nivel-tag nivel-avanzado">AVANZADO</span>
+      <p>Un compañero ha montado un equipo con un procesador de gama alta y un disipador de torre. Tras el montaje, la temperatura en reposo es de 70 °C y el equipo se apaga en cuanto se abre un juego. El disipador está bien apretado, el ventilador gira a tope y la pasta es nueva, pero se aplicó «un pegote generoso» para asegurarse. Redacta el diagnóstico completo indicando al menos tres causas posibles ordenadas por probabilidad, el procedimiento de reparación con las herramientas del taller (sin SAI —Sistema de Alimentación Ininterrumpida: equipo que mantiene la alimentación ante cortes y filtra picos—, sin estación de aire caliente, sin guantes) y cómo verificarías el resultado antes de entregar el equipo, incluyendo qué dato anotarías en el informe de montaje del RA2.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-b</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Sé explicar la cadena térmica: núcleo → pasta → disipador → ventilador → chasis</label></li>
+        <li><label><input type="checkbox" class="check-item"> Distingo temperatura normal, throttling térmico y apagado de protección</label></li>
+        <li><label><input type="checkbox" class="check-item"> Mido con HWiNFO64 y Core Temp antes y después de reparar</label></li>
+        <li><label><input type="checkbox" class="check-item"> Reconozco las cuatro causas típicas: pasta, suciedad, anclaje y flujo de aire</label></li>
+        <li><label><input type="checkbox" class="check-item"> Aplico la pasta térmica en cantidad correcta y limpio con alcohol isopropílico</label></li>
+        <li><label><input type="checkbox" class="check-item"> Verifico la reparación con una prueba de carga y lo anoto en el parte de trabajo</label></li>
+      </ul>
+    </div>
+
+    <div class="box-critico">
+      <div class="box-label">⚠ TRAMPA DE EXAMEN</div>
+      <p>Dar por buena la refrigeración porque «el ventilador gira» o porque la temperatura en reposo es correcta. Un ventilador puede girar sin mover aire (aletas tapadas) y un disipador puede estar montado sin pasta o sin presión sobre el chip. La avería por calor no se confirma con una cifra aislada: hay que valorar la temperatura en reposo, la carga, el Tjmax del modelo, la aparición de throttling, la frecuencia real y si hay apagones. En procesadores con Tjmax≈100 °C, alcanzar 95–98 °C en una prueba sintética como OCCT puede ser normal si no hay throttling ni apagón; será sospechoso o avería si hay apagados de protección, throttling severo con pérdida de rendimiento, temperatura sostenida en Tjmax o un salto anómalo entre reposo y carga. Otro error habitual es creer que más pasta térmica refrigera mejor: el exceso de pasta actúa como aislante.</p>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceC">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num critico">c</div>
+      <div class="bloque-info">
+        <h3>Averías típicas del equipo microinformático: conexión, incompatibilidad, disco y suciedad</h3>
+        <p>CE-c · CRÍTICO · 2 sesiones</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">2 sesiones</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>Una <strong>avería típica</strong> es un fallo que se repite en muchos equipos y cuya causa ya está catalogada. El técnico no improvisa: reconoce el síntoma, lo clasifica y aplica el protocolo de comprobación. Ese método se llama <strong>diagnóstico por descarte</strong>: ir eliminando causas posibles, de la más simple y barata (un cable flojo) a la más cara (sustituir la placa base).</p>
+
+    <div class="clave">Antes de desmontar nada: escucha, pregunta qué cambió y comprueba lo que no cuesta dinero. El 70 % de las averías «graves» son un conector a medio encajar.</div>
+
+    <p>Antes de clasificar averías, fija el vocabulario que aparecerá en las comprobaciones. El <strong>SMART</strong> (<em>Self-Monitoring, Analysis and Reporting Technology</em>) es el sistema de autodiagnóstico que el propio disco guarda y que programas como CrystalDiskInfo leen para mostrar su salud. Un <strong>sector</strong> es la unidad mínima de almacenamiento del disco (habitualmente 512 bytes o 4096 bytes en discos modernos). Un <strong>sector reasignado</strong> es un sector defectuoso que el disco ya ha sustituido por otro de la zona de reserva; si el contador sube, el disco se está degradando. Un <strong>sector pendiente</strong> es un sector que el disco todavía no ha podido leer ni reasignar; indica riesgo de pérdida de datos y no se debe forzar el disco sin copia de seguridad.</p>
+
+    <p>El <strong>conector EPS de 8 pines</strong> (a veces presentado como 4+4) es el cable que lleva alimentación específica desde la fuente al procesador; se conecta en la placa cerca del zócalo de la CPU y no debe confundirse con el ATX de 24 pines, que alimenta la placa en general. El <strong>polímetro</strong> o multímetro es el instrumento que mide tensiones, continuidad y resistencia; para revisar la fuente se usa en modo tensión continua (DC), con la punta negra en COM y la roja en VΩ, conectando la negra a una masa del chasis y la roja al pin que se quiere medir, siempre con el equipo encendido solo bajo supervisión y sin tocar la zona de 230 V.</p>
+
+    <h4>Las cuatro familias de averías</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Familia</th><th>Síntomas habituales</th><th>Comprobación</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Mala conexión</strong></td><td>No arranca, se apaga al mover el equipo, pitidos, un disco «desaparece»</td><td>Conector ATX de 24 pines y EPS de 8 pines a fondo; RAM encajada con las pestañas cerradas; cables SATA firmes; tensiones de la fuente con polímetro (multímetro)</td></tr>
+          <tr><td><strong>Incompatibilidad</strong></td><td>Falla justo después de cambiar o añadir una pieza; solo se reconoce la mitad de la RAM</td><td>Zócalo y generación: LGA1700 es un zócalo Intel, AM5 uno AMD y DDR5 la generación de memoria RAM; comprobar que la placa admite el zócalo de la CPU y el tipo de DDR (no mezclar DDR4/DDR5), vatios de la fuente, lista de memoria soportada del manual de la placa</td></tr>
+          <tr><td><strong>Disco</strong></td><td>Arranque lentísimo, errores al guardar, pantallazos, ruidos, clics</td><td>SMART con CrystalDiskInfo, <code>chkdsk</code>, revisión de cables y sustitución</td></tr>
+          <tr><td><strong>Suciedad</strong></td><td>Ventilador ruidoso, temperaturas altas, contactos que fallan</td><td>Aire comprimido y alcohol isopropílico (como vimos en CE-b para la cadena térmica)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>En las comprobaciones de RAM, un <strong>canal de memoria</strong> es el camino independiente por el que la CPU accede a un grupo de ranuras. Las placas suelen tener dos canales (A y B); para aprovechar el doble canal, los módulos deben colocarse en las ranuras que indique el manual (con frecuencia A2 y B2). Un módulo mal encajado o colocado en la ranura de otro canal puede hacer que el equipo arranque con menos memoria o de forma inestable. En Windows se comprueba con CPU-Z (utilidad gratuita que muestra información del hardware; pestañas <em>Memory</em> y <em>SPD</em>) o con <code>Get-CimInstance Win32_PhysicalMemory | Select-Object BankLabel, DeviceLocator, Capacity, Speed, Manufacturer, PartNumber</code>.</p>
+
+    <h4>El POST y el zumbador</h4>
+    <p>Al pulsar el botón de encendido, la BIOS/UEFI (el firmware que inicializa el hardware antes que el sistema operativo) ejecuta el <strong>POST</strong> (<em>Power-On Self-Test</em>): una autocomprobación de procesador, memoria, tarjetas y discos. Si algo falla antes de dar imagen, el equipo lo avisa con <strong>pitidos</strong> a través del <strong>zumbador</strong> (el pequeño altavoz que el taller conecta a los pines de la placa). Los códigos cambian según el fabricante: un pitido corto suele significar «todo correcto»; pitidos repetidos o largos apuntan a memoria o a alimentación. Como en el taller no hay tarjeta de diagnóstico POST, el zumbador es nuestra única fuente cuando no hay imagen.</p>
+
+    <h4>Herramientas de comprobación</h4>
+    <div class="cards">
+      <div class="card">
+        <h4><span class="ico">💾</span> CrystalDiskInfo</h4>
+        <ul><li>Lee el <strong>SMART</strong>, el autodiagnóstico que el propio disco guarda.</li><li>Resume el estado en Bueno / Precaución / Malo.</li><li>Un aumento de sectores reasignados o pendientes indica degradación; no se debe seguir usando sin copia.</li></ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">🧠</span> MemTest86</h4>
+        <ul><li>Arranca desde USB y escribe patrones en la RAM para detectar módulos defectuosos.</li><li>Un solo error ya invalida el módulo.</li></ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">🪟</span> Windows</h4>
+        <ul><li>Administrador de dispositivos: conflictos de controladores.</li><li>Visor de eventos (<code>eventvwr.msc</code>): errores críticos con fecha y hora.</li></ul>
+      </div>
+    </div>
+
+    <h4>Comandos de diagnóstico en PowerShell</h4>
+    <pre><code>Get-PhysicalDisk | Select-Object FriendlyName, MediaType, HealthStatus, OperationalStatus</code></pre>
+    <ul>
+      <li><code>Get-PhysicalDisk</code>: comando (cmdlet) de PowerShell que lista los discos físicos conectados. PowerShell es la consola de comandos moderna de Windows.</li>
+      <li><code>|</code>: la <strong>tubería</strong> (pipe); envía el resultado del primer comando como entrada del segundo.</li>
+      <li><code>Select-Object</code>: cmdlet que muestra solo las columnas indicadas, para que la salida sea legible.</li>
+      <li><code>FriendlyName</code>: nombre comercial del disco.</li>
+      <li><code>MediaType</code>: tipo de medio (HDD, SSD, Unspecified).</li>
+      <li><code>HealthStatus</code>: salud que declara el firmware del disco (Healthy, Warning, Unhealthy).</li>
+      <li><code>OperationalStatus</code>: estado operativo (OK, Degraded, Lost Communication).</li>
+    </ul>
+
+    <pre><code>chkdsk C: /f /r</code></pre>
+    <ul>
+      <li><code>chkdsk</code>: <em>Check Disk</em>, utilidad de Windows que revisa el sistema de archivos.</li>
+      <li><code>C:</code>: volumen que se revisa.</li>
+      <li><code>/f</code>: <em>fix</em>, corrige los errores encontrados.</li>
+      <li><code>/r</code>: localiza <strong>sectores defectuosos</strong> (zonas del disco que ya no se leen bien) e intenta recuperar su contenido; implica <code>/f</code> y tarda mucho más.</li>
+      <li>Se lanza en PowerShell <strong>como administrador</strong>; si el volumen está en uso, Windows pedirá reiniciar.</li>
+    </ul>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 480 200" role="img" aria-label="Clasificación de las averías típicas de un equipo microinformático en cuatro familias">
+        <defs>
+          <marker id="flecha-c-cec" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="150" y="10" width="180" height="42" rx="10" fill="#1e3a5f"/>
+        <text x="240" y="37" text-anchor="middle" font-size="15" fill="#f7f9fc">Equipo con fallo</text>
+        <line x1="240" y1="52" x2="240" y2="70" stroke="#667085" stroke-width="2"/>
+        <line x1="62" y1="70" x2="422" y2="70" stroke="#667085" stroke-width="2"/>
+        <line x1="62" y1="70" x2="62" y2="88" stroke="#667085" stroke-width="2" marker-end="url(#flecha-c-cec)"/>
+        <line x1="182" y1="70" x2="182" y2="88" stroke="#667085" stroke-width="2" marker-end="url(#flecha-c-cec)"/>
+        <line x1="302" y1="70" x2="302" y2="88" stroke="#667085" stroke-width="2" marker-end="url(#flecha-c-cec)"/>
+        <line x1="422" y1="70" x2="422" y2="88" stroke="#667085" stroke-width="2" marker-end="url(#flecha-c-cec)"/>
+        <rect x="10" y="90" width="105" height="72" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="62" y="118" text-anchor="middle" font-size="13" fill="#1a1a2e">Conexión</text>
+        <text x="62" y="138" text-anchor="middle" font-size="13" fill="#667085">cables flojos</text>
+        <rect x="130" y="90" width="105" height="72" rx="10" fill="#fdf6e3" stroke="#d4a017" stroke-width="2"/>
+        <text x="182" y="118" text-anchor="middle" font-size="13" fill="#1a1a2e">Incompati-</text>
+        <text x="182" y="138" text-anchor="middle" font-size="13" fill="#667085">bilidad</text>
+        <rect x="250" y="90" width="105" height="72" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="302" y="118" text-anchor="middle" font-size="13" fill="#1a1a2e">Disco</text>
+        <text x="302" y="138" text-anchor="middle" font-size="13" fill="#667085">SMART y chkdsk</text>
+        <rect x="370" y="90" width="105" height="72" rx="10" fill="#f7f9fc" stroke="#b03a2e" stroke-width="2"/>
+        <text x="422" y="118" text-anchor="middle" font-size="13" fill="#1a1a2e">Suciedad</text>
+        <text x="422" y="138" text-anchor="middle" font-size="13" fill="#667085">aire y alcohol</text>
+      </svg>
+      <figcaption>Cada síntoma se encuadra en una familia antes de tocar el equipo. Observa que la rama «Conexión» es la primera que se descarta: es la más barata de comprobar.</figcaption>
+    </figure>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p><strong>Gestoría Ribera SL.</strong> El PC de recepción (Windows 11 25H2) tarda cuatro minutos en arrancar, se reinicia solo una vez al día y el técnico oye un clic metálico. No se ha instalado nada nuevo en tres meses.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li>Clasificamos: «no ha cambiado nada» descarta incompatibilidad; el clic y la lentitud apuntan a <strong>disco</strong>. No desmontamos aún.</li>
+        <li>Copiamos los datos del usuario a un USB antes de cualquier prueba: si el disco está mal, cada arranque lo empeora.</li>
+        <li>Abrimos CrystalDiskInfo (portable, sin instalar). Estado: <em>Precaución</em>, con 128 sectores reasignados y 96 pendientes (ya ha sustituido 128 sectores defectuosos y aún tiene 96 sin resolver). El SMART confirma el diagnóstico.</li>
+        <li>Ejecutamos <code>Get-PhysicalDisk | Select-Object FriendlyName, MediaType, HealthStatus</code>: devuelve <code>Warning</code> para ese disco. Coincide con CrystalDiskInfo.</li>
+        <li>Con el disco ya respaldado, lanzamos <code>chkdsk C: /f /r</code> para saber si el daño es reparable. Aparecen errores corregidos, pero los sectores pendientes siguen ahí.</li>
+        <li>Decisión: el disco no es fiable. Clonamos con <strong>Rescuezilla</strong> a un SSD nuevo. Rescuezilla es una utilidad gratuita de clonación e imagen de discos: se descarga desde su web oficial, se graba en un USB arrancable, se arranca el PC desde ese USB y se seleccionan el disco de origen y el SSD de destino. Montamos el SSD y verificamos el arranque. El clic desaparece.</li>
+        <li>Informe de intervención: síntoma, pruebas, resultado del SMART, actuación y recomendación de sustituir el disco de respaldo cada tres años.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-c · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>Taller del aula, <strong>PC-04</strong>: al pulsar encendido giran los ventiladores y se enciende el LED de la placa, pero no hay imagen y el zumbador emite pitidos repetidos. El equipo funcionaba ayer. Indica en qué orden comprobarías y con qué medios del taller.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>1. Seguridad:</strong> apagar, desenchufar y ponerse la pulsera antiestática antes de tocar el interior.</p>
+        <p><strong>2. Conexiones:</strong> revisar que el conector ATX de 24 pines y el EPS de 8 pines estén a fondo; comprobar que el cable de vídeo (HDMI/DisplayPort) esté bien conectado y en la salida correcta (gráfica dedicada, no la placa).</p>
+        <p><strong>3. Memoria:</strong> soltar las pestañas, extraer los módulos, limpiar la zona de contactos con alcohol isopropílico y volver a encajarlos hasta oír el clic. Probar con un solo módulo y repetir con el otro: si con uno arranca, el módulo descartado está mal.</p>
+        <p><strong>4. Si sigue sin imagen:</strong> dejar solo lo imprescindible (procesador, un módulo, placa y fuente) y volver a probar; así se aísla la pieza culpable.</p>
+        <p><strong>5. Documentar:</strong> anotar el patrón de pitidos, ya que el código identifica la pieza según el fabricante de la BIOS.</p>
+      </details>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-c · Medio</h5>
+      <span class="nivel-tag nivel-medio">MEDIO</span>
+      <p><strong>Clínica Dental Sonrisa</strong>, PC de administración: tenía 16 GB de RAM y, tras añadir un módulo nuevo de 8 GB, el sistema solo reconoce 16 GB. El módulo es DDR5 y la placa AM5 admite DDR5. Explica las comprobaciones que harías, cómo detectarías si es un problema de asiento, de canal o de compatibilidad, y qué herramientas usarías en Windows 11.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-c · Avanzado</h5>
+      <span class="nivel-tag nivel-avanzado">AVANZADO</span>
+      <p><strong>Autoescuela Vía Norte</strong>, equipo con los expedientes de alumnos: se reinicia de forma aleatoria, a veces ni arranca y el ventilador del chasis está muy sucio. CrystalDiskInfo muestra <em>Precaución</em> con 40 sectores reasignados. Redacta el plan completo: orden de comprobaciones, qué comandos ejecutarías, cómo protegerías los datos, qué sustituirías y cómo dejarías constancia en el parte de trabajo. Justifica cada decisión.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-c</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Clasifico un síntoma en una de las cuatro familias de avería</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé qué comprueba el POST y qué significa el zumbador</label></li>
+        <li><label><input type="checkbox" class="check-item"> Reviso conectores ATX, EPS, SATA y asiento de la RAM antes de desmontar</label></li>
+        <li><label><input type="checkbox" class="check-item"> Interpreto el estado SMART de un disco con CrystalDiskInfo</label></li>
+        <li><label><input type="checkbox" class="check-item"> Lanzo y explico <code>Get-PhysicalDisk</code> y <code>chkdsk /f /r</code></label></li>
+        <li><label><input type="checkbox" class="check-item"> Copio los datos antes de ejecutar cualquier prueba sobre un disco sospechoso</label></li>
+        <li><label><input type="checkbox" class="check-item"> Dejo constancia de la intervención en un parte de trabajo</label></li>
+      </ul>
+    </div>
+
+    <div class="box-critico">
+      <div class="box-label">⚠ TRAMPA DE EXAMEN</div>
+      <p>«No arranca» no es sinónimo de «fuente de alimentación rota». Antes de cambiar la fuente hay que medir sus tensiones con el polímetro (multímetro) en modo tensión continua y comprobar conectores y RAM: suspender el examen por sustituir piezas al azar es lo más habitual. Y una segunda trampa, esta grave: ejecutar <code>chkdsk /r</code> o formatear un disco con datos del cliente <strong>sin haber hecho copia</strong>. Primero se salvan los datos, después se diagnostica.</p>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceD">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num critico">d</div>
+      <div class="bloque-info">
+        <h3>Sustitución de componentes deteriorados</h3>
+        <p>CE-d · CRÍTICO · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>Una vez identificada la avería (como vimos en <strong>CE-b</strong> y <strong>CE-c</strong>), llega el momento de actuar. <strong>Sustituir un componente deteriorado</strong> significa retirar la pieza dañada e instalar otra en su lugar, de forma que el equipo vuelva a funcionar dentro de sus especificaciones. No es lo mismo que <em>reparar</em>: en un taller de Grado Medio no soldamos (no hay soldador ni estación de aire caliente), así que casi siempre la solución profesional es el reemplazo de la pieza completa.</p>
+
+    <div class="clave">Solo se sustituye lo que antes se ha demostrado que está mal. Cambiar piezas "por probar" es lo contrario de diagnosticar.</div>
+
+    <h4>Cuándo sustituir y qué comprobar después</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Componente</th><th>Síntoma que justifica el cambio</th><th>Comprobación tras sustituirlo</th></tr></thead>
+        <tbody>
+          <tr><td>Módulo de RAM</td><td>Errores en MemTest86, pantallazos, pitidos de POST</td><td>POST correcto + MemTest86 sin errores</td></tr>
+          <tr><td>Disco fijo</td><td>Sectores reasignados al alza en CrystalDiskInfo, ruidos, chkdsk con errores</td><td>SMART en "Correcto" y arranque del SO</td></tr>
+          <tr><td>Fuente ATX</td><td>Tensiones fuera de rango medidas con polímetro, olor a quemado</td><td>Tensiones estables + prueba de carga</td></tr>
+          <tr><td>Disipador / ventilador</td><td>No gira, ruido, temperatura en throttling</td><td>Temperatura estable bajo estrés</td></tr>
+          <tr><td>Pila CR2032 (alimentación de CMOS/RTC)</td><td>Se pierde fecha y hora en cada apagado</td><td>Fecha y hora conservadas tras desenchufar</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>Aclaración:</strong> la pila CR2032 es una pila de litio de botón (20 mm de diámetro × 3,2 mm de grosor, 3 V). La CMOS es una pequeña memoria de configuración y la RTC es el reloj de tiempo real; la pila no es la CMOS, sino que alimenta la CMOS/RTC cuando el equipo está desenchufado.</p>
+
+    <h4>Compatibilidad: el paso que casi nadie revisa</h4>
+    <p>Un componente nuevo pero <strong>incompatible</strong> convierte una avería en dos. Antes de comprar o coger la pieza del almacén hay que verificar:</p>
+    <div class="cards">
+      <div class="card">
+        <h4><span class="ico">🧩</span> Encaje físico</h4>
+        <ul><li>Socket del microprocesador: LGA1700, AM5…</li><li>Factor de forma de la placa: ATX, micro-ATX</li><li>Longitud del módulo M.2: el código 2280 significa 22 mm de ancho × 80 mm de largo (M.2 es el formato de tarjeta de expansión, habitual para unidades de estado sólido)</li></ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">💾</span> Tipo de memoria</h4>
+        <ul><li>DDR4 y DDR5 no son intercambiables</li><li>Misma velocidad y, a ser posible, misma latencia CL (CAS Latency): número de ciclos que tarda la memoria en responder; si se mezclan CL distintas, la placa suele ajustar al valor más lento y puede haber inestabilidad</li><li>Muesca distinta: no entra porque no debe</li></ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">⚡</span> Alimentación</h4>
+        <ul><li>Potencia total suficiente (TDP del conjunto)</li><li>Conector ATX 24 pines y EPS 8 pines</li><li>Conectores SATA (interfaz serie para discos y unidades ópticas) o PCIe (bus serie de alta velocidad para tarjetas de expansión y unidades M.2) disponibles</li></ul>
+      </div>
+    </div>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 700 130" role="img" aria-label="Flujo de trabajo para sustituir un componente deteriorado">
+        <defs>
+          <marker id="flecha-d-ced" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="10" y="40" width="120" height="60" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="70" y="65" text-anchor="middle" font-size="13" fill="#1a1a2e">1. Diagnóstico</text>
+        <text x="70" y="85" text-anchor="middle" font-size="12" fill="#667085">localizar el fallo</text>
+
+        <rect x="150" y="40" width="120" height="60" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="210" y="65" text-anchor="middle" font-size="13" fill="#1a1a2e">2. Compatibilidad</text>
+        <text x="210" y="85" text-anchor="middle" font-size="12" fill="#667085">misma especificación</text>
+
+        <rect x="290" y="40" width="120" height="60" rx="10" fill="#fdf6e0" stroke="#d4a017" stroke-width="2"/>
+        <text x="350" y="65" text-anchor="middle" font-size="13" fill="#1a1a2e">3. Sustitución</text>
+        <text x="350" y="85" text-anchor="middle" font-size="12" fill="#667085">con pulsera ESD</text>
+
+        <rect x="430" y="40" width="120" height="60" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="490" y="65" text-anchor="middle" font-size="13" fill="#1a1a2e">4. Verificación</text>
+        <text x="490" y="85" text-anchor="middle" font-size="12" fill="#667085">POST y sistema</text>
+
+        <rect x="570" y="40" width="120" height="60" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="630" y="65" text-anchor="middle" font-size="13" fill="#1a1a2e">5. Registro</text>
+        <text x="630" y="85" text-anchor="middle" font-size="12" fill="#667085">parte de trabajo</text>
+
+        <line x1="130" y1="70" x2="148" y2="70" stroke="#667085" stroke-width="2" marker-end="url(#flecha-d-ced)"/>
+        <line x1="270" y1="70" x2="288" y2="70" stroke="#667085" stroke-width="2" marker-end="url(#flecha-d-ced)"/>
+        <line x1="410" y1="70" x2="428" y2="70" stroke="#667085" stroke-width="2" marker-end="url(#flecha-d-ced)"/>
+        <line x1="550" y1="70" x2="568" y2="70" stroke="#667085" stroke-width="2" marker-end="url(#flecha-d-ced)"/>
+      </svg>
+      <figcaption>Secuencia obligatoria de una sustitución profesional. El alumno debe fijarse en que la sustitución es el paso 3: nunca se empieza por ahí, y nunca se termina sin el paso 4 y el 5.</figcaption>
+    </figure>
+
+    <h4>Procedimiento físico: seguridad primero</h4>
+    <p>Todo el material del taller es sensible a la <strong>ESD</strong> (descarga electrostática, vista en RA8 y CE-b). Antes de tocar nada: apagar el equipo, desenchufar la fuente de la red, mantener pulsado el botón de encendido 5 segundos para descargar los condensadores, y colocarse la <strong>pulsera antiestática</strong> conectada a la carcasa metálica. Los módulos de RAM y las tarjetas se sujetan por los bordes, nunca por los contactos dorados.</p>
+
+    <h4>Verificación después del cambio</h4>
+    <p>El equipo debe arrancar y el componente nuevo debe aparecer correctamente en el sistema. En Windows podemos confirmarlo con PowerShell:</p>
+    <pre><code>Get-CimInstance -ClassName Win32_DiskDrive |
+  Select-Object Model, SerialNumber, Size, Status</code></pre>
+    <ul>
+      <li><code>Get-CimInstance</code>: cmdlet de PowerShell que consulta información del sistema a través de CIM/WMI (visto en CE-b).</li>
+      <li><code>-ClassName Win32_DiskDrive</code>: clase que representa las unidades de disco físicas conectadas; devuelve una por cada disco detectado.</li>
+      <li><code>|</code>: <em>pipe</em> o tubería; envía el resultado del primer comando como entrada del siguiente.</li>
+      <li><code>Select-Object</code>: filtra y muestra solo las propiedades indicadas, para que la salida sea legible.</li>
+      <li><code>Model</code>: modelo comercial del disco; sirve para confirmar que es el que acabamos de instalar.</li>
+      <li><code>SerialNumber</code>: número de serie único del disco; identifica la pieza concreta, no solo el modelo.</li>
+      <li><code>Size</code>: capacidad en bytes; debe coincidir con la del componente nuevo.</li>
+      <li><code>Status</code>: estado que reporta el firmware; "OK" indica que el disco responde.</li>
+    </ul>
+
+    <div class="dual-columns">
+      <div class="win-col"><h4>🪟 Windows</h4><p>Verificación con PowerShell: <code>Get-CimInstance Win32_PhysicalMemory</code>, <code>Get-PhysicalDisk</code> y el Administrador de dispositivos. Para pruebas de estabilidad, MemTest86 (RAM) u OCCT (CPU y fuente).</p></div>
+      <div class="linux-col"><h4>🐧 Linux</h4><p>Equivalentes en terminal: <code>lsblk</code> (discos y particiones), <code>lspci</code> (tarjetas de expansión) y <code>sudo dmidecode --type memory</code> (módulos de RAM instalados). En Ubuntu/Debian <code>dmidecode</code> requiere permisos de root, de ahí <code>sudo</code>; el flag <code>--type</code> selecciona el tipo de entrada DMI y el argumento <code>memory</code> indica las entradas de memoria.</p></div>
+    </div>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p>En <strong>Tecnoparts SL</strong> entra un equipo de la Gestoría Ramírez con pantallazos azules aleatorios. Ya sabemos por CE-c que hay que descartar RAM. El equipo lleva 2 módulos DDR4-3200 de 8 GB en las ranuras A2 y B2. MemTest86 no identifica ranuras, solo direcciones de memoria; reporta errores en un rango de direcciones. Para atribuir el fallo a un módulo, anotamos ese rango y haremos la prueba de intercambio que se describe en el paso 1.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li><strong>Confirmar el diagnóstico:</strong> ejecutamos MemTest86 desde USB arrancable y anotamos las direcciones con error. MemTest86 no identifica ranuras, solo direcciones. Para atribuir el fallo, intercambiamos físicamente los dos módulos de ranura y repetimos la prueba: si el fallo se reproduce con el mismo módulo al probarlo en la otra ranura, el módulo es defectuoso; si el fallo permanece en la misma ranura al poner otro módulo, el sospechoso es la ranura o la placa base. En este caso, el módulo que estaba en B2 falla también al probarlo en A2, mientras que el otro módulo no falla en B2; por tanto, es el módulo, no la ranura.</li>
+        <li><strong>Anotar especificaciones:</strong> con CPU-Z, pestaña SPD, leemos DDR4, 8 GB, 3200 MHz y el PartNumber. Buscamos en el almacén una pieza igual para no romper el doble canal (visto en CE-c).</li>
+        <li><strong>Preparar el puesto:</strong> apagamos, desenchufamos, pulsamos el botón de encendido 5 s, nos ponemos la pulsera antiestática y la conectamos al chasis.</li>
+        <li><strong>Extraer el módulo:</strong> abrimos las pestañas blancas de los extremos de la ranura B2 a la vez; el módulo sale solo. Lo dejamos en una bolsa antiestática.</li>
+        <li><strong>Instalar el nuevo:</strong> alineamos la muesca del módulo con la llave de la ranura (solo entra en una posición), presionamos en los dos extremos hasta oír el clic de las pestañas. Nunca se fuerza.</li>
+        <li><strong>Verificar:</strong> arrancamos y comprobamos el POST. En PowerShell, <code>Get-CimInstance Win32_PhysicalMemory | Select-Object DeviceLocator, Capacity, Speed</code> debe mostrar dos módulos de 8 GB a 3200 MHz en A2 y B2.</li>
+        <li><strong>Prueba de estabilidad:</strong> una pasada completa de MemTest86 sin errores y 30 minutos de OCCT para confirmar que el sistema aguanta carga.</li>
+        <li><strong>Registrar:</strong> anotamos en el parte de trabajo la pieza retirada (con su número de serie), la instalada, la fecha y las pruebas realizadas. Sin este registro no hay garantía ni trazabilidad.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-d · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>Un equipo del aula de <strong>Academia Nordeste SL</strong> se apaga solo a los 4 o 5 minutos de encenderse. HWiNFO64 muestra la temperatura de la CPU subiendo hasta 100 °C y el ventilador del disipador no gira. El técnico sospecha del ventilador. Describe el procedimiento completo de sustitución y las comprobaciones posteriores.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>1. Confirmar el diagnóstico:</strong> no basta con "no gira". Comprobamos que el conector del ventilador está bien insertado en el header CPU_FAN de la placa base (un cable flojo da el mismo síntoma). Si está bien conectado y sigue sin girar, el ventilador está deteriorado: motor gripado o rodamiento roto.</p>
+        <p><strong>2. Comprobar compatibilidad:</strong> anotamos el tamaño del ventilador (80, 92 o 120 mm), el tipo de conector (4 pines PWM) y, si es un disipador completo, el socket (LGA1700 o AM5). PWM (modulación por ancho de pulso) permite regular la velocidad del ventilador; un ventilador de 4 pines tiene control PWM, mientras que uno de 3 pines se regula por variación de tensión y no ofrece el mismo control. Elegimos una pieza con igual o mayor caudal de aire.</p>
+        <p><strong>3. Sustituir con seguridad:</strong> apagar, desenchufar la fuente, mantener pulsado el botón de encendido 5 s para descargar condensadores, colocarse la pulsera antiestática conectada al chasis. Desconectar el cable del ventilador, retirar los tornillos o clips del disipador y sacarlo con cuidado. Limpiar la pasta térmica vieja con alcohol isopropílico y un paño que no deje pelusa, aplicar pasta nueva del tamaño de un grano de arroz y montar el ventilador nuevo.</p>
+        <p><strong>4. Verificar:</strong> arrancar, entrar en la UEFI y comprobar que la temperatura en reposo baja de 40 °C y que el ventilador gira. Después, con HWiNFO64 monitorizando, lanzar una prueba de estrés con OCCT o Prime95 durante 15 minutos: la CPU no debe entrar en throttling ni superar los 90 °C.</p>
+        <p><strong>5. Registrar:</strong> dejar constancia en el parte de trabajo del ventilador retirado, el instalado, las temperaturas medidas y la prueba de estrés realizada.</p>
+      </details>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-d · Medio</h5>
+      <span class="nivel-tag nivel-medio">MEDIO</span>
+      <p>En <strong>Logística Duero SL</strong>, el PC de recepción tiene un HDD (disco duro mecánico) de 3,5" de 500 GB. CrystalDiskInfo muestra 240 sectores reasignados y 18 pendientes, en aumento desde hace dos semanas, y el sistema tarda más de cinco minutos en arrancar. El jefe de taller te pide sustituirlo por un SSD (unidad de estado sólido) de 2,5" SATA (interfaz serie para almacenamiento) de 480 GB conservando el sistema operativo y los datos. Detalla la sustitución, la clonación y las comprobaciones.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-d · Avanzado</h5>
+      <span class="nivel-tag nivel-avanzado">AVANZADO</span>
+      <p>Un equipo de <strong>Talleres Miño SL</strong> daba pantallazos azules. El técnico sustituyó el módulo de RAM por uno nuevo, pero los pantallazos continúan. Ese módulo nuevo se ha probado en otro equipo y funciona perfectamente. No hay tarjeta de diagnóstico POST en el taller, solo el zumbador de la placa base. Explica qué otros componentes pueden estar deteriorados, qué prueba harías con cada uno y en qué orden, y cómo dejas constancia en el parte de trabajo.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="box-critico">
+      <div class="box-label">⚠ TRAMPA DE EXAMEN</div>
+      <p>El error más frecuente es <strong>sustituir antes de diagnosticar</strong>: cambiar la RAM sin haber pasado MemTest86, o la fuente sin haber medido tensiones con el polímetro. Si el examen te pide "sustituir un componente deteriorado", el primer paso de la respuesta siempre es <em>justificar con una prueba objetiva</em> que ese componente está mal. El segundo error clásico es olvidar la verificación posterior y el registro en el parte de trabajo: una sustitución sin comprobar y sin documentar no está terminada y puntúa como incompleta.</p>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-d</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Justifico la sustitución con una prueba objetiva previa (MemTest86, SMART, polímetro, temperaturas)</label></li>
+        <li><label><input type="checkbox" class="check-item"> Verifico la compatibilidad del componente nuevo: socket, tipo de memoria, factor de forma y alimentación</label></li>
+        <li><label><input type="checkbox" class="check-item"> Aplico el protocolo antiestático: apagado, desenchufado, descarga de condensadores y pulsera ESD</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sujeto los componentes por los bordes y no fuerzo conectores ni módulos</label></li>
+        <li><label><input type="checkbox" class="check-item"> Compruebo el POST y el reconocimiento del componente desde el sistema operativo</label></li>
+        <li><label><input type="checkbox" class="check-item"> Ejecuto una prueba de estabilidad después del cambio</label></li>
+        <li><label><input type="checkbox" class="check-item"> Registro pieza retirada, pieza instalada y pruebas en el parte de trabajo</label></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceE">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num">e</div>
+      <div class="bloque-info">
+        <h3>Compatibilidad de los componentes sustituidos</h3>
+        <p>CE-e · importante · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>En el CE-d aprendimos a sustituir una pieza deteriorada. Pero cambiar una pieza <strong>no es</strong> poner otra que simplemente quepa: la nueva debe entenderse con el resto del equipo. <strong>Compatible</strong> significa que el componente encaja, recibe la alimentación correcta, habla el mismo idioma eléctrico que la placa y la BIOS/UEFI lo reconoce.</p>
+
+    <div class="clave">Un componente incompatible no siempre “no arranca”: muchas veces arranca y va lento, pierde rendimiento o da fallos aleatorios. Por eso se verifica, no se supone.</div>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 460 300" role="img" aria-label="Cadena de cuatro comprobaciones de compatibilidad: física, eléctrica, lógica y firmware">
+        <defs>
+          <marker id="flecha-e-cee" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="100" y="15" width="260" height="52" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="230" y="38" text-anchor="middle" font-size="15" fill="#1a1a2e">1 · FÍSICA</text>
+        <text x="230" y="57" text-anchor="middle" font-size="13" fill="#667085">¿entra en su ranura o zócalo?</text>
+
+        <line x1="230" y1="67" x2="230" y2="87" stroke="#667085" stroke-width="2" marker-end="url(#flecha-e-cee)"/>
+
+        <rect x="100" y="90" width="260" height="52" rx="10" fill="#f7f9fc" stroke="#d4a017" stroke-width="2"/>
+        <text x="230" y="113" text-anchor="middle" font-size="15" fill="#1a1a2e">2 · ELÉCTRICA</text>
+        <text x="230" y="132" text-anchor="middle" font-size="13" fill="#667085">tensión y potencia (TDP, vatios)</text>
+
+        <line x1="230" y1="142" x2="230" y2="162" stroke="#667085" stroke-width="2" marker-end="url(#flecha-e-cee)"/>
+
+        <rect x="100" y="165" width="260" height="52" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="230" y="188" text-anchor="middle" font-size="15" fill="#1a1a2e">3 · LÓGICA</text>
+        <text x="230" y="207" text-anchor="middle" font-size="13" fill="#667085">protocolo y versión del bus</text>
+
+        <line x1="230" y1="217" x2="230" y2="237" stroke="#667085" stroke-width="2" marker-end="url(#flecha-e-cee)"/>
+
+        <rect x="100" y="240" width="260" height="52" rx="10" fill="#f7f9fc" stroke="#b03a2e" stroke-width="2"/>
+        <text x="230" y="263" text-anchor="middle" font-size="15" fill="#1a1a2e">4 · FIRMWARE</text>
+        <text x="230" y="282" text-anchor="middle" font-size="13" fill="#667085">¿la BIOS/UEFI lo reconoce?</text>
+      </svg>
+      <figcaption>Los cuatro filtros que debe pasar todo componente sustituido. El orden es importante: si falla el filtro 1, no tiene sentido probar el 4.</figcaption>
+    </figure>
+
+    <p>Antes de revisar la tabla conviene fijar varios términos. El <strong>chipset</strong> es el conjunto de circuitos de la placa base que conecta la CPU con los periféricos y determina qué procesadores, memorias y puertos admite; por eso un mismo zócalo puede cambiar su compatibilidad según el chipset, por ejemplo B760 o B650. <strong>NVMe</strong> (Non-Volatile Memory Express) es un protocolo para SSD que trabaja sobre PCIe; no es lo mismo que SATA, aunque ambos puedan compartir formato M.2. En una ranura M.2, las <strong>claves B y M</strong> son muescas mecánicas y eléctricas: la clave M es la habitual para SSD NVMe por PCIe x4, mientras que la clave B se asocia a otras interfaces como SATA o PCIe con menos carriles, y existen ranuras B+M que admiten determinados módulos según el manual de la placa. Para comprobar la tarjeta gráfica, <strong>GPU-Z</strong> es una utilidad que muestra modelo, interfaz PCIe, memoria y relojes de la tarjeta; los conectores de alimentación y la longitud se verifican físicamente. Por último, el <strong>overclock</strong> consiste en configurar la placa, la CPU o la RAM por encima de sus especificaciones nominales; si no se practica, el equipo debe quedarse dentro de las velocidades oficiales.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Componente sustituido</th><th>Qué verificar</th><th>Dónde se comprueba</th></tr></thead>
+        <tbody>
+          <tr><td>Microprocesador</td><td>Zócalo (LGA1700, LGA1851, AM5), chipset compatible, TDP frente al disipador</td><td>Etiqueta de la placa, CPU-Z → <em>CPU / Mainboard</em>, HWiNFO64</td></tr>
+          <tr><td>Memoria RAM</td><td>Tipo (DDR4 o DDR5), velocidad admitida (nominal y configurada), ranuras y canales</td><td>CPU-Z → <em>SPD</em>, <code>dmidecode</code>, <code>Win32_PhysicalMemory</code></td></tr>
+          <tr><td>Disco</td><td>Interfaz (SATA o NVMe), clave de la ranura M.2, longitud (2280)</td><td>CrystalDiskInfo, <code>lsblk</code>, manual de la placa</td></tr>
+          <tr><td>Tarjeta gráfica</td><td>Versión de PCIe, conectores de alimentación, longitud dentro del chasis</td><td>GPU-Z, <code>lspci</code>, etiqueta de la fuente</td></tr>
+          <tr><td>Fuente de alimentación</td><td>Potencia total en vatios, conectores ATX 24, EPS 8 y PCIe</td><td>Etiqueta serigrafiada de la fuente</td></tr>
+          <tr><td>Placa base / chasis</td><td>Factor forma (ATX, micro-ATX), altura del disipador</td><td>Regla y especificaciones del fabricante</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>La comprobación rápida se hace por software. En Windows, CPU-Z pestaña <em>SPD</em> muestra el tipo y la velocidad nominal de cada módulo, y HWiNFO64 confirma el zócalo, el chipset y la velocidad configurada. En Linux se consulta la tabla que publica el firmware.</p>
+
+    <div class="dual-columns">
+      <div class="win-col">
+        <h4>🪟 Windows (PowerShell)</h4>
+        <pre><code>Get-CimInstance Win32_PhysicalMemory | Select-Object BankLabel, DeviceLocator, Capacity, Speed, ConfiguredClockSpeed, SMBIOSMemoryType</code></pre>
+        <ul>
+          <li><code>Get-CimInstance</code>: cmdlet que consulta la base de datos de hardware de Windows (WMI/CIM), como vimos en CE-c.</li>
+          <li><code>Win32_PhysicalMemory</code>: clase que representa cada módulo de RAM instalado.</li>
+          <li><code>|</code> (tubería): envía el resultado del primer comando al siguiente.</li>
+          <li><code>Select-Object</code>: muestra solo las columnas indicadas.</li>
+          <li><code>BankLabel</code> y <code>DeviceLocator</code>: canal y ranura física donde está el módulo.</li>
+          <li><code>Capacity</code>: tamaño en bytes; <code>Speed</code>: velocidad nominal del módulo; <code>ConfiguredClockSpeed</code>: velocidad configurada o efectiva a la que trabaja.</li>
+          <li><code>SMBIOSMemoryType</code>: código de tipo del módulo (26 = DDR4, 34 = DDR5).</li>
+        </ul>
+      </div>
+      <div class="linux-col">
+        <h4>🐧 Linux (terminal)</h4>
+        <pre><code>sudo dmidecode -t memory | grep -E "Type:|Speed:|Configured Memory Speed:|Size:"</code></pre>
+        <ul>
+          <li><code>sudo</code>: ejecuta como administrador; leer la tabla del firmware requiere permisos.</li>
+          <li><code>dmidecode</code>: lee la tabla DMI/SMBIOS donde la BIOS/UEFI describe el hardware.</li>
+          <li><code>-t memory</code>: limita la consulta a los módulos de memoria.</li>
+          <li><code>| grep -E</code>: filtra las líneas que coincidan con un patrón; <code>-E</code> permite alternativas separadas por <code>|</code>.</li>
+          <li><code>"Type:|Speed:|Configured Memory Speed:|Size:"</code>: patrón que deja visible el tipo, la velocidad nominal, la velocidad configurada y el tamaño de cada módulo.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p>En Tecnoparts SL se sustituye un módulo defectuoso de 8 GB en el equipo <strong>PC-CONTAB-02</strong>: placa con zócalo LGA1700 y chipset B760, dos ranuras DDR4 ocupadas hasta ahora. El técnico coloca un módulo de 16 GB DDR4-3600 en la ranura A2.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li>Física: la muesca del módulo DDR4 coincide con la ranura. Un DDR5 no habría entrado; la muesca está en otra posición.</li>
+        <li>Lógica y velocidad: la placa admite DDR4 hasta 3200 MHz sin overclock, es decir, sin configurar la placa, la CPU o la RAM por encima de sus especificaciones nominales. El módulo de 3600 es compatible, pero funcionará a 3200: no hay avería, solo rendimiento limitado.</li>
+        <li>Canales: se mantiene el doble canal colocando el módulo en A2 y el superviviente en B2, como vimos en CE-c.</li>
+        <li>Verificación: <code>Get-CimInstance Win32_PhysicalMemory</code> debe listar dos módulos con <code>SMBIOSMemoryType</code> 26. El módulo DDR4-3600 puede mostrar <code>Speed</code> 3600 (velocidad nominal) y <code>ConfiguredClockSpeed</code> 3200 (velocidad configurada por la placa).</li>
+        <li>Firmware: si el módulo no aparece, se actualiza la BIOS/UEFI antes de declararlo defectuoso.</li>
+      </ol>
+    </div>
+
+    <div class="box-complementario">
+      <div class="box-label">NOTA</div>
+      <p>Compatible no es sinónimo de óptimo. Una tarjeta PCIe 4.0 en una ranura PCIe 3.0 funciona, pero a la mitad de velocidad. Documenta siempre esa pérdida en el parte de trabajo.</p>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-e · Básico</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>En la empresa LogiRuta SL, el técnico ha sustituido en el equipo <strong>PC-FACTURACION</strong> (placa con socket AM5 y chipset B650) un SSD SATA de 2,5" por un SSD M.2 NVMe 2280, y la tarjeta gráfica por otra que exige dos conectores PCIe de 8 pines. La fuente instalada es de 550 W y solo tiene un conector PCIe de 8 pines. Indica qué comprobaciones de compatibilidad hay que hacer y cuáles fallan.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>Física:</strong> comprobar que la placa tiene una ranura M.2 compatible con NVMe por PCIe (habitualmente clave M; si es B+M, consultar el manual) y que admite longitud 2280; medir la longitud de la gráfica frente al chasis y al disipador.</p>
+        <p><strong>Eléctrica:</strong> la fuente solo ofrece un conector PCIe de 8 pines y la gráfica pide dos. <strong>Falla</strong>: hay que montar una fuente con dos conectores PCIe o cambiar de gráfica. Los adaptadores de un conector a dos no son una solución profesional.</p>
+        <p><strong>Lógica:</strong> el SSD NVMe necesita una ranura M.2 con PCIe; si la ranura solo ofrece SATA o no soporta NVMe, el disco no se reconocería. La versión de PCIe de la gráfica es compatible hacia atrás.</p>
+        <p><strong>Firmware:</strong> entrar en la BIOS/UEFI y comprobar que el SSD NVMe aparece como unidad de arranque; si no, actualizar el firmware de la placa antes de dar el disco por defectuoso.</p>
+        <p><strong>Conclusión:</strong> el montaje no puede darse por válido hasta resolver la insuficiencia eléctrica de la fuente.</p>
+      </details>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-e</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Distingo los cuatro niveles de compatibilidad: física, eléctrica, lógica y firmware</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé comprobar zócalo, chipset y TDP al sustituir un microprocesador</label></li>
+        <li><label><input type="checkbox" class="check-item"> Verifico tipo y velocidades nominal y configurada de la RAM con CPU-Z, Win32_PhysicalMemory o dmidecode</label></li>
+        <li><label><input type="checkbox" class="check-item"> Compruebo interfaz, clave y longitud de un disco M.2 antes de montarlo</label></li>
+        <li><label><input type="checkbox" class="check-item"> Cuento los conectores de alimentación de la fuente antes de instalar una gráfica</label></li>
+        <li><label><input type="checkbox" class="check-item"> Dejo constancia en el parte de trabajo de las incompatibilidades parciales detectadas</label></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceF">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num">f</div>
+      <div class="bloque-info">
+        <h3>Actualizaciones y ampliaciones de componentes</h3>
+        <p>CE-f · importante · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>Una cosa es <strong>reparar</strong> lo que se ha roto (eso fue el CE-d) y otra <strong>mejorar</strong> un equipo que funciona. Aquí entran dos operaciones que el cliente pide constantemente cuando el ordenador «va lento»: la <strong>actualización</strong>, que sustituye un componente por otro de mayores prestaciones, y la <strong>ampliación</strong>, que añade un componente o aumenta su cantidad sin quitar el que ya estaba.</p>
+
+    <div class="cards">
+      <div class="card">
+        <h4><span class="ico">🔄</span> Actualización de componente</h4>
+        <ul><li>Cambiar un HDD por un SSD</li><li>Pasar de 8 a 16 GB sustituyendo módulos</li><li>Cambiar la CPU por una superior compatible</li></ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">➕</span> Ampliación</h4>
+        <ul><li>Añadir un segundo módulo de RAM</li><li>Instalar un disco adicional M.2 2280</li><li>Añadir una tarjeta de red PCIe</li></ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">⚙️</span> Actualización de firmware</h4>
+        <ul><li>Poner al día la BIOS/UEFI (como vimos en CE-c)</li><li>Actualizar el firmware del SSD (como vimos en CE-e)</li><li>Solo si aporta algo: no es rutina</li></ul>
+      </div>
+    </div>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 460 290" role="img" aria-label="Proceso ordenado de una actualización o ampliación de componentes">
+        <defs>
+          <marker id="flecha-f-cef" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="90" y="10" width="280" height="46" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="230" y="39" text-anchor="middle" font-size="15" fill="#1a1a2e">1. Detectar la necesidad real</text>
+        <line x1="230" y1="56" x2="230" y2="76" stroke="#667085" stroke-width="2" marker-end="url(#flecha-f-cef)"/>
+        <rect x="90" y="80" width="280" height="46" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="230" y="103" text-anchor="middle" font-size="15" fill="#1a1a2e">2. Comprobar compatibilidad</text>
+        <text x="230" y="120" text-anchor="middle" font-size="13" fill="#667085">(CE-e)</text>
+        <line x1="230" y1="126" x2="230" y2="146" stroke="#667085" stroke-width="2" marker-end="url(#flecha-f-cef)"/>
+        <rect x="90" y="150" width="280" height="46" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="230" y="179" text-anchor="middle" font-size="15" fill="#1a1a2e">3. Copia de seguridad previa</text>
+        <line x1="230" y1="196" x2="230" y2="216" stroke="#667085" stroke-width="2" marker-end="url(#flecha-f-cef)"/>
+        <rect x="90" y="220" width="280" height="46" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="230" y="243" text-anchor="middle" font-size="15" fill="#1a1a2e">4. Instalar y verificar</text>
+        <text x="230" y="260" text-anchor="middle" font-size="13" fill="#667085">POST + herramientas</text>
+      </svg>
+      <figcaption>El orden no es opcional: sin los pasos 2 y 3 no se toca el equipo. Fíjate en que la verificación final cierra el proceso.</figcaption>
+    </figure>
+
+    <div class="box-importante">
+      <div class="box-label">IMPORTANTE</div>
+      <p>Actualizar la BIOS/UEFI es la operación más delicada del bloque: si se corta la corriente a mitad, el equipo puede quedar sin arrancar. En el taller <strong>no hay SAI</strong> (como vimos en CE-b de este mismo RA4), así que solo se hace con el equipo conectado a red estable, sin otros trabajos eléctricos en el aula y con la copia de seguridad ya hecha.</p>
+    </div>
+
+    <div class="dual-columns">
+      <div class="win-col">
+        <h4>🪟 Windows</h4>
+        <p>El firmware se actualiza con la <strong>herramienta oficial del fabricante</strong> de la placa (descargada solo de su web). Se ejecuta, se reinicia y no se apaga el equipo hasta que termine. Nunca se usa un fichero de otra placa o de otra versión.</p>
+      </div>
+      <div class="linux-col">
+        <h4>🐧 Linux</h4>
+        <pre><code>sudo fwupdmgr update</code></pre>
+        <ul>
+          <li><code>sudo</code>: ejecuta con privilegios de administrador (como vimos en CE-d); sin él no se puede escribir en el firmware.</li>
+          <li><code>fwupdmgr</code>: utilidad de línea de órdenes que descarga e instala firmware de los dispositivos compatibles.</li>
+          <li><code>update</code>: busca firmware nuevo, lo aplica y pide reiniciar si es necesario.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="clave">Antes de ampliar, comprueba; antes de actualizar firmware, copia.</div>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p>La academia <strong>Formactiva</strong> tiene un PC de recepción: placa ASUS PRIME B560M-A, i5-10400, un solo módulo de 8 GB DDR4-2666 en el zócalo A2, HDD de 1 TB con Windows 11 25H2 y queja de lentitud al abrir varias pestañas.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li>Comprobar compatibilidad (CE-e): la placa admite cuatro zócalos DDR4 y un M.2 2280 con clave M, así que se puede ampliar RAM y añadir un SSD NVMe.</li>
+        <li>Registrar la versión de firmware <em>antes</em> de tocar nada:
+        <pre><code>Get-CimInstance Win32_BIOS | Select-Object Manufacturer, SMBIOSBIOSVersion, ReleaseDate</code></pre>
+        <ul>
+          <li><code>Get-CimInstance</code>: consulta información del sistema vía WMI (como vimos en CE-b).</li>
+          <li><code>Win32_BIOS</code>: clase que representa la BIOS/UEFI instalada.</li>
+          <li><code>|</code>: tubería; pasa el resultado al siguiente cmdlet (como vimos en CE-b).</li>
+          <li><code>Select-Object</code>: elige solo las columnas indicadas.</li>
+          <li><code>Manufacturer</code>, <code>SMBIOSBIOSVersion</code>, <code>ReleaseDate</code>: fabricante, versión y fecha del firmware. Se anotan en el parte de trabajo.</li>
+        </ul></li>
+        <li>Copia de seguridad completa del disco con Rescuezilla a un disco USB (CE-c).</li>
+        <li>Instalar un módulo idéntico al existente en el zócalo B2 para activar el doble canal (CE-c) y el SSD M.2 2280, con el equipo desenchufado y pulsera antiestática puesta (como vimos en CE-b y CE-d de este mismo RA4).</li>
+        <li>Arrancar, comprobar el POST y verificar la memoria con:
+        <pre><code>Get-CimInstance Win32_PhysicalMemory | Select-Object DeviceLocator, Capacity, Speed</code></pre>
+        <ul>
+          <li><code>Get-CimInstance</code>: consulta información del sistema vía WMI (como vimos en CE-b).</li>
+          <li><code>Win32_PhysicalMemory</code>: clase WMI que representa los módulos de memoria RAM instalados.</li>
+          <li><code>|</code>: tubería; pasa el resultado al siguiente cmdlet.</li>
+          <li><code>Select-Object</code>: selecciona solo las propiedades indicadas de cada objeto.</li>
+          <li><code>DeviceLocator</code>: zócalo o ranura donde está instalado cada módulo (por ejemplo, A2 o B2).</li>
+          <li><code>Capacity</code>: capacidad del módulo en bytes; 8589934592 bytes equivalen a 8 GB.</li>
+          <li><code>Speed</code>: frecuencia nominal configurada del módulo, en MHz.</li>
+        </ul>
+        Se comprueba que aparecen dos filas de 8 GB (8589934592 bytes cada una). Con CrystalDiskInfo se confirma que el SSD está en «Correcto». No se actualiza la BIOS: no aporta nada a esta mejora.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-f · Arranque lento en un equipo de oficina</h5>
+      <span class="nivel-tag nivel-basico">BÁSICO</span>
+      <p>En el aula-taller, el equipo 2 tiene un HDD SATA de 1 TB con Windows 11, 8 GB de RAM en un único módulo y una placa con dos zócalos. El usuario se queja de que tarda mucho en arrancar y abrir programas. Indica si la mejora propuesta es actualización o ampliación, qué compruebas antes de intervenir, qué componente instalarías y cómo verificarías que el cambio ha funcionado. Documenta brevemente el resultado.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p>Es una <strong>actualización</strong>: se sustituye el HDD por un SSD, no se añade un componente al lado del existente.</p>
+        <ol>
+          <li>Comprobar compatibilidad (CE-e): la placa debe tener puerto SATA libre y el equipo debe aceptar un SSD SATA de 2,5". Se confirma también que el HDD no está en proceso de fallo y se anota la versión de BIOS/UEFI.</li>
+          <li>Hacer copia de seguridad o clonación del HDD con Rescuezilla a un disco USB (CE-c) antes de manipular. Si se clona, se verifica que el clon arranca.</li>
+          <li>Con el equipo desenchufado y la pulsera antiestática puesta (como vimos en CE-b y CE-d de este mismo RA4), retirar el HDD e instalar el SSD SATA en la misma bahía, conectando cables SATA de datos y alimentación.</li>
+          <li>Arrancar, comprobar que el POST es correcto y que Windows inicia desde el SSD. Verificar el estado del disco con CrystalDiskInfo en «Correcto» y comparar el tiempo de arranque antes y después.</li>
+          <li>Documentar en el parte de trabajo: tipo de operación (actualización), referencias del SSD instalado, clonación realizada, pruebas de arranque y resultado observado (por ejemplo, arranque más rápido y programas que abren con menos espera).</li>
+        </ol>
+      </details>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-f · Ampliación de un puesto de trabajo</h5>
+      <span class="nivel-tag nivel-medio">MEDIO</span>
+      <p>La gestoría <strong>Nortec SL</strong> (aula-taller, equipo 5) tiene un PC con placa micro-ATX, un módulo de 8 GB DDR4-3200, SSD SATA de 240 GB y dos zócalos de memoria. El cliente pide poder trabajar con varias aplicaciones a la vez y guardar copias locales, sin perder el sistema instalado. Indica si es actualización o ampliación, qué compruebas antes, qué instalarías, cómo lo verificarías y qué documentas al final.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Característica</th><th>Qué significa</th><th>Qué elegir según el uso</th></tr></thead>
+        <tbody>
+          <tr><td>Tipo y formato</td><td>DDR4/DDR5, M.2 2280 o SATA, clave B/M</td><td>Lo que admita la placa; nunca forzar la muesca</td></tr>
+          <tr><td>Capacidad</td><td>GB de memoria o de almacenamiento</td><td>16 GB para ofimática; 32 GB si hay varias máquinas virtuales</td></tr>
+          <tr><td>Velocidad</td><td>Frecuencia (MHz) o MB/s secuenciales</td><td>Igualar la del módulo existente; en SSD, priorizar NVMe frente a SATA</td></tr>
+          <tr><td>Durabilidad</td><td>TBW: terabytes que el SSD garantiza escribir</td><td>Cuanto más intensivo el uso, mayor TBW</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-f</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Distingo actualización (sustituir) de ampliación (añadir) y de una simple reparación</label></li>
+        <li><label><input type="checkbox" class="check-item"> Compruebo la compatibilidad del componente antes de comprarlo o instalarlo</label></li>
+        <li><label><input type="checkbox" class="check-item"> Hago copia de seguridad antes de tocar el equipo</label></li>
+        <li><label><input type="checkbox" class="check-item"> Solo actualizo la BIOS/UEFI cuando aporta una mejora concreta y con red eléctrica estable</label></li>
+        <li><label><input type="checkbox" class="check-item"> Verifico el resultado con POST, CPU-Z y CrystalDiskInfo, y lo anoto en el parte de trabajo</label></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="ceG">
+  <div class="bloque-header">
+    <div class="bloque-titulo">
+      <div class="bloque-num">g</div>
+      <div class="bloque-info">
+        <h3>El informe de avería: reparación y ampliación</h3>
+        <p>CE-g · importante · 1 sesión</p>
+      </div>
+    </div>
+    <span class="bloque-sesiones">1 sesión</span>
+  </div>
+  <div class="bloque-body">
+
+    <p>Un <strong>informe de avería</strong> es el documento donde el técnico deja por escrito qué le pasaba al equipo, qué ha comprobado, qué ha hecho y con qué resultado. No es un trámite: es la prueba del trabajo realizado, la base de la garantía y el historial que consultará el siguiente técnico que abra ese equipo. En los CEs anteriores has diagnosticado, sustituido, comprobado compatibilidad y ampliado piezas; ahora toca <strong>documentarlo</strong> para que otro lo entienda sin ti delante.</p>
+
+    <div class="clave">Si no está en el informe, no ha ocurrido: el trabajo que no se documenta no se puede cobrar, garantizar ni repetir.</div>
+
+    <figure class="diagrama">
+      <svg viewBox="0 0 540 170" role="img" aria-label="Ciclo de vida de una intervención técnica, desde la recepción del equipo hasta el archivo del informe">
+        <defs>
+          <marker id="flecha-g-ceg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#667085"/>
+          </marker>
+        </defs>
+        <rect x="15" y="50" width="90" height="70" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="60" y="80" text-anchor="middle" font-size="13" fill="#1a1a2e">Recepción</text>
+        <text x="60" y="98" text-anchor="middle" font-size="12" fill="#667085">del equipo</text>
+        <line x1="105" y1="85" x2="118" y2="85" stroke="#667085" stroke-width="2" marker-end="url(#flecha-g-ceg)"/>
+        <rect x="120" y="50" width="90" height="70" rx="10" fill="#e8f2fb" stroke="#2d6a9f" stroke-width="2"/>
+        <text x="165" y="80" text-anchor="middle" font-size="13" fill="#1a1a2e">Diagnóstico</text>
+        <text x="165" y="98" text-anchor="middle" font-size="12" fill="#667085">y pruebas</text>
+        <line x1="210" y1="85" x2="223" y2="85" stroke="#667085" stroke-width="2" marker-end="url(#flecha-g-ceg)"/>
+        <rect x="225" y="50" width="90" height="70" rx="10" fill="#fdf6e3" stroke="#d4a017" stroke-width="2"/>
+        <text x="270" y="80" text-anchor="middle" font-size="13" fill="#1a1a2e">Actuación</text>
+        <text x="270" y="98" text-anchor="middle" font-size="12" fill="#667085">reparar/ampliar</text>
+        <line x1="315" y1="85" x2="328" y2="85" stroke="#667085" stroke-width="2" marker-end="url(#flecha-g-ceg)"/>
+        <rect x="330" y="50" width="90" height="70" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="375" y="80" text-anchor="middle" font-size="13" fill="#1a1a2e">Verificación</text>
+        <text x="375" y="98" text-anchor="middle" font-size="12" fill="#667085">y conformidad</text>
+        <line x1="420" y1="85" x2="433" y2="85" stroke="#667085" stroke-width="2" marker-end="url(#flecha-g-ceg)"/>
+        <rect x="435" y="50" width="90" height="70" rx="10" fill="#e2f0e6" stroke="#1a6b3a" stroke-width="2"/>
+        <text x="480" y="80" text-anchor="middle" font-size="13" fill="#1a1a2e">Informe</text>
+        <text x="480" y="98" text-anchor="middle" font-size="12" fill="#667085">y archivo</text>
+        <text x="270" y="145" text-anchor="middle" font-size="12" fill="#667085">Cada etapa deja datos que acabarán en el informe</text>
+      </svg>
+      <figcaption>El informe no se escribe al final «de memoria»: se alimenta de lo anotado en cada etapa. Fíjate en que verificación y conformidad van antes de redactar.</figcaption>
+    </figure>
+
+    <h4>Partes de un informe de avería</h4>
+    <p>El <strong>síntoma</strong> es lo que el usuario cuenta («se reinicia solo»); el <strong>diagnóstico</strong>, que ya practicaste en CE-c, es la causa real que tú demuestras con pruebas. Nunca los mezcles en el mismo apartado.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Apartado</th><th>Qué se escribe</th><th>Ejemplo real</th></tr></thead>
+        <tbody>
+          <tr><td>Identificación</td><td>Cliente, número de <strong>orden de trabajo</strong> (código interno que numera cada intervención) y datos del equipo: marca, modelo y <strong>número de serie</strong> (código único de fábrica).</td><td>OT-2026/0481 · HP ProDesk 400 G7 · S/N 8CC1234XZ</td></tr>
+          <tr><td>Síntoma</td><td>Lo que reporta el usuario, con sus palabras y la fecha.</td><td>«Se reinicia sola al abrir Excel» (12/11/2026)</td></tr>
+          <tr><td>Diagnóstico</td><td>Pruebas hechas y conclusión. Aquí se citan herramientas y resultados.</td><td>CrystalDiskInfo: 14 sectores reasignados, estado «Precaución»</td></tr>
+          <tr><td>Actuación</td><td>Qué se ha sustituido o ampliado, con modelo y capacidad.</td><td>Clonado a SSD SATA 2,5" 480 GB y retirada del HDD</td></tr>
+          <tr><td>Verificación</td><td>Pruebas posteriores que demuestran que funciona.</td><td>chkdsk sin errores, 2 h de uso, SMART «Bueno»</td></tr>
+          <tr><td>Cierre</td><td>Fecha, técnico, coste si procede y firma de conformidad del cliente.</td><td>18/11/2026 · J. Ruiz · conforme y firmado</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <h4><span class="ico">🔧</span> Reparación</h4>
+        <ul><li>Había una avería</li><li>Pieza deteriorada sustituida</li><li>El informe explica la causa</li></ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">⬆️</span> Ampliación</h4>
+        <ul><li>El equipo funcionaba</li><li>Se añade RAM o disco (CE-f)</li><li>El informe justifica la mejora</li></ul>
+      </div>
+      <div class="card">
+        <h4><span class="ico">📋</span> Trazabilidad</h4>
+        <ul><li>Quién, cuándo y qué tocó</li><li>Base de la garantía</li><li>Historial consultable</li></ul>
+      </div>
+    </div>
+
+    <h4>Recoger los datos del equipo antes de redactar</h4>
+    <p>El número de serie y la versión de BIOS se leen del sistema cuando el equipo arranca; no se copian «a ojo» de la etiqueta, que puede estar borrada. En el aula, con Windows 11 y PowerShell (intérprete de comandos de Windows, ya usado en CE-b y CE-c):</p>
+    <pre><code>Get-CimInstance Win32_BIOS | Select-Object Manufacturer, SerialNumber, SMBIOSBIOSVersion</code></pre>
+    <ul>
+      <li><code>Get-CimInstance</code>: cmdlet (comando propio de PowerShell) que consulta información del sistema a través de WMI, la base de datos interna de hardware de Windows.</li>
+      <li><code>Win32_BIOS</code>: clase WMI que agrupa los datos de la BIOS/UEFI de la placa.</li>
+      <li><code>|</code>: la tubería (pipe); envía el resultado del comando anterior al siguiente, como vimos en CE-c.</li>
+      <li><code>Select-Object</code>: filtra y muestra solo las columnas indicadas, en lugar de decenas de campos.</li>
+      <li><code>Manufacturer</code>, <code>SerialNumber</code>, <code>SMBIOSBIOSVersion</code>: fabricante del firmware, número de serie del equipo y versión de BIOS; los tres datos que van al apartado de identificación del informe.</li>
+    </ul>
+    <p>Para comprobar el consumo real de memoria en Windows está el <strong>Administrador de tareas</strong> (se abre con Ctrl+Mayús+Esc): es la herramienta del sistema que muestra los procesos en ejecución y el uso de CPU, memoria, disco y red. En <em>Rendimiento > Memoria</em> indica la cantidad total, la disponible, la velocidad y las ranuras ocupadas; sirve para detectar si falta RAM, aunque para conocer el modelo exacto de los módulos se usa CPU-Z.</p>
+    <p>Si el equipo no arranca (los del taller están así), el número de serie se toma de la etiqueta del chasis. La versión de BIOS no se puede obtener del módulo de memoria ni del disco: esos componentes solo muestran sus propios modelos y números de serie. Si no hay arranque, se consulta la etiqueta de la placa o del chip de BIOS si es visible, la documentación o el soporte del fabricante con modelo y número de serie, o se anota «versión de BIOS no comprobable sin arranque», citando siempre la fuente.</p>
+
+    <div class="ejemplo-resuelto">
+      <h5>💡 Ejemplo resuelto</h5>
+      <p><strong>AulaTec Formación S.L.</strong> Equipo de secretaría, OT-2026/0512. El usuario informa: «el ordenador va muy lento y a veces se queda pensando». Sobre la mesa, un HP con HDD de 1 TB.</p>
+      <p><strong>Resolución paso a paso:</strong></p>
+      <ol>
+        <li>Recepción — se anota la OT, el número de serie (leído con el comando anterior) y el síntoma textual del usuario.</li>
+        <li>Diagnóstico — se abre CrystalDiskInfo (ya usado en CE-c): SMART con 14 sectores reasignados y 6 pendientes, estado «Precaución». Se confirma con <code>chkdsk C: /f</code>, que repara el sistema de archivos pero no los sectores físicos. Conclusión: el HDD está degradado; no es un problema de software.</li>
+        <li>Propuesta — se entrega un <strong>presupuesto</strong> (documento con el coste de la pieza y la mano de obra) al cliente antes de tocar nada. El cliente lo aprueba por correo; ese correo se adjunta al expediente.</li>
+        <li>Actuación — clonación con Rescuezilla (CE-c) a un SSD SATA de 480 GB; se cambia la unidad y se guarda el HDD viejo etiquetado durante 30 días.</li>
+        <li>Verificación — arranque correcto, chkdsk sin errores, SMART «Bueno» y dos horas de uso con Office abierto.</li>
+        <li>Informe — se redactan los seis apartados de la tabla, se adjunta el presupuesto aprobado y el cliente firma la conformidad. El informe se archiva por número de OT.</li>
+      </ol>
+    </div>
+
+    <div class="ejercicio">
+      <h5>Ejercicio CE-g · Informe de ampliación</h5>
+      <p><strong>TecnoParts S.L.</strong> El equipo de contabilidad (OT-2026/0533, Dell OptiPlex 7010, S/N 4RTY88K) va lento al abrir hojas de cálculo grandes. Comprobado con CPU-Z y el Administrador de tareas, tiene 8 GB de RAM instalados en un único módulo, que ocupa una de las dos ranuras de la placa; la otra ranura está libre. El cliente pide ampliar a 16 GB. Redacta el informe de la intervención indicando qué apartados incluirías y qué escribirías en cada uno, sabiendo que el equipo quedó verificado correctamente.</p>
+      <div class="respuesta" contenteditable="true" data-placeholder="Escribe tu respuesta aquí..."></div>
+      <details class="solucion"><summary>Ver solución</summary>
+        <p><strong>1. Identificación:</strong> cliente TecnoParts S.L., OT-2026/0533, Dell OptiPlex 7010, S/N 4RTY88K, fecha de entrada.</p>
+        <p><strong>2. Síntoma:</strong> «lentitud al abrir hojas de cálculo grandes». Se indica que no es una avería, sino una insuficiencia de recursos.</p>
+        <p><strong>3. Diagnóstico:</strong> CPU-Z muestra 8 GB en un único módulo; el Administrador de tareas, en Rendimiento > Memoria, confirma un uso de memoria sostenido por encima del 85 %. Conclusión: se necesita ampliar a 16 GB.</p>
+        <p><strong>4. Actuación:</strong> se instala un segundo módulo de 8 GB DDR3 (no DDR4, incompatible con esta placa) de igual frecuencia y latencia que el existente (compatibilidad ya comprobada en CE-e), con el equipo apagado y pulsera antiestática; queda en doble canal, ocupando la segunda ranura y dejando las dos ranuras ocupadas.</p>
+        <p><strong>5. Verificación:</strong> arranque correcto, BIOS/UEFI reconoce 16 GB, CPU-Z confirma doble canal y velocidad nominal, POST sin errores y apertura de la hoja de cálculo que antes fallaba.</p>
+        <p><strong>6. Cierre:</strong> fecha, técnico, importe de la ampliación, firma de conformidad del cliente y archivo por número de OT. Se advierte por escrito de que las dos ranuras quedan ocupadas, dato útil para una futura ampliación.</p>
+      </details>
+    </div>
+
+    <div class="checklist">
+      <strong>✓ Checklist CE-g</strong>
+      <ul>
+        <li><label><input type="checkbox" class="check-item"> Distingo síntoma (lo que dice el usuario) de diagnóstico (la causa demostrada)</label></li>
+        <li><label><input type="checkbox" class="check-item"> Sé enumerar los seis apartados de un informe de avería</label></li>
+        <li><label><input type="checkbox" class="check-item"> Obtengo número de serie y versión de BIOS con PowerShell; si no arranca, tomo el número de serie de la etiqueta del chasis y consulto la BIOS en la documentación o soporte del fabricante, o indico que no es comprobable, citando la fuente</label></li>
+        <li><label><input type="checkbox" class="check-item"> Diferencio un informe de reparación de uno de ampliación</label></li>
+        <li><label><input type="checkbox" class="check-item"> Incluyo siempre verificación final y conformidad del cliente</label></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+<div class="bloque" id="resumen">
+  <div class="bloque-header" style="border-left-color:#1a6b3a;">
+    <div class="bloque-titulo">
+      <div class="bloque-num" style="background:#1a6b3a;">★</div>
+      <div class="bloque-info">
+        <h3>Puntos clave — RA4</h3>
+        <p>Repasa esto antes del examen</p>
+      </div>
+    </div>
+  </div>
+  <div class="bloque-body">
+    <ol>
+      <li style="margin-bottom:8px;"><strong>CE-b.</strong> Diagnosticar un sobrecalentamiento del microprocesador monitorizando temperaturas y Tjmax con HWiNFO64 8.20 (sensores) y Core Temp 1.19, y confirmando el throttling térmico o el apagado de protección con una prueba de carga en OCCT 13.1 o Prime95 30.19 (Small FFTs). En Ubuntu 24.04 LTS y Debian 13.0 se usan lm-sensors y psensor; en Windows 11 25H2 se contrasta con PowerShell y Get-CimInstance Win32_Processor | Select-Object Name, MaxClockSpeed, CurrentClockSpeed.</li>
+      <li style="margin-bottom:8px;"><strong>CE-b.</strong> Reparar la cadena térmica revisando el estado de la pasta térmica, el disipador, el ventilador y la circulación de aire del chasis, comprobando la conexión al header CPU_FAN de la placa ATX y el TDP y Vcore con CPU-Z 2.15. Manipular siempre con pulsera antiestática (ESD) y limpiar con alcohol isopropílico.</li>
+      <li style="margin-bottom:8px;"><strong>CE-c.</strong> Localizar averías típicas por descarte: mala conexión de componentes (ATX 24 pines y EPS 8 pines), incompatibilidades de socket LGA1700/AM5 y de memoria DDR5/DDR4, y suciedad. Medir tensión continua (DC) con el polímetro en modo VΩ, tomando la masa en el chasis.</li>
+      <li style="margin-bottom:8px;"><strong>CE-c.</strong> Diagnosticar el disco y la memoria: revisar el SMART con CrystalDiskInfo 9.5 (sectores reasignados y pendientes), ejecutar chkdsk /f y /r desde el Administrador de tareas/consola y probar la RAM con MemTest86 11.2. Completar con la tarjeta de diagnóstico POST, los pitidos del zumbador, el Administrador de dispositivos y el Visor de eventos (eventvwr.msc).</li>
+      <li style="margin-bottom:8px;"><strong>CE-c.</strong> Comprobar los canales de memoria (A2 y B2, doble canal) con CPU-Z 2.15 en las pestañas Memory y SPD y con Get-CimInstance Win32_PhysicalMemory | Select-Object BankLabel, DeviceLocator, Capacity, Speed, y verificar las unidades con Get-PhysicalDisk | Select-Object FriendlyName, MediaType, HealthStatus, OperationalStatus. Antes de intervenir, clonar o hacer imagen del disco con Rescuezilla 2.6 en USB arrancable y anotar todo en el parte de trabajo.</li>
+      <li style="margin-bottom:8px;"><strong>CE-d.</strong> Sustituir el componente deteriorado por la pieza completa (fuente ATX, disipador, ventilador, pila CR2032 del CMOS/RTC) y verificar después la reparación con POST, MemTest86 11.2 y CrystalDiskInfo 9.5. Identificar la pieza por su modelo y número de serie con Get-CimInstance Win32_DiskDrive | Select-Object Model, SerialNumber, Size, Status y Win32_PhysicalMemory, o con lsblk, lspci y sudo dmidecode en Ubuntu 24.04 LTS y Debian 13.0.</li>
+      <li style="margin-bottom:8px;"><strong>CE-d.</strong> Aplicar el procedimiento seguro de sustitución: pulsera antiestática, descarga de condensadores y protección de contactos dorados en bolsa antiestática; elegir ventilador PWM de 4 pines (compatible con 3 pines) atendiendo al caudal de aire y al header de la placa, renovar la pasta térmica y comprobar el resultado en la UEFI y con Prime95 30.19, dejando trazabilidad en el parte de trabajo.</li>
+      <li style="margin-bottom:8px;"><strong>CE-e.</strong> Verificar la compatibilidad física, eléctrica y lógica del componente sustituido: socket LGA1700/LGA1851/AM5, chipset B760/B650, factor forma ATX/micro-ATX, longitud del chasis y altura del disipador, SSD M.2 2280 con clave M, B o B+M, y muescas y tipo de DDR4/DDR5. Confirmar conectores de alimentación ATX 24, EPS 8 y PCIe 8 pines.</li>
+      <li style="margin-bottom:8px;"><strong>CE-e.</strong> Contraste en el sistema: en Windows 11 25H2, CPU-Z 2.15 (SPD: velocidad nominal frente a configurada) y Get-CimInstance Win32_PhysicalMemory | Select-Object BankLabel, DeviceLocator, Capacity, Speed, ConfiguredClockSpeed, SMBIOSMemoryType; en Ubuntu 24.04 LTS y Debian 13.0, sudo dmidecode -t memory | grep -E con los campos Type, Size y Configured Memory Speed. Completar con CrystalDiskInfo 9.5, lsblk y lspci (PCIe 4.0/3.0, compatibilidad hacia atrás) y GPU-Z 2.62 al valorar overclock.</li>
+      <li style="margin-bottom:8px;"><strong>CE-f.</strong> Realizar actualizaciones de firmware consultando la BIOS/UEFI y aplicando fwupdmgr update en Ubuntu 24.04 LTS o Debian 13.0, y en Windows 11 25H2 comprobando Get-CimInstance Win32_BIOS | Select-Object Manufacturer, SMBIOSBIOSVersion, ReleaseDate; tras la actualización, arrancar y confirmar el POST.</li>
+      <li style="margin-bottom:8px;"><strong>CE-f.</strong> Ejecutar ampliaciones de memoria y de almacenamiento comprobando antes el tipo y la velocidad con CPU-Z 2.15 (SPD, DeviceLocator, Capacity, Speed), el desgaste TBW del NVMe M.2 2280 o del SATA con CrystalDiskInfo 9.5 y la compatibilidad DDR4/DDR5 y de clave M/B+M, verificando el resultado final en el POST.</li>
+      <li style="margin-bottom:8px;"><strong>CE-g.</strong> Elaborar el informe de avería y la orden de trabajo (OT) con número de serie (S/N), síntoma, identificación, diagnóstico, actuación, verificación y cierre, garantizando la trazabilidad. Recoger los datos con Get-CimInstance (WMI) | Select-Object Manufacturer, SerialNumber, SMBIOSBIOSVersion, con el Administrador de tareas (Ctrl+Mayús+Esc) y con CPU-Z 2.15, apoyarse en las etiquetas del chasis, de la placa y del chip de BIOS, y adjuntar presupuesto, resultado de chkdsk C: /f, firma de conformidad y archivo del informe de reparación o de ampliación.</li>
+    </ol>
+  </div>
+</div>
+</div>
+
+<footer>Montaje y mantenimiento de equipos · Grado Medio · RA4: Mantiene equipos informáticos interpretando las recomendaciones de los fabricantes y relacionando las disfunciones con sus causas.</footer>
+
+<button class="btn-top" id="btnTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="progreso-badge" id="progresoBadge">Progreso: 0%</div>
+
+<script>
+
+  window.addEventListener('scroll', function() {
+    document.getElementById('btnTop').classList.toggle('visible', window.scrollY > 300);
+  });
+  function updateProgress() {
+    var all = document.querySelectorAll('.check-item');
+    var checked = document.querySelectorAll('.check-item:checked');
+    var pct = all.length > 0 ? Math.round((checked.length / all.length) * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progresoBadge').textContent = 'Progreso: ' + pct + '%';
+    try { localStorage.setItem('progreso_ra4_montaje_y_mantenimie', pct); } catch(e) {}
+  }
+  document.querySelectorAll('.check-item').forEach(function(cb, i) {
+    try { if (localStorage.getItem('cb_ra4_montaje_y_mantenimie_' + i) === 'true') cb.checked = true; } catch(e) {}
+    cb.addEventListener('change', function() {
+      try { localStorage.setItem('cb_ra4_montaje_y_mantenimie_' + i, cb.checked); } catch(e) {}
+      updateProgress();
+    });
+  });
+  document.querySelectorAll('.respuesta[contenteditable="true"]').forEach(function(div, i) {
+    try { var s = localStorage.getItem('resp_ra4_montaje_y_mantenimie_' + i); if (s) div.innerHTML = s; } catch(e) {}
+    div.addEventListener('input', function() {
+      try { localStorage.setItem('resp_ra4_montaje_y_mantenimie_' + i, div.innerHTML); } catch(e) {}
+    });
+  });
+  updateProgress();
+
+</script>
+</body>
+</html>
